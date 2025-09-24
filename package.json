@@ -39,27 +39,28 @@
     "backup": "node scripts/backup.mjs"
   },
   "dependencies": {
-    "zod": "^3.22.4",
     "@cloudflare/workers-types": "^4.20240117.0",
-    "hono": "^3.12.8",
-    "drizzle-orm": "^0.29.3",
-    "redis": "^4.6.12",
     "cheerio": "^1.0.0-rc.12",
-    "node-fetch": "^3.3.2",
     "date-fns": "^3.2.0",
-    "lodash": "^4.17.21"
+    "drizzle-orm": "^0.29.3",
+    "hono": "^3.12.8",
+    "lodash": "^4.17.21",
+    "node-fetch": "^3.3.2",
+    "redis": "^4.6.12",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@cloudflare/workerd-darwin-arm64": "^1.20250924.0",
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "drizzle-kit": "^0.20.13",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4",
     "turbo": "^1.11.3",
     "typescript": "^5.3.3",
-    "@types/node": "^20.10.5",
     "vitest": "^1.2.0",
-    "prettier": "^3.2.4",
-    "eslint": "^8.56.0",
-    "@typescript-eslint/parser": "^6.19.0",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "wrangler": "^3.22.4",
-    "drizzle-kit": "^0.20.13"
+    "wrangler": "^3.22.4"
   },
   "workspaces": [
     "apps/*",
