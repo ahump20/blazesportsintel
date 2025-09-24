@@ -1,0 +1,19 @@
+[build]
+  base = "apps/web"
+  publish = "apps/web"
+  command = "pnpm run build"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[functions]
+  directory = "apps/api/functions"

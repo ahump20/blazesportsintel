@@ -1,6 +1,7 @@
 {
   "name": "@blazesportsintel/schema",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,9 +10,10 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "zod": "^3.22.4"
+    "zod": "^3.22.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.0",
+    "@types/node": "^20.11.0"
   }
 }

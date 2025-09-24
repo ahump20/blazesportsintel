@@ -3,71 +3,39 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Texas-inspired sports intelligence platform - The Deep South Sports Authority",
-  "author": "Blaze Intelligence",
+  "description": "Unified sports data repository for Texas and Deep South sports intelligence",
+  "author": "Blaze Intelligence <data@blazesportsintel.com>",
   "license": "MIT",
+  "homepage": "https://blazesportsintel.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahump20/blazesportsintel.git"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "start": "npm run dev",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
-    "clean": "turbo run clean && rm -rf node_modules",
+    "dev": "turbo run dev",
     "refresh:all": "node packages/pipeline/run-all.mjs",
-    "refresh:daily": "npm run refresh:all && npm run validate && npm run deploy:data",
     "refresh:nfl": "node packages/pipeline/run.mjs nfl",
     "refresh:mlb": "node packages/pipeline/run.mjs mlb",
-    "refresh:nba": "node packages/pipeline/run.mjs nba",
     "refresh:ncaa_fb": "node packages/pipeline/run.mjs ncaa_fb",
-    "refresh:ncaa_bb": "node packages/pipeline/run.mjs ncaa_bb",
-    "refresh:college_baseball": "node packages/pipeline/run.mjs college_baseball",
+    "refresh:college_bb": "node packages/pipeline/run.mjs college_bb",
     "refresh:tx_hs_fb": "node packages/pipeline/run.mjs tx_hs_fb",
-    "refresh:pg_baseball": "node packages/pipeline/run.mjs pg_baseball",
-    "refresh:standings": "node packages/pipeline/standings.mjs",
-    "refresh:schedules": "node packages/pipeline/schedules.mjs",
-    "refresh:stats": "node packages/pipeline/stats.mjs",
+    "refresh:pg_tx": "node packages/pipeline/run.mjs pg_tx",
     "validate": "node scripts/validate.mjs",
-    "validate:schemas": "node scripts/validate-schemas.mjs",
     "linkcheck": "node scripts/linkcheck.mjs",
     "seed": "node scripts/seed.mjs",
-    "migrate": "node scripts/migrate.mjs",
-    "deploy": "npm run build && wrangler pages deploy apps/web/dist --project-name=blazesportsintel",
-    "deploy:api": "cd apps/api && wrangler deploy",
-    "deploy:data": "node scripts/deploy-data.mjs",
-    "deploy:production": "npm run test && npm run build && npm run deploy",
-    "monitor": "node scripts/monitor.mjs",
-    "backup": "node scripts/backup.mjs"
-  },
-  "dependencies": {
-    "@cloudflare/workers-types": "^4.20240117.0",
-    "cheerio": "^1.0.0-rc.12",
-    "date-fns": "^3.2.0",
-    "drizzle-orm": "^0.29.3",
-    "hono": "^3.12.8",
-    "lodash": "^4.17.21",
-    "node-fetch": "^3.3.2",
-    "redis": "^4.6.12",
-    "zod": "^3.22.4"
+    "deploy": "pnpm run build && netlify deploy --prod --dir=apps/web/dist",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "@cloudflare/workerd-darwin-arm64": "^1.20250924.0",
-    "@types/node": "^20.10.5",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
-    "drizzle-kit": "^0.20.13",
-    "eslint": "^8.56.0",
-    "prettier": "^3.2.4",
-    "turbo": "^1.11.3",
-    "typescript": "^5.3.3",
-    "vitest": "^1.2.0",
-    "wrangler": "^3.22.4"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "@types/node": "^20.11.0",
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
   }
 }

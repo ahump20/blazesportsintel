@@ -1,19 +1,13 @@
 {
   "name": "@blazesportsintel/api",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "build": "tsc"
+    "build": "netlify-lambda build functions",
+    "dev": "netlify-lambda serve functions"
   },
   "dependencies": {
-    "@blazesportsintel/schema": "workspace:*",
-    "hono": "^3.12.0"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20231218.0",
-    "wrangler": "^3.22.1",
-    "typescript": "^5.3.3"
+    "netlify-lambda": "^2.0.0"
   }
 }

@@ -1,97 +1,43 @@
-name: Deploy to Cloudflare Pages
-
+name: Deploy to Production
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
+          cache: 'pnpm'
+          
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Build all packages
+        
+      - name: Build applications
         run: pnpm run build
-
-      - name: Run tests
-        run: pnpm run test
-        continue-on-error: true
-
-      - name: Deploy API to Cloudflare Workers
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          cd apps/api
-          npx wrangler deploy --env production
-
-      - name: Deploy Web to Cloudflare Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          npx wrangler pages deploy apps/web/dist \
-            --project-name=blazesportsintel \
-            --branch=main
-
-      - name: Deploy Preview
-        if: github.event_name == 'pull_request'
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          npx wrangler pages deploy apps/web/dist \
-            --project-name=blazesportsintel \
-            --branch=preview-${{ github.event.pull_request.number }}
-
-      - name: Comment PR with preview URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        
+      - name: Deploy to Netlify
+        uses: netlify/actions/cli@v2
         with:
-          script: |
-            const prNumber = context.payload.pull_request.number;
-            const previewUrl = `https://preview-${prNumber}.blazesportsintel.pages.dev`;
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: `### 🚀 Preview Deployed!\n\nYour changes have been deployed to: ${previewUrl}\n\n#### Deployment Details:\n- Branch: preview-${prNumber}\n- Status: ✅ Success\n- Time: ${new Date().toISOString()}`
-            });
+          args: 'deploy --dir=apps/web --prod'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        if: github.ref == 'refs/heads/main'
+        
+      - name: Deploy Preview
+        uses: netlify/actions/cli@v2
+        with:
+          args: 'deploy --dir=apps/web --alias=preview-${{ github.event.number }}'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        if: github.event_name == 'pull_request'

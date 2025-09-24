@@ -1,8 +1,4 @@
 packages:
-  - apps/*
-  - packages/*
-  - packages/sources/*
-
-ignoredBuiltDependencies:
-  - es5-ext
-  - sharp
+  - 'apps/*'
+  - 'packages/*'
+  - 'packages/sources/*'
