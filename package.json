@@ -1,0 +1,72 @@
+{
+  "name": "blazesportsintel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Texas-inspired sports intelligence platform - The Deep South Sports Authority",
+  "author": "Blaze Intelligence",
+  "license": "MIT",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "start": "npm run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "refresh:all": "node packages/pipeline/run-all.mjs",
+    "refresh:daily": "npm run refresh:all && npm run validate && npm run deploy:data",
+    "refresh:nfl": "node packages/pipeline/run.mjs nfl",
+    "refresh:mlb": "node packages/pipeline/run.mjs mlb",
+    "refresh:nba": "node packages/pipeline/run.mjs nba",
+    "refresh:ncaa_fb": "node packages/pipeline/run.mjs ncaa_fb",
+    "refresh:ncaa_bb": "node packages/pipeline/run.mjs ncaa_bb",
+    "refresh:college_baseball": "node packages/pipeline/run.mjs college_baseball",
+    "refresh:tx_hs_fb": "node packages/pipeline/run.mjs tx_hs_fb",
+    "refresh:pg_baseball": "node packages/pipeline/run.mjs pg_baseball",
+    "refresh:standings": "node packages/pipeline/standings.mjs",
+    "refresh:schedules": "node packages/pipeline/schedules.mjs",
+    "refresh:stats": "node packages/pipeline/stats.mjs",
+    "validate": "node scripts/validate.mjs",
+    "validate:schemas": "node scripts/validate-schemas.mjs",
+    "linkcheck": "node scripts/linkcheck.mjs",
+    "seed": "node scripts/seed.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "deploy": "npm run build && wrangler pages deploy apps/web/dist --project-name=blazesportsintel",
+    "deploy:api": "cd apps/api && wrangler deploy",
+    "deploy:data": "node scripts/deploy-data.mjs",
+    "deploy:production": "npm run test && npm run build && npm run deploy",
+    "monitor": "node scripts/monitor.mjs",
+    "backup": "node scripts/backup.mjs"
+  },
+  "dependencies": {
+    "zod": "^3.22.4",
+    "@cloudflare/workers-types": "^4.20240117.0",
+    "hono": "^3.12.8",
+    "drizzle-orm": "^0.29.3",
+    "redis": "^4.6.12",
+    "cheerio": "^1.0.0-rc.12",
+    "node-fetch": "^3.3.2",
+    "date-fns": "^3.2.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.3",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.5",
+    "vitest": "^1.2.0",
+    "prettier": "^3.2.4",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "wrangler": "^3.22.4",
+    "drizzle-kit": "^0.20.13"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

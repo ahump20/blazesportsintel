@@ -1,0 +1,16 @@
+name = "blazesportsintel-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "blazesportsintel-api-production"
+route = { pattern = "api.blazesportsintel.com/*", zone_name = "blazesportsintel.com" }
+
+[[r2_buckets]]
+binding = "DATA_BUCKET"
+bucket_name = "blaze-sportsintel"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "blazesportsintel_cache"
+preview_id = "blazesportsintel_cache_preview"

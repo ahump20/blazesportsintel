@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.next/
+.cache/
+.turbo/
+*.log
+.env
+.env.local
+.env.production
+.wrangler/
+coverage/
+*.swp
+.DS_Store
+data/**/*.jsonl
+data/**/*.parquet
+!data/**/metadata.json

@@ -1,0 +1,353 @@
+:root {
+  --primary: #BF5700;
+  --secondary: #002244;
+  --accent: #00B2A9;
+  --light: #9BCBEB;
+  --bg: #FAFAFA;
+  --text: #36454F;
+  --border: #E5E4E2;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tagline {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.as-of {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Navigation */
+.nav {
+  padding: 1rem 2rem;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav a {
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+/* Leagues Grid */
+.leagues {
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.leagues h2 {
+  color: var(--secondary);
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.league-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.league-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+}
+
+.league-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.league-card h3 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.sport-tag {
+  display: inline-block;
+  background: var(--light);
+  color: var(--secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Teams Grid */
+.teams-section {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.team-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.team-card h3 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.division {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Link-outs */
+.link-outs {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.link-outs h4 {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.linkout {
+  display: inline-block;
+  background: var(--light);
+  color: var(--secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.linkout:hover {
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+}
+
+.linkout-large {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.linkout-large:hover {
+  background: var(--secondary);
+  text-decoration: none;
+}
+
+/* Tables */
+.standings-table,
+.roster-table,
+.schedule-table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.standings-table th,
+.roster-table th,
+.schedule-table th {
+  background: var(--secondary);
+  color: white;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 500;
+}
+
+.standings-table td,
+.roster-table td,
+.schedule-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.standings-table tr:last-child td,
+.roster-table tr:last-child td,
+.schedule-table tr:last-child td {
+  border-bottom: none;
+}
+
+.standings-table tr:hover,
+.roster-table tr:hover,
+.schedule-table tr:hover {
+  background: #f8f9fa;
+}
+
+/* Features */
+.features {
+  background: white;
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  border-radius: 8px;
+}
+
+.features h2 {
+  color: var(--secondary);
+  margin-bottom: 1.5rem;
+}
+
+.features ul {
+  list-style: none;
+}
+
+.features li {
+  padding: 0.75rem 0;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+.footer {
+  background: var(--secondary);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.footer a {
+  color: var(--light);
+}
+
+.compliance {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Loading */
+.loading {
+  padding: 4rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Sections */
+.roster-section,
+.schedule-section,
+.standings-section,
+.link-outs-section {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.roster-section h2,
+.schedule-section h2,
+.standings-section h2,
+.link-outs-section h2 {
+  color: var(--secondary);
+  margin-bottom: 1.5rem;
+}
+
+.player-link {
+  display: inline-block;
+  color: var(--accent);
+  margin-right: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .league-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .standings-table,
+  .roster-table,
+  .schedule-table {
+    font-size: 0.85rem;
+  }
+
+  .standings-table th,
+  .roster-table th,
+  .schedule-table th,
+  .standings-table td,
+  .roster-table td,
+  .schedule-table td {
+    padding: 0.5rem;
+  }
+}

@@ -1,0 +1,138 @@
+name: Daily Data Refresh
+
+on:
+  schedule:
+    # Run at 9:00 AM and 3:00 PM Central Time
+    - cron: '0 14,20 * * *'  # UTC times: 14:00 (9am CT), 20:00 (3pm CT)
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  NODE_ENV: production
+  BLAZE_USER_AGENT: BlazeSportsIntelBot/1.0
+
+jobs:
+  refresh-data:
+    runs-on: ubuntu-latest
+    name: Refresh Sports Data
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm run build
+
+      - name: Refresh NFL data
+        run: pnpm run refresh:nfl
+        continue-on-error: true
+
+      - name: Refresh MLB data
+        run: pnpm run refresh:mlb
+        continue-on-error: true
+
+      - name: Refresh NCAA Football data
+        run: pnpm run refresh:ncaa_fb
+        env:
+          CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+        continue-on-error: true
+
+      - name: Refresh Texas HS Football data
+        run: pnpm run refresh:tx_hs_fb
+        env:
+          DCTF_COOKIE: ${{ secrets.DCTF_COOKIE }}
+        continue-on-error: true
+
+      - name: Refresh Perfect Game data
+        run: pnpm run refresh:pg_baseball
+        env:
+          PERFECTGAME_COOKIE: ${{ secrets.PERFECTGAME_COOKIE }}
+        continue-on-error: true
+
+      - name: Validate data
+        run: pnpm run validate
+
+      - name: Check links
+        run: pnpm run linkcheck
+        continue-on-error: true
+
+      - name: Create timestamp
+        id: timestamp
+        run: echo "date=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "Blaze Sports Intel Bot"
+          git config user.email "bot@blazesportsintel.com"
+          git add -A data/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: Daily data refresh - ${{ steps.timestamp.outputs.date }}
+
+            Updated sports data for:
+            - NFL rosters and standings
+            - MLB rosters and standings
+            - NCAA Football teams
+            - Texas HS Football
+            - Perfect Game baseball
+
+            As-of: $(date +'%Y-%m-%d')"
+            git push
+          fi
+
+      - name: Upload to R2
+        if: success()
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          # This would use AWS CLI or rclone to sync data to R2
+          echo "Uploading data to Cloudflare R2..."
+          # aws s3 sync data/ s3://$R2_BUCKET/data/ --endpoint-url https://YOUR_ACCOUNT_ID.r2.cloudflarestorage.com
+
+      - name: Purge CDN cache
+        if: success()
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":false,"files":["https://api.blazesportsintel.com/v1/*"]}'
+
+      - name: Send notification
+        if: failure()
+        run: |
+          echo "Data refresh failed. Check logs for details."
+          # Could integrate with Slack, Discord, or email notifications
