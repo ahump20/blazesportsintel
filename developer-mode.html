@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLAZE SPORTS INTEL | Quantum Performance Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300..700&family=Inter:wght@300..900&family=Space+Grotesk:wght@300..700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --burnt-orange: #bf5700;
+      --crimson-tide: #9e1b32;
+      --lsu-purple: #461d7c;
+      --championship-gold: #ffd700;
+      --texas-dust: #8b7355;
+      --midnight-black: #0a0e27;
+      --stadium-lights: #fff8dc;
+      --quantum-blue: #00d9ff;
+      --plasma-purple: #9d00ff;
+      --matrix-green: #00ff41;
+      --warning-red: #ff0040;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #0a0e27 100%);
+      overflow-x: hidden;
+      color: var(--stadium-lights);
+    }
+
+    .championship-title {
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, var(--burnt-orange), var(--championship-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .quantum-glow {
+      animation: quantumPulse 2s ease-in-out infinite;
+      box-shadow: 0 0 50px rgba(0, 217, 255, 0.5);
+    }
+
+    @keyframes quantumPulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+      }
+    }
+
+    .neural-grid {
+      background-image: linear-gradient(rgba(0, 217, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 217, 255, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridFlow 20s linear infinite;
+    }
+
+    @keyframes gridFlow {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(50px, 50px);
+      }
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(191, 87, 0, 0.1), rgba(0, 217, 255, 0.05));
+      border: 1px solid rgba(191, 87, 0, 0.3);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 40px rgba(191, 87, 0, 0.4);
+      border-color: var(--burnt-orange);
+    }
+
+    .holographic-text {
+      background: linear-gradient(45deg, var(--quantum-blue), var(--plasma-purple), var(--championship-gold), var(--quantum-blue));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: holographicShift 3s ease infinite;
+    }
+
+    @keyframes holographicShift {
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(191, 87, 0, 0.3);
+      border-top-color: var(--burnt-orange);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .nav-item {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--burnt-orange), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-item:hover::after {
+      left: 100%;
+    }
+
+    .metric-display {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(191, 87, 0, 0.1));
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+    }
+
+    .metric-display::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid transparent;
+      background: linear-gradient(45deg, var(--burnt-orange), var(--quantum-blue)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container" class="min-h-screen relative">
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-orange-500/20">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <div class="w-12 h-12 relative" aria-hidden="true">
+              <div class="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg animate-pulse"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-white font-bold text-xl">B</span>
+              </div>
+            </div>
+            <div>
+              <h1 class="championship-title text-2xl font-bold">BLAZE SPORTS INTEL</h1>
+              <p class="text-xs text-orange-300 uppercase tracking-wider">Quantum Performance Engine v5.6</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-8">
+            <a class="nav-item text-white hover:text-orange-400 transition font-medium" href="#dashboard">Dashboard</a>
+            <a class="nav-item text-white hover:text-orange-400 transition font-medium" href="#analysis">Live Analysis</a>
+            <a class="nav-item text-white hover:text-orange-400 transition font-medium" href="#nil">NIL Intel</a>
+            <a class="nav-item text-white hover:text-orange-400 transition font-medium" href="#recruiting">Recruiting</a>
+            <button type="button" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-full font-bold hover:scale-105 transition">
+              LAUNCH QUANTUM
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20" id="dashboard">
+      <div id="hero-canvas" class="absolute inset-0" role="presentation"></div>
+      <div class="neural-grid absolute inset-0 opacity-20" aria-hidden="true"></div>
+      <div class="relative z-10 container mx-auto px-6 text-center">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-7xl font-bold mb-6">
+            <span class="holographic-text">CHAMPIONSHIP INTELLIGENCE</span>
+          </h2>
+          <h3 class="championship-title text-5xl mb-8">FROM FRIDAY NIGHT LIGHTS TO THE SUPER BOWL</h3>
+          <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+            Where Texas heritage meets Silicon Valley innovation. The most powerful sports analytics platform ever built - featuring
+            Unreal Engine 5.6 level visualization, real-time path tracing, and quantum-computed performance metrics.
+          </p>
+          <div class="grid grid-cols-1 gap-4 mb-12 sm:grid-cols-2 lg:grid-cols-4" role="list">
+            <div class="stat-card p-6 rounded-xl" role="listitem">
+              <div class="text-4xl font-bold text-orange-400">94.6%</div>
+              <div class="text-sm text-gray-400 uppercase">Prediction Accuracy</div>
+            </div>
+            <div class="stat-card p-6 rounded-xl" role="listitem">
+              <div class="text-4xl font-bold text-blue-400">&lt;100ms</div>
+              <div class="text-sm text-gray-400 uppercase">Latency</div>
+            </div>
+            <div class="stat-card p-6 rounded-xl" role="listitem">
+              <div class="text-4xl font-bold text-purple-400">8.2M</div>
+              <div class="text-sm text-gray-400 uppercase">Data Points/Sec</div>
+            </div>
+            <div class="stat-card p-6 rounded-xl" role="listitem">
+              <div class="text-4xl font-bold text-green-400">∞</div>
+              <div class="text-sm text-gray-400 uppercase">Scale Potential</div>
+            </div>
+          </div>
+          <div class="flex flex-col justify-center gap-4 sm:flex-row sm:space-x-6">
+            <button
+              id="launch-engine"
+              type="button"
+              class="px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 text-white rounded-full font-bold text-lg hover:scale-110 transition-all duration-300 quantum-glow"
+            >
+              ACTIVATE QUANTUM ENGINE
+            </button>
+            <button type="button" class="px-10 py-4 border-2 border-orange-500 text-orange-400 rounded-full font-bold text-lg hover:bg-orange-500/20 transition">
+              VIEW LIVE DEMO
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="absolute top-32 left-10 metric-display p-4 rounded-xl">
+        <div class="text-xs text-gray-400 uppercase mb-1">Champion Enigma Score</div>
+        <div class="text-2xl font-bold text-orange-400">98.7</div>
+      </div>
+      <div class="absolute bottom-32 right-10 metric-display p-4 rounded-xl">
+        <div class="text-xs text-gray-400 uppercase mb-1">NIL Valuation</div>
+        <div class="text-2xl font-bold text-green-400">$2.4M</div>
+      </div>
+    </section>
+
+    <section class="relative py-20 overflow-hidden" id="analysis">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="championship-title text-5xl mb-4">CHAMPION ENIGMA ENGINE™</h2>
+          <p class="text-xl text-gray-400">Quantifying the Unquantifiable - 8 Dimensions of Elite Performance</p>
+        </div>
+        <div class="relative">
+          <div id="enigma-canvas" class="w-full h-[600px] rounded-2xl overflow-hidden" role="presentation"></div>
+          <div class="absolute top-6 left-6 space-y-3">
+            <div class="metric-display p-3 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse" aria-hidden="true"></div>
+                <span class="text-sm">Clutch Gene: <span class="font-bold text-orange-400">97.2</span></span>
+              </div>
+            </div>
+            <div class="metric-display p-3 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-purple-500 rounded-full animate-pulse" aria-hidden="true"></div>
+                <span class="text-sm">Killer Instinct: <span class="font-bold text-purple-400">92.8</span></span>
+              </div>
+            </div>
+            <div class="metric-display p-3 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse" aria-hidden="true"></div>
+                <span class="text-sm">Flow State: <span class="font-bold text-blue-400">89.5</span></span>
+              </div>
+            </div>
+            <div class="metric-display p-3 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse" aria-hidden="true"></div>
+                <span class="text-sm">Beast Mode: <span class="font-bold text-green-400">94.1</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-8 mt-16 md:grid-cols-3">
+          <div class="stat-card p-8 rounded-xl">
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mb-4" aria-hidden="true">
+              <span class="text-2xl" role="img" aria-label="DNA">🧬</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Biometric Fusion</h3>
+            <p class="text-gray-400">Real-time HRV, EEG, and galvanic skin response integrated with game footage for complete performance mapping.</p>
+          </div>
+          <div class="stat-card p-8 rounded-xl">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center mb-4" aria-hidden="true">
+              <span class="text-2xl" role="img" aria-label="Brain">🧠</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Neural Pattern Recognition</h3>
+            <p class="text-gray-400">TensorFlow-powered AI identifies clutch performance patterns across 10,000+ game situations.</p>
+          </div>
+          <div class="stat-card p-8 rounded-xl">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center mb-4" aria-hidden="true">
+              <span class="text-2xl" role="img" aria-label="Chart">📊</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-3">Predictive Analytics</h3>
+            <p class="text-gray-400">94.6% accuracy in predicting breakout performances and career trajectory inflection points.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="relative py-20 bg-black/50" id="nil">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="championship-title text-5xl mb-4">POWERED BY THE FUTURE</h2>
+          <p class="text-xl text-gray-400">Enterprise-Grade Technology Stack</p>
+        </div>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="text-center">
+            <div class="stat-card p-6 rounded-xl mb-4">
+              <div class="text-3xl mb-2" aria-hidden="true">⚡</div>
+              <h3 class="font-bold text-lg">Unreal Engine 5.6</h3>
+            </div>
+            <p class="text-sm text-gray-500">Nanite virtualized geometry & Lumen global illumination</p>
+          </div>
+          <div class="text-center">
+            <div class="stat-card p-6 rounded-xl mb-4">
+              <div class="text-3xl mb-2" aria-hidden="true">🎮</div>
+              <h3 class="font-bold text-lg">Unity 6 HDRP</h3>
+            </div>
+            <p class="text-sm text-gray-500">Path-traced rendering for photorealistic visualization</p>
+          </div>
+          <div class="text-center">
+            <div class="stat-card p-6 rounded-xl mb-4">
+              <div class="text-3xl mb-2" aria-hidden="true">🔮</div>
+              <h3 class="font-bold text-lg">NVIDIA Omniverse</h3>
+            </div>
+            <p class="text-sm text-gray-500">Real-time RTX ray tracing & USD pipeline integration</p>
+          </div>
+          <div class="text-center">
+            <div class="stat-card p-6 rounded-xl mb-4">
+              <div class="text-3xl mb-2" aria-hidden="true">🚀</div>
+              <h3 class="font-bold text-lg">WebGPU Native</h3>
+            </div>
+            <p class="text-sm text-gray-500">Next-gen browser graphics with compute shaders</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="relative py-20" id="recruiting">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="championship-title text-5xl mb-4">REAL-TIME COMMAND CENTER</h2>
+          <p class="text-xl text-gray-400">Live Game Intelligence Streaming</p>
+        </div>
+        <div class="stat-card p-8 rounded-2xl">
+          <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div>
+              <h3 class="text-xl font-bold mb-4 text-orange-400">Player Metrics</h3>
+              <canvas id="performance-chart" width="400" height="200" aria-label="Player performance trend" role="img"></canvas>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold mb-4 text-blue-400">Team Dynamics</h3>
+              <canvas id="team-chart" width="400" height="200" aria-label="Team dynamics" role="img"></canvas>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold mb-4 text-green-400">NIL Evolution</h3>
+              <canvas id="nil-chart" width="400" height="200" aria-label="NIL valuation trend" role="img"></canvas>
+            </div>
+          </div>
+          <div class="mt-8 p-6 bg-black/50 rounded-xl">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-lg">Live Intelligence Feed</h3>
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse" aria-hidden="true"></div>
+                <span class="text-sm text-green-400">LIVE</span>
+              </div>
+            </div>
+            <div id="live-feed" class="space-y-2 max-h-40 overflow-y-auto" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="relative py-12 border-t border-orange-500/20">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col gap-4 items-start justify-between sm:flex-row sm:items-center">
+          <div>
+            <h3 class="championship-title text-2xl mb-2">BLAZE SPORTS INTEL</h3>
+            <p class="text-gray-400">Where Champions Are Decoded</p>
+          </div>
+          <div class="text-left sm:text-right">
+            <p class="text-sm text-gray-500">© 2025 Blaze Intelligence Corporation</p>
+            <p class="text-xs text-gray-600 mt-1">Built in Austin, Texas 🤠 | Powered by Championship DNA</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { quantumPerformanceDataset } from './data/quantum-performance-dataset.js';
+
+    const { gsap, ScrollTrigger } = window;
+    const THREE = window.THREE;
+    const Chart = window.Chart;
+
+    if (gsap && ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+    } else {
+      console.warn('QuantumEngine: GSAP or ScrollTrigger unavailable; skipping ScrollTrigger registration.');
+    }
+
+    if (!THREE) {
+      console.error('QuantumEngine: THREE.js is required but missing.');
+    }
+
+    if (!Chart) {
+      console.error('QuantumEngine: Chart.js is required but missing.');
+    }
+
+    const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const PERFORMANCE_SERIES_CONFIG = { sport: 'Baseball', metric: 'clutchIndex' };
+    const TEAM_RADAR_CONFIG = [
+      { label: 'Offense', sport: 'Football', metric: 'burstScore', windowSize: 12, fallback: 88 },
+      { label: 'Defense', sport: 'Football', metric: 'resilienceFactor', windowSize: 12, fallback: 86 },
+      { label: 'Special Teams', sport: 'Football', metric: 'tempoControl', windowSize: 12, fallback: 87 },
+      { label: 'Clutch', sport: 'Football', metric: 'clutchIndex', windowSize: 12, fallback: 92 },
+      { label: 'Chemistry', sport: 'Football', metric: 'leadershipAura', windowSize: 12, fallback: 90 }
+    ];
+    const NIL_SERIES_CONFIG = { sport: 'Basketball', metric: 'leadershipAura' };
+    const NIL_VALUE_SCALE = 18;
+    const INITIAL_NIL_MONTH_INDEX = 6;
+    const FEED_SPORT_SEQUENCE = ['Baseball', 'Football', 'Basketball', 'Track & Field'];
+    const METRIC_LABELS = {
+      clutchIndex: 'Clutch Index',
+      burstScore: 'Burst Score',
+      visionRating: 'Vision Rating',
+      leadershipAura: 'Leadership Aura',
+      tempoControl: 'Tempo Control',
+      resilienceFactor: 'Resilience Factor'
+    };
+
+    class DatasetCursor {
+      constructor(records) {
+        this.records = Array.isArray(records) ? records : [];
+        this.groups = new Map();
+        this.indices = new Map();
+        this.sportGroups = new Map();
+
+        for (const record of this.records) {
+          if (!record || typeof record !== 'object') {
+            continue;
+          }
+
+          const { sport, metric } = record;
+          if (!sport || !metric) {
+            continue;
+          }
+
+          const key = this.composeKey(sport, metric);
+          if (!this.groups.has(key)) {
+            this.groups.set(key, []);
+          }
+          this.groups.get(key).push(record);
+
+          if (!this.sportGroups.has(sport)) {
+            this.sportGroups.set(sport, []);
+          }
+          this.sportGroups.get(sport).push(record);
+        }
+      }
+
+      composeKey(sport, metric) {
+        return `${sport}|${metric}`;
+      }
+
+      resolveKey(config) {
+        if (!config) {
+          return null;
+        }
+
+        if (typeof config === 'string') {
+          return config;
+        }
+
+        if (typeof config === 'object' && 'sport' in config && 'metric' in config) {
+          return this.composeKey(config.sport, config.metric);
+        }
+
+        console.warn('DatasetCursor: unsupported key config provided.', config);
+        return null;
+      }
+
+      nextSeries(config, length) {
+        const key = this.resolveKey(config);
+        if (!key || length <= 0) {
+          return [];
+        }
+
+        const records = this.groups.get(key);
+        if (!records || records.length === 0) {
+          return [];
+        }
+
+        const pointer = this.indices.get(key) ?? 0;
+        const series = [];
+
+        for (let i = 0; i < length; i += 1) {
+          const record = records[(pointer + i) % records.length];
+          series.push(record);
+        }
+
+        this.indices.set(key, (pointer + length) % records.length);
+        return series;
+      }
+
+      nextValue(config) {
+        const [record] = this.nextSeries(config, 1);
+        return record ?? null;
+      }
+
+      rollingAverage(config, length) {
+        const series = this.nextSeries(config, length);
+        if (series.length === 0) {
+          return null;
+        }
+
+        const total = series.reduce((sum, item) => sum + (typeof item.value === 'number' ? item.value : 0), 0);
+        return Number((total / series.length).toFixed(2));
+      }
+
+      sampleBySport(sport) {
+        const records = this.sportGroups.get(sport);
+        if (!records || records.length === 0) {
+          return null;
+        }
+
+        const index = Math.floor(Math.random() * records.length);
+        return records[index] ?? null;
+      }
+
+      sampleAny() {
+        if (this.records.length === 0) {
+          return null;
+        }
+
+        const index = Math.floor(Math.random() * this.records.length);
+        return this.records[index] ?? null;
+      }
+    }
+
+    class QuantumEngine {
+      constructor() {
+        this.performanceChart = null;
+        this.teamChart = null;
+        this.nilChart = null;
+        this.chartUpdateIntervalId = null;
+        this.liveFeedIntervalId = null;
+        this.heroRenderer = null;
+        this.heroCamera = null;
+        this.heroScene = null;
+        this.enigmaRenderer = null;
+        this.enigmaCamera = null;
+        this.enigmaScene = null;
+        this.enigmaNodes = [];
+        this.datasetCursor = new DatasetCursor(quantumPerformanceDataset);
+        this.performanceSeriesConfig = PERFORMANCE_SERIES_CONFIG;
+        this.teamRadarConfig = TEAM_RADAR_CONFIG;
+        this.nilSeriesConfig = NIL_SERIES_CONFIG;
+        this.nilValueScale = NIL_VALUE_SCALE;
+        this.nilMonthPointer = INITIAL_NIL_MONTH_INDEX;
+        this.feedSportPointer = 0;
+        this.handleResize = this.handleResize.bind(this);
+        this.launchHandler = this.launchQuantumInterface.bind(this);
+        this.init();
+      }
+
+      init() {
+        const heroInitialized = this.initHeroScene();
+        const enigmaInitialized = this.initEnigmaVisualization();
+        this.initLiveCharts();
+        this.initWebSocket();
+        this.initAnimations();
+        if (heroInitialized || enigmaInitialized) {
+          window.addEventListener('resize', this.handleResize);
+        }
+      }
+
+      initHeroScene() {
+        const container = document.getElementById('hero-canvas');
+        if (!container) {
+          console.warn('QuantumEngine: hero canvas not found; skipping hero scene setup.');
+          return false;
+        }
+
+        this.heroScene = new THREE.Scene();
+        this.heroCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.heroCamera.position.set(0, 0, 30);
+        this.heroRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+        this.heroRenderer.setSize(window.innerWidth, window.innerHeight);
+        this.heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.heroRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.heroRenderer.toneMappingExposure = 1.5;
+        container.appendChild(this.heroRenderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        this.heroScene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xbf5700, 2);
+        directionalLight.position.set(10, 10, 5);
+        directionalLight.castShadow = true;
+        this.heroScene.add(directionalLight);
+
+        this.createQuantumField();
+        this.createChampionshipTrophy();
+        this.setupPostProcessing();
+        this.animateHero();
+        return true;
+      }
+
+      initEnigmaVisualization() {
+        const container = document.getElementById('enigma-canvas');
+        if (!container) {
+          console.warn('QuantumEngine: enigma canvas not found; skipping visualization setup.');
+          return false;
+        }
+
+        this.enigmaScene = new THREE.Scene();
+        this.enigmaCamera = new THREE.PerspectiveCamera(60, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        this.enigmaCamera.position.set(0, 10, 30);
+        this.enigmaRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        this.enigmaRenderer.setSize(container.offsetWidth, container.offsetHeight);
+        container.appendChild(this.enigmaRenderer.domElement);
+        this.createEnigmaDimensions();
+
+        const controls = new THREE.OrbitControls(this.enigmaCamera, this.enigmaRenderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        this.enigmaControls = controls;
+        this.animateEnigma();
+        return true;
+      }
+
+      createQuantumField() {
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particleCount = 10000;
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 100;
+          positions[i + 1] = (Math.random() - 0.5) * 100;
+          positions[i + 2] = (Math.random() - 0.5) * 100;
+
+          const colorChoice = Math.random();
+          if (colorChoice < 0.33) {
+            colors[i] = 0.75;
+            colors[i + 1] = 0.34;
+            colors[i + 2] = 0;
+          } else if (colorChoice < 0.66) {
+            colors[i] = 0;
+            colors[i + 1] = 0.85;
+            colors[i + 2] = 1;
+          } else {
+            colors[i] = 1;
+            colors[i + 1] = 0.84;
+            colors[i + 2] = 0;
+          }
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.5, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.8 });
+
+        this.quantumField = new THREE.Points(particlesGeometry, particlesMaterial);
+        this.heroScene.add(this.quantumField);
+      }
+
+      createChampionshipTrophy() {
+        const trophyGroup = new THREE.Group();
+        const cupGeometry = new THREE.CylinderGeometry(3, 1, 6, 32, 1, true);
+        const cupMaterial = new THREE.MeshPhysicalMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1, clearcoat: 1, clearcoatRoughness: 0.1 });
+        const cup = new THREE.Mesh(cupGeometry, cupMaterial);
+
+        const torusGeometry = new THREE.TorusGeometry(2.5, 0.3, 8, 32, Math.PI);
+        const handleMaterial = new THREE.MeshPhysicalMaterial({ color: 0xbf5700, metalness: 0.8, roughness: 0.2 });
+
+        const handle1 = new THREE.Mesh(torusGeometry, handleMaterial);
+        handle1.position.set(-2.5, 0, 0);
+        handle1.rotation.z = Math.PI / 2;
+
+        const handle2 = handle1.clone();
+        handle2.position.set(2.5, 0, 0);
+        handle2.rotation.z = -Math.PI / 2;
+
+        trophyGroup.add(cup, handle1, handle2);
+        this.trophy = trophyGroup;
+        this.heroScene.add(this.trophy);
+      }
+
+      setupPostProcessing() {
+        if (!this.heroRenderer || !this.heroCamera || !this.heroScene) {
+          return;
+        }
+        const composer = new THREE.EffectComposer(this.heroRenderer);
+        const renderPass = new THREE.RenderPass(this.heroScene, this.heroCamera);
+        composer.addPass(renderPass);
+
+        const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        composer.addPass(bloomPass);
+
+        this.composer = composer;
+      }
+
+      animateHero() {
+        if (!this.heroRenderer || !this.heroCamera || !this.heroScene) {
+          return;
+        }
+        requestAnimationFrame(() => this.animateHero());
+
+        if (this.quantumField) {
+          this.quantumField.rotation.x += 0.0005;
+          this.quantumField.rotation.y += 0.001;
+        }
+
+        if (this.trophy) {
+          this.trophy.rotation.y += 0.01;
+          this.trophy.position.y = Math.sin(Date.now() * 0.001) * 2;
+        }
+
+        if (this.composer) {
+          this.composer.render();
+        } else {
+          this.heroRenderer.render(this.heroScene, this.heroCamera);
+        }
+      }
+
+      createEnigmaDimensions() {
+        const dimensions = [
+          { name: 'Clutch Gene', color: 0xff0000, position: [10, 0, 0] },
+          { name: 'Killer Instinct', color: 0xff00ff, position: [-10, 0, 0] },
+          { name: 'Flow State', color: 0x00ffff, position: [0, 10, 0] },
+          { name: 'Mental Fortress', color: 0x00ff00, position: [0, -10, 0] },
+          { name: 'Predator Mindset', color: 0xffff00, position: [0, 0, 10] },
+          { name: 'Champion Aura', color: 0xffd700, position: [0, 0, -10] },
+          { name: 'Winner DNA', color: 0xff8c00, position: [7, 7, 0] },
+          { name: 'Beast Mode', color: 0x9400d3, position: [-7, -7, 0] }
+        ];
+
+        this.enigmaNodes = [];
+
+        dimensions.forEach((dim, index) => {
+          const nodeGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+          const nodeMaterial = new THREE.MeshPhysicalMaterial({ color: dim.color, emissive: dim.color, emissiveIntensity: 0.5, metalness: 0.5, roughness: 0.2, clearcoat: 1 });
+          const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+          node.position.set(...dim.position);
+          this.enigmaScene.add(node);
+          this.enigmaNodes.push(node);
+
+          dimensions.slice(index + 1).forEach((targetDim) => {
+            const points = [new THREE.Vector3(...dim.position), new THREE.Vector3(...targetDim.position)];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0xbf5700, opacity: 0.3, transparent: true });
+            const line = new THREE.Line(geometry, material);
+            this.enigmaScene.add(line);
+          });
+        });
+
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 2000;
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 50;
+          positions[i + 1] = (Math.random() - 0.5) * 50;
+          positions[i + 2] = (Math.random() - 0.5) * 50;
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const particleMaterial = new THREE.PointsMaterial({ color: 0xbf5700, size: 0.1, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.5 });
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        this.enigmaScene.add(particles);
+      }
+
+      animateEnigma() {
+        if (!this.enigmaRenderer || !this.enigmaScene || !this.enigmaCamera) {
+          return;
+        }
+        requestAnimationFrame(() => this.animateEnigma());
+
+        this.enigmaNodes.forEach((node, index) => {
+          node.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
+          node.rotation.y += 0.01;
+        });
+
+        if (this.enigmaControls) {
+          this.enigmaControls.update();
+        }
+
+        this.enigmaRenderer.render(this.enigmaScene, this.enigmaCamera);
+      }
+
+      initLiveCharts() {
+        const performanceCanvas = document.getElementById('performance-chart');
+        const teamCanvas = document.getElementById('team-chart');
+        const nilCanvas = document.getElementById('nil-chart');
+
+        if (!performanceCanvas || !teamCanvas || !nilCanvas) {
+          console.warn('QuantumEngine: chart canvases missing; skipping chart initialization.');
+          return;
+        }
+
+        const perfCtx = performanceCanvas.getContext('2d');
+        const teamCtx = teamCanvas.getContext('2d');
+        const nilCtx = nilCanvas.getContext('2d');
+
+        if (!perfCtx || !teamCtx || !nilCtx) {
+          console.warn('QuantumEngine: unable to obtain 2D contexts; skipping chart initialization.');
+          return;
+        }
+
+        const performanceRecords = this.datasetCursor.nextSeries(this.performanceSeriesConfig, 20);
+        const initialPerformanceData =
+          performanceRecords.length > 0
+            ? performanceRecords.map((record) => Number(record.value.toFixed(2)))
+            : Array.from({ length: 20 }, () => Math.round((Math.random() * 30 + 70) * 100) / 100);
+
+        this.performanceChart = new Chart(perfCtx, {
+          type: 'line',
+          data: {
+            labels: Array.from({ length: initialPerformanceData.length }, () => ''),
+            datasets: [
+              {
+                label: 'Performance Score',
+                data: initialPerformanceData,
+                borderColor: '#BF5700',
+                backgroundColor: 'rgba(191, 87, 0, 0.1)',
+                tension: 0.4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: false, min: 60, max: 100, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#999' } },
+              x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#999' } }
+            }
+          }
+        });
+
+        const teamValues = this.teamRadarConfig.map((config) => {
+          const average = this.datasetCursor.rollingAverage(config, config.windowSize);
+          return this.clampMetricValue(average ?? config.fallback);
+        });
+
+        this.teamChart = new Chart(teamCtx, {
+          type: 'radar',
+          data: {
+            labels: this.teamRadarConfig.map((config) => config.label),
+            datasets: [
+              {
+                label: 'Team Metrics',
+                data: teamValues,
+                borderColor: '#00D9FF',
+                backgroundColor: 'rgba(0, 217, 255, 0.2)'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+              r: { beginAtZero: true, max: 100, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#999', backdropColor: 'transparent' }, pointLabels: { color: '#999' } }
+            }
+          }
+        });
+
+        const nilRecords = this.datasetCursor.nextSeries(this.nilSeriesConfig, 6);
+        const nilData =
+          nilRecords.length > 0
+            ? nilRecords.map((record) => Math.max(100, Math.round(record.value * this.nilValueScale)))
+            : [450, 520, 580, 790, 1200, 2400];
+        const nilLabels = MONTH_LABELS.slice(0, nilData.length);
+        this.nilMonthPointer = nilLabels.length;
+
+        this.nilChart = new Chart(nilCtx, {
+          type: 'bar',
+          data: {
+            labels: nilLabels,
+            datasets: [
+              {
+                label: 'NIL Value ($K)',
+                data: nilData,
+                backgroundColor: nilData.map((_, index) =>
+                  index === nilData.length - 1 ? 'rgba(255, 215, 0, 0.8)' : 'rgba(191, 87, 0, 0.8)'
+                ),
+                borderColor: '#BF5700',
+                borderWidth: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#999', callback: (value) => `$${value}K` } },
+              x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#999' } }
+            }
+          }
+        });
+
+        this.chartUpdateIntervalId = window.setInterval(() => this.updateCharts(), 2000);
+      }
+
+      updateCharts() {
+        if (!this.performanceChart || !this.teamChart || !this.nilChart) {
+          return;
+        }
+
+        const performanceRecord = this.datasetCursor.nextValue(this.performanceSeriesConfig);
+        if (performanceRecord && this.performanceChart.data.datasets[0]) {
+          const dataset = this.performanceChart.data.datasets[0].data;
+          dataset.shift();
+          dataset.push(Number(performanceRecord.value.toFixed(2)));
+          this.performanceChart.update('none');
+        }
+
+        const teamDataset = this.teamRadarConfig.map((config) => {
+          const value = this.datasetCursor.rollingAverage(config, config.windowSize);
+          return this.clampMetricValue(value ?? config.fallback);
+        });
+        this.teamChart.data.datasets[0].data = teamDataset;
+        this.teamChart.update('none');
+
+        const nilRecord = this.datasetCursor.nextValue(this.nilSeriesConfig);
+        if (nilRecord && this.nilChart.data.datasets[0]) {
+          const scaledValue = Math.max(100, Math.round(nilRecord.value * this.nilValueScale));
+          const labels = this.nilChart.data.labels;
+          if (Array.isArray(labels) && labels.length > 0) {
+            labels.shift();
+            labels.push(MONTH_LABELS[this.nilMonthPointer % MONTH_LABELS.length]);
+          }
+          this.nilMonthPointer += 1;
+
+          const nilData = this.nilChart.data.datasets[0].data;
+          nilData.shift();
+          nilData.push(scaledValue);
+          this.nilChart.update('none');
+        }
+      }
+
+      initWebSocket() {
+        this.simulateLiveData();
+      }
+
+      simulateLiveData() {
+        const feed = document.getElementById('live-feed');
+        if (!feed) {
+          console.warn('QuantumEngine: live feed container not found; skipping feed simulation.');
+          return;
+        }
+
+        this.liveFeedIntervalId = window.setInterval(() => {
+          const sport = FEED_SPORT_SEQUENCE[this.feedSportPointer % FEED_SPORT_SEQUENCE.length];
+          this.feedSportPointer += 1;
+          const record = this.datasetCursor.sampleBySport(sport) ?? this.datasetCursor.sampleAny();
+          const message = record ? this.buildFeedMessage(record) : this.buildFallbackFeedMessage();
+          const timestamp = new Date().toLocaleTimeString();
+          const feedItem = document.createElement('div');
+          feedItem.className = 'flex items-center justify-between p-2 bg-orange-500/10 rounded';
+          feedItem.innerHTML = `<span class="text-sm">${message}</span><span class="text-xs text-gray-500">${timestamp}</span>`;
+          feed.prepend(feedItem);
+
+          while (feed.children.length > 10) {
+            feed.removeChild(feed.lastChild);
+          }
+        }, 3000);
+      }
+
+      initAnimations() {
+        const gsapInstance = window.gsap;
+        if (!gsapInstance) {
+          console.warn('QuantumEngine: GSAP unavailable; skipping animation hooks.');
+          return;
+        }
+
+        gsapInstance.utils.toArray('.stat-card').forEach((card) => {
+          gsapInstance.from(card, {
+            scrollTrigger: { trigger: card, start: 'top 80%', toggleActions: 'play none none reverse' },
+            y: 50,
+            opacity: 0,
+            duration: 1
+          });
+        });
+
+        const launchButton = document.getElementById('launch-engine');
+        if (launchButton) {
+          launchButton.addEventListener('click', this.launchHandler, { once: true });
+        }
+      }
+
+      clampMetricValue(value) {
+        if (typeof value !== 'number' || Number.isNaN(value)) {
+          return 0;
+        }
+        const bounded = Math.max(0, Math.min(100, value));
+        return Number(bounded.toFixed(2));
+      }
+
+      buildFeedMessage(record) {
+        const icons = {
+          Baseball: '⚾',
+          Football: '🏈',
+          Basketball: '🏀',
+          'Track & Field': '🏃'
+        };
+
+        const metricLabel = METRIC_LABELS[record.metric] ?? record.metric;
+        const trend = record.trend ? record.trend.toUpperCase() : 'STABLE';
+        const context = record.context ? record.context.replace(/-/g, ' ') : 'regular season';
+        const value = typeof record.value === 'number' ? record.value.toFixed(2) : 'N/A';
+
+        return `${icons[record.sport] ?? '📊'} ${record.sport} ${record.playerId} · ${metricLabel}: ${value} (${trend}) — ${context}`;
+      }
+
+      buildFallbackFeedMessage() {
+        return '📈 Quantum Engine synchronized — awaiting fresh performance telemetry.';
+      }
+
+      launchQuantumInterface() {
+        this.cleanup();
+        document.body.innerHTML = `
+          <div class="fixed inset-0 bg-black flex items-center justify-center">
+            <div class="text-center">
+              <h1 class="text-6xl font-bold text-orange-500 mb-4">QUANTUM ENGINE ACTIVATED</h1>
+              <div class="loading-spinner mx-auto mb-8"></div>
+              <p class="text-xl text-gray-400">Initializing Championship Intelligence...</p>
+            </div>
+          </div>
+        `;
+
+        window.setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
+
+      handleResize() {
+        if (this.heroCamera && this.heroRenderer) {
+          this.heroCamera.aspect = window.innerWidth / window.innerHeight;
+          this.heroCamera.updateProjectionMatrix();
+          this.heroRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        if (this.enigmaCamera && this.enigmaRenderer) {
+          const parent = this.enigmaRenderer.domElement.parentElement;
+          const width = parent?.offsetWidth ?? window.innerWidth;
+          const height = Math.max(parent?.offsetHeight ?? window.innerHeight, 1);
+          this.enigmaCamera.aspect = width / height;
+          this.enigmaCamera.updateProjectionMatrix();
+          this.enigmaRenderer.setSize(width, height);
+        }
+      }
+
+      cleanup() {
+        if (this.chartUpdateIntervalId) {
+          window.clearInterval(this.chartUpdateIntervalId);
+          this.chartUpdateIntervalId = null;
+        }
+
+        if (this.liveFeedIntervalId) {
+          window.clearInterval(this.liveFeedIntervalId);
+          this.liveFeedIntervalId = null;
+        }
+
+        window.removeEventListener('resize', this.handleResize);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!THREE || !Chart) {
+        console.error('QuantumEngine: Initialization aborted due to missing dependencies.');
+        return;
+      }
+      new QuantumEngine();
+    });
+  </script>
+</body>
+</html>
