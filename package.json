@@ -1,41 +1,23 @@
 {
-  "name": "blazesportsintel",
-  "version": "1.0.0",
+  "name": "blaze-sportsintel",
   "private": true,
-  "type": "module",
-  "description": "Unified sports data repository for Texas and Deep South sports intelligence",
-  "author": "Blaze Intelligence <data@blazesportsintel.com>",
-  "license": "MIT",
-  "homepage": "https://blazesportsintel.com",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ahump20/blazesportsintel.git"
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
-  },
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "refresh:all": "node packages/pipeline/run-all.mjs",
-    "refresh:nfl": "node packages/pipeline/run.mjs nfl",
-    "refresh:mlb": "node packages/pipeline/run.mjs mlb",
-    "refresh:ncaa_fb": "node packages/pipeline/run.mjs ncaa_fb",
-    "refresh:college_bb": "node packages/pipeline/run.mjs college_bb",
-    "refresh:tx_hs_fb": "node packages/pipeline/run.mjs tx_hs_fb",
-    "refresh:pg_tx": "node packages/pipeline/run.mjs pg_tx",
-    "validate": "node scripts/validate.mjs",
-    "linkcheck": "node scripts/linkcheck.mjs",
-    "seed": "node scripts/seed.mjs",
-    "deploy": "pnpm run build && netlify deploy --prod --dir=apps/web/dist",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter @blaze/web dev",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.637.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "turbo": "^1.11.0",
-    "typescript": "^5.3.0",
-    "vitest": "^1.2.0"
+    "eslint": "^9.10.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
   }
 }

@@ -1,19 +1,24 @@
 [build]
-  base = "apps/web"
-  publish = "apps/web"
-  command = "pnpm run build"
+  command = "pnpm --filter @blaze/web build"
+  publish = "apps/web/dist"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/:file.html"
+  to = "/:file"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 [[headers]]
-  for = "/api/*"
+  for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type"
-
-[functions]
-  directory = "apps/api/functions"
+    Content-Security-Policy = "default-src 'self'; img-src 'self' https: data:; script-src 'self'; style-src 'self' 'unsafe-inline' https:; font-src 'self' https: data:; connect-src 'self' https:;"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "no-referrer-when-downgrade"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

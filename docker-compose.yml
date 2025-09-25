@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "5173:5173"
+      - "4173:4173"
+    environment:
+      - NODE_ENV=development
+    command: [ "sh", "-c", "pnpm --filter @blaze/web dev --host 0.0.0.0" ]

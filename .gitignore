@@ -1,16 +1,19 @@
-node_modules/
-dist/
-.next/
-.cache/
-.turbo/
-*.log
-.env
-.env.local
-.env.production
-.wrangler/
-coverage/
-*.swp
+# Node
+node_modules
+dist
+coverage
+.vite
 .DS_Store
-data/**/*.jsonl
-data/**/*.parquet
-!data/**/metadata.json
+
+# Env and local
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Local Netlify folder
+.netlify

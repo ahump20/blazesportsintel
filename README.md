@@ -1,88 +1,82 @@
-# 🔥 Blaze Sports Intel - Unified Sports Data Repository
+# Blaze Sports Intel — Minimal Bootable Stack
+Last updated: 2025-09-25 (America/Chicago)
 
-The definitive unified sports data repository for Texas and Deep South sports intelligence. From Friday night lights to the big leagues.
+Mission: Bridge instinct and data into runnable systems that prove value on first boot—Texas-rooted, Deep South aware, rigor first, artifacts always.
 
-## 🏆 Coverage
+## Overview
+- Frontend: Vite + React SPA (apps/web)
+- Hosting: Netlify (prod + previews)
+- CDN/Assets: Cloudflare R2 via S3-compatible API (script provided)
+- Tooling: pnpm workspaces, ESLint/Prettier, Vitest, OpenTelemetry-ready logging hook
+- Security: .env.example (no secrets), secret rotation guide, CSP and redirects
 
-- **NFL** - All 32 franchises with complete rosters and depth charts
-- **MLB** - All 30 teams with 40-man rosters and minor league affiliates  
-- **Texas HS Football** - UIL classifications (6A-1A) with powerhouse programs
-- **Perfect Game TX** - Elite youth baseball 14U+ tournaments and showcases
-- **NCAA Football** - FBS Power 5 and Group of 5 programs
-- **College Baseball** - Major conference programs and statistics
+## Quickstart
+1) Prereqs: Node 20+, pnpm 9+
+2) Install:
+   pnpm install
+3) Dev:
+   ./scripts/dev.sh
+   # or: pnpm --filter @blaze/web dev
+4) Build:
+   pnpm build
+5) Preview build:
+   pnpm --filter @blaze/web preview
+6) Docker (local static serve):
+   docker compose up -d --build
 
-## 🚀 Quick Start
+## One-command local boot
+make dev
+# or
+./scripts/dev.sh
 
-```bash
-# Install dependencies
-pnpm install
+## Environment
+Copy .env.example to .env in project root or export as shell env vars. Do NOT commit .env.
 
-# Run data refresh for all leagues
-pnpm run refresh:all
+## Seeds
+sample_data/ includes ordered examples:
+- baseball_sample.json
+- football_sample.json
+- basketball_sample.json
+- track_sample.json
 
-# Validate data integrity
-pnpm run validate
+Load path example:
+import baseball from '../../sample_data/baseball_sample.json';
 
-# Start development server
-pnpm run dev
+## Scripts
+- pnpm build: build all packages
+- pnpm test: run tests
+- pnpm lint / pnpm format
+- pnpm --filter @blaze/web dev/preview/build
+- node scripts/verify_env.mjs
+- node scripts/r2_upload.mjs ./dist assets/web/
 
-# Deploy to production
-pnpm run deploy
-```
+## CI/CD
+- ci.yml: lint + test on PRs and pushes
+- deploy.yml: build and deploy to Netlify. Publish dir fixed to apps/web/dist. PR previews enabled.
 
-## 📊 API Endpoints
+## Netlify redirects and headers
+- netlify.toml sets:
+  - *.html -> extensionless 301
+  - SPA fallback
+  - Strict CSP, HSTS, cache headers
 
-- `GET /api/teams?league={league}` - Get teams for a league
-- `GET /api/standings?league={league}` - Get current standings
-- `GET /api/schedules?league={league}` - Get game schedules
-- `GET /api/players/{playerId}` - Get player details
+## Telemetry
+- Minimal OTEL/logging hook wired in src/components/Telemetry.ts. Extend with OTLP exporter when backend is ready.
 
-## 🔄 Automated Updates
+## Security
+- Secrets were detected as public in prior context. Rotate immediately. See docs/SECURITY_ROTATION.md.
+- .env is gitignored. Use .env.example for placeholders.
+- CI and repo contain no secrets.
 
-Data refreshes automatically twice daily:
-- **9:00 AM CT** - Full refresh with overnight results
-- **3:00 PM CT** - Midday update for live seasons
+## Performance
+- Expected scale: static SPA + cached assets at edge; R2 objects long-lived with versioning.
+- Bottlenecks: large 3D assets; mitigate with R2 and aggressive cache-control.
+- Profiling path: Lighthouse CI or Web Vitals; measure FCP/LCP/CLS; lazy-load 3D.
 
-## 🏈 Texas HS Football Authority
+## Troubleshooting
+- Build dir wrong? Ensure deploy uses apps/web/dist
+- 404 on deep-links? SPA fallback configured in netlify.toml and public/_redirects
+- R2 upload fails? Check endpoint/region and credentials; see docs.
 
-Built to Dave Campbell's Texas Football standard:
-- All UIL classifications covered
-- Powerhouse program tracking (Allen, North Shore, Westlake, etc.)
-- District standings and playoff brackets
-- Coaching staff and facilities data
-
-## ⚾ Perfect Game Integration
-
-- Texas regional tournaments 14U+
-- Elite travel team tracking
-- Player rankings and commitments
-- Showcase performance data
-
-## 🔗 Official Sources
-
-All data includes verified link-outs to:
-- Baseball Reference & Pro Football Reference
-- MLB.com & NFL.com official sites  
-- Dave Campbell's Texas Football
-- Perfect Game USA
-- UIL Texas official records
-- 247Sports & Rivals recruiting
-
-## 🤖 Automation
-
-- **Daily data refresh** via GitHub Actions
-- **Automatic validation** with schema checking
-- **Link verification** for external sources
-- **Error monitoring** and alerting
-
-## 📜 License
-
-MIT License - See [LICENSE](LICENSE) for details
-
-## 🙋‍♂️ Contact
-
-**Blaze Intelligence** - Where Data Becomes Championship Intelligence
-- Website: https://blazesportsintel.com
-- Email: data@blazesportsintel.com
-
-Built with Texas pride and Deep South sports authority.
+## License
+MIT
