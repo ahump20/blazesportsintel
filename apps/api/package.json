@@ -1,0 +1,23 @@
+{
+  "name": "@blaze/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Building Cloudflare Workers API'",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --env production",
+    "deploy:staging": "wrangler deploy --env staging",
+    "tail": "wrangler tail --env production",
+    "test": "echo 'API tests pending'"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.23"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241018.0",
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.78.10"
+  }
+}

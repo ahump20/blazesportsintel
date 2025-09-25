@@ -1,0 +1,9 @@
+{
+  "updated": "2025-01-26T21:00:00Z",
+  "region": "Texas/Deep South",
+  "topProspects": [
+    {"rank": 1, "name": "Jackson Smith", "position": "SS", "grad": 2026, "state": "TX"},
+    {"rank": 2, "name": "Tyler Johnson", "position": "RHP", "grad": 2026, "state": "GA"},
+    {"rank": 3, "name": "Marcus Davis", "position": "OF", "grad": 2026, "state": "FL"}
+  ]
+}

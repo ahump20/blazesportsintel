@@ -1,12 +1,8 @@
 import React from 'react';
-// import baseball from '../../../sample_data/baseball_sample.json';
+import { SportDashboard } from '../components/SportDashboard';
+import { useLiveDashboard } from '../hooks/useLiveDashboard';
 
 export default function Baseball() {
-  return (
-    <section>
-      <h2>Baseball</h2>
-      <pre className="badge">seed sample: Cardinals vs Astros</pre>
-      <p>Deep South baseball intelligence - MLB pipelines, Perfect Game scouting, and pitch modeling.</p>
-    </section>
-  );
+  const feed = useLiveDashboard('baseball', 45_000);
+  return <SportDashboard sport="baseball" feed={feed} />;
 }

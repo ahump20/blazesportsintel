@@ -1,12 +1,8 @@
 import React from 'react';
-// import football from '../../../sample_data/football_sample.json';
+import { SportDashboard } from '../components/SportDashboard';
+import { useLiveDashboard } from '../hooks/useLiveDashboard';
 
 export default function Football() {
-  return (
-    <section>
-      <h2>Football</h2>
-      <pre className="badge">seed sample: Titans vs Texans</pre>
-      <p>Texas and SEC football intelligence - NFL analytics, Longhorns tracking, and Texas HS rankings.</p>
-    </section>
-  );
+  const feed = useLiveDashboard('football', 60_000);
+  return <SportDashboard sport="football" feed={feed} />;
 }

@@ -1,0 +1,8 @@
+{
+  "event": "Texas Relays",
+  "updated": "2025-01-26T21:00:00Z",
+  "topPerformances": [
+    {"event": "100m", "athlete": "John Williams", "time": "10.02", "wind": "+1.2"},
+    {"event": "4x100m", "team": "Texas A&M", "time": "38.95"}
+  ]
+}
