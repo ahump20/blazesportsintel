@@ -1,19 +1,22 @@
 # Node
 node_modules
-dist
-coverage
-.vite
-.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Env and local
+# Next.js
+.next
+out
+
+# Build artifacts
+coverage
+dist
+
+# Env
 .env
 .env.*
 !.env.example
 
-# Logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-
-# Local Netlify folder
+# Misc
+.DS_Store
 .netlify

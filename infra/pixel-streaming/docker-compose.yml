@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  signaling:
+    image: ghcr.io/epicgames/pixel-streaming-signalling:5.6
+    environment:
+      - HttpPort=80
+      - EnableWebServer=true
+      - UseFrontend=true
+      - publicIp=0.0.0.0
+      - peerConnectionOptions.useDefaultStun=true
+    ports:
+      - "80:80"
+  matchmaker:
+    image: ghcr.io/epicgames/pixel-streaming-matchmaker:5.6
+    environment:
+      - HttpPort=90
+    ports:
+      - "90:90"
+  sfu:
+    image: ghcr.io/epicgames/pixel-streaming-sfu:5.6
+    environment:
+      - HttpPort=8889
+    ports:
+      - "8889:8889"

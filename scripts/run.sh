@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-pnpm install
-pnpm build
-pnpm --filter @blaze/web preview
+npm install
+npm run build:web
+npm run start --workspace apps/web

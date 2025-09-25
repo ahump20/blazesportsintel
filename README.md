@@ -1,82 +1,67 @@
-# Blaze Sports Intel — Minimal Bootable Stack
+# Blaze Sports Intel — Developer Mode Graphics Stack
 Last updated: 2025-09-25 (America/Chicago)
 
-Mission: Bridge instinct and data into runnable systems that prove value on first boot—Texas-rooted, Deep South aware, rigor first, artifacts always.
-
 ## Overview
-- Frontend: Vite + React SPA (apps/web)
-- Hosting: Netlify (prod + previews)
-- CDN/Assets: Cloudflare R2 via S3-compatible API (script provided)
-- Tooling: pnpm workspaces, ESLint/Prettier, Vitest, OpenTelemetry-ready logging hook
-- Security: .env.example (no secrets), secret rotation guide, CSP and redirects
+- Frontend: Next.js 14 app (apps/web) with /dev Developer Mode UI and WebGPU labs
+- Edge: Cloudflare Worker proxy for UE Pixel Streaming, KV feature flags, and R2 asset serving
+- Hosting: Netlify for Next.js build; Cloudflare Access gates `/dev/*`
+- Assets: Cloudflare R2 bucket (`bsi-3d-assets`) for `.gltf/.glb/.ktx2/.drc`
+- Observability: OpenTelemetry web tracer stub (configurable via `/otel` or OTLP collector)
+
+Sports focus order is always **Baseball → Football → Basketball → Track & Field**. Soccer is intentionally excluded.
 
 ## Quickstart
-1) Prereqs: Node 20+, pnpm 9+
-2) Install:
-   pnpm install
-3) Dev:
-   ./scripts/dev.sh
-   # or: pnpm --filter @blaze/web dev
-4) Build:
-   pnpm build
-5) Preview build:
-   pnpm --filter @blaze/web preview
-6) Docker (local static serve):
-   docker compose up -d --build
+1. Requirements: Node 20+, npm 10+, Wrangler CLI for Worker deployments.
+2. Install workspaces:
+   ```bash
+   npm install
+   ```
+3. Run the web app locally (Next dev server on :5173):
+   ```bash
+   npm run dev:web
+   ```
+4. Build artifacts:
+   ```bash
+   npm run build:web
+   ```
+5. Deploy the Cloudflare Worker:
+   ```bash
+   npm run deploy:worker
+   ```
 
-## One-command local boot
-make dev
-# or
-./scripts/dev.sh
+## Developer Mode
+- `/dev` home surfaces KV feature flags (engine mode, codec, bitrate, resolution).
+- `/dev/ue` reverse-proxies the Unreal Pixel Streaming frontend through Cloudflare Worker.
+- `/dev/labs` hosts WebGPU experiments, including a Baseball strike zone 3D demo with WebGL fallback.
+- `/dev/assets/*` streams R2-hosted 3D assets with immutable caching and CORS enabled.
 
-## Environment
-Copy .env.example to .env in project root or export as shell env vars. Do NOT commit .env.
+## Cloudflare Configuration Checklist
+1. Protect `blazesportsintel.com/dev/*` with Cloudflare Access (Zero-Trust) — allow engineering emails only.
+2. Create KV namespace for feature flags and set `YOUR_KV_NAMESPACE_ID` in `wrangler.toml`.
+3. Provision R2 bucket `bsi-3d-assets`; upload assets and wire to the Worker route.
+4. Set Worker environment variables (`UE_FRONTEND_URL`, `ALLOWED_ADMIN_EMAIL`).
+5. Deploy Worker (`infra/cloudflare/workers/dev-ue-proxy`).
 
-## Seeds
-sample_data/ includes ordered examples:
-- baseball_sample.json
-- football_sample.json
-- basketball_sample.json
-- track_sample.json
+## Netlify Deployment
+- Netlify build command: `npm run build --workspace apps/web`
+- Publish directory: `apps/web/.next`
+- Headers for `/dev/*` enforce `frame-ancestors 'self'` and restricted permissions.
 
-Load path example:
-import baseball from '../../sample_data/baseball_sample.json';
+## OpenTelemetry
+- `apps/web/app/instrumentation.ts` registers a minimal OTLP trace exporter.
+- Configure runtime by setting `window.__OTLP_URL` before hydration or proxy `/otel` to your collector.
 
-## Scripts
-- pnpm build: build all packages
-- pnpm test: run tests
-- pnpm lint / pnpm format
-- pnpm --filter @blaze/web dev/preview/build
-- node scripts/verify_env.mjs
-- node scripts/r2_upload.mjs ./dist assets/web/
+## Pixel Streaming Reference
+- `infra/pixel-streaming/docker-compose.yml` scaffolds Epic Games signaling, matchmaker, and SFU containers.
+- Deploy on a GPU-capable host, expose HTTPS via Cloudflare, and update `UE_FRONTEND_URL` for the Worker proxy.
 
-## CI/CD
-- ci.yml: lint + test on PRs and pushes
-- deploy.yml: build and deploy to Netlify. Publish dir fixed to apps/web/dist. PR previews enabled.
-
-## Netlify redirects and headers
-- netlify.toml sets:
-  - *.html -> extensionless 301
-  - SPA fallback
-  - Strict CSP, HSTS, cache headers
-
-## Telemetry
-- Minimal OTEL/logging hook wired in src/components/Telemetry.ts. Extend with OTLP exporter when backend is ready.
+## Scripts & Utilities
+- `scripts/r2_upload.mjs`: Upload build assets to R2 (after configuring env vars).
+- `scripts/verify_env.mjs`: Minimal env validation helper.
 
 ## Security
-- Secrets were detected as public in prior context. Rotate immediately. See docs/SECURITY_ROTATION.md.
-- .env is gitignored. Use .env.example for placeholders.
-- CI and repo contain no secrets.
-
-## Performance
-- Expected scale: static SPA + cached assets at edge; R2 objects long-lived with versioning.
-- Bottlenecks: large 3D assets; mitigate with R2 and aggressive cache-control.
-- Profiling path: Lighthouse CI or Web Vitals; measure FCP/LCP/CLS; lazy-load 3D.
-
-## Troubleshooting
-- Build dir wrong? Ensure deploy uses apps/web/dist
-- 404 on deep-links? SPA fallback configured in netlify.toml and public/_redirects
-- R2 upload fails? Check endpoint/region and credentials; see docs.
+- Never commit `.env`; secrets belong in Cloudflare/Netlify config.
+- Rotate any exposed credentials immediately (see `docs/SECURITY_ROTATION.md`).
 
 ## License
 MIT

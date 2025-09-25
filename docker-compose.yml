@@ -5,7 +5,6 @@ services:
       dockerfile: Dockerfile.web
     ports:
       - "5173:5173"
-      - "4173:4173"
     environment:
       - NODE_ENV=development
-    command: [ "sh", "-c", "pnpm --filter @blaze/web dev --host 0.0.0.0" ]
+    command: [ "sh", "-c", "npm install && npm run dev --workspace apps/web -- --hostname 0.0.0.0" ]

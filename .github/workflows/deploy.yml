@@ -1,4 +1,5 @@
 name: Deploy to Production
+
 on:
   push:
     branches: [ main ]
@@ -10,35 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          
+          node-version: 20
+          cache: npm
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Build applications
-        run: pnpm run build
-        
-      - name: Deploy to Netlify
-        uses: netlify/actions/cli@v2
-        with:
-          args: 'deploy --dir=apps/web --prod'
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: npm install
+      - name: Build web
+        run: npm run build:web
+      - name: Deploy to Netlify (prod)
         if: github.ref == 'refs/heads/main'
-
-      - name: Deploy Preview
         uses: netlify/actions/cli@v2
         with:
-          args: 'deploy --dir=apps/web --alias=preview-${{ github.event.number }}'
+          args: 'deploy --dir=apps/web/.next --prod'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: Deploy Preview
         if: github.event_name == 'pull_request'
+        uses: netlify/actions/cli@v2
+        with:
+          args: 'deploy --dir=apps/web/.next --alias=preview-${{ github.event.number }}'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

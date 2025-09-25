@@ -1,19 +1,16 @@
-.PHONY: dev build test lint format docker-up
+.PHONY: dev build lint test docker-up
 
 dev:
 	./scripts/dev.sh
 
 build:
-	pnpm build
-
-test:
-	pnpm test
+	npm run build:web
 
 lint:
-	pnpm lint
+	npm run lint --workspace apps/web
 
-format:
-	pnpm format
+test:
+	npm run build --workspace apps/web
 
 docker-up:
 	docker compose up -d --build

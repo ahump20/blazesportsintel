@@ -1,25 +1,25 @@
 {
-  "name": "@blaze/web",
+  "name": "bsi-web",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview --port 4173",
-    "lint": "eslint . --ext .ts,.tsx",
-    "format": "prettier -w .",
-    "test": "vitest run"
+    "dev": "next dev -p 5173",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.52.0",
+    "@opentelemetry/sdk-trace-web": "^1.20.0",
+    "next": "^14.2.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "three": "^0.160.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.4",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8"
-  }
+    "@types/three": "^0.180.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.3"
+  },
+  "type": "module"
 }

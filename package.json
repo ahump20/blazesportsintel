@@ -1,24 +1,14 @@
 {
-  "name": "blaze-sportsintel",
+  "name": "blaze-sports-intel",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
+  "workspaces": [
+    "apps/web",
+    "infra/cloudflare/workers/dev-ue-proxy"
+  ],
   "scripts": {
-    "build": "pnpm -r build",
-    "dev": "pnpm --filter @blaze/web dev",
-    "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
-    "format": "pnpm -r format"
-  },
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.637.0"
-  },
-  "devDependencies": {
-    "eslint": "^9.10.0",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.2",
-    "vitest": "^2.1.1",
-    "wrangler": "^4.40.1"
+    "postinstall": "npm install --workspace apps/web --ignore-scripts && npm install --workspace infra/cloudflare/workers/dev-ue-proxy --ignore-scripts",
+    "dev:web": "npm run dev --workspace apps/web",
+    "build:web": "npm run build --workspace apps/web",
+    "deploy:worker": "npm run deploy --workspace infra/cloudflare/workers/dev-ue-proxy"
   }
 }

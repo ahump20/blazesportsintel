@@ -1,0 +1,27 @@
+name = "bsi-dev-worker"
+main = "src/index.ts"
+compatibility_date = "2025-09-15"
+
+[[kv_namespaces]]
+binding = "BSI_FLAGS"
+id = "YOUR_KV_NAMESPACE_ID"
+
+[[r2_buckets]]
+binding = "BSI_ASSETS"
+bucket_name = "bsi-3d-assets"
+
+[vars]
+UE_FRONTEND_URL = "https://YOUR_UE_SIGNALING_OR_FRONTEND_HOST"
+ALLOWED_ADMIN_EMAIL = "ahump20@outlook.com"
+
+[[routes]]
+pattern = "blazesportsintel.com/dev/ue*"
+zone_id = "YOUR_ZONE_ID"
+
+[[routes]]
+pattern = "blazesportsintel.com/dev/flags*"
+zone_id = "YOUR_ZONE_ID"
+
+[[routes]]
+pattern = "blazesportsintel.com/dev/assets/*"
+zone_id = "YOUR_ZONE_ID"
