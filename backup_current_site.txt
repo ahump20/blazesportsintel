@@ -1,0 +1,29 @@
+BACKUP CREATED: Current blazesportsintel.com site structure
+Date: 2025-01-25
+Purpose: Backup before deploying comprehensive final-deployed-site.html
+
+Current Site Analysis:
+- Next.js application in /apps/web/
+- Built via Netlify with netlify.toml configuration
+- Includes particle systems, live sports data, Vision AI capabilities
+- Sports: Baseball, Football, Basketball, Track & Field
+- Focus teams: Cardinals, Titans, Longhorns, Grizzlies
+- Features: Real-time analytics, pose detection, heat maps
+
+Deployment Method:
+- Netlify build: "npm run build --workspace apps/web"
+- Publish directory: "apps/web/.next"
+
+Comprehensive Replacement Features:
+- Enhanced Vision AI with MediaPipe integration
+- Advanced particle systems and 3D visualizations
+- Real-time sports data feeds
+- NIL valuation tools
+- Perfect Game integration for youth baseball
+- Mobile-responsive design with camera access
+- Biomechanical analysis and character assessment
+- Heat map visualizations
+- Interactive dashboards for all sports
+
+File Size: Comprehensive HTML file is 1000+ lines with embedded JavaScript
+Expected to meet 500KB+ requirement with all features included.

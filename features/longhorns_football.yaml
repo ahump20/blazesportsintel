@@ -1,0 +1,114 @@
+name: longhorns_qb_completion_rate_over_expectation_4g
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_qb_stats
+description: Texas Longhorns quarterback completion percentage over expected based on receiver separation and coverage over 4 games
+sport_scope: ["football"]
+version: 1
+window: 4g
+agg: mean
+validation:
+  not_null: true
+  min: -25.0
+  max: 25.0
+tags: ["longhorns", "ncaa", "quarterback", "completion_rate", "expected"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_defensive_havoc_rate_season
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_defensive_stats
+description: Texas Longhorns defensive havoc rate (tackles for loss, interceptions, fumbles, pass breakups) per play for season
+sport_scope: ["football"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 50.0
+tags: ["longhorns", "ncaa", "defense", "havoc", "disruption"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.18
+  missing_threshold: 0.08
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_recruiting_class_composite_rating
+owner: blaze_ncaa_team
+dtype: float
+source: curated.recruiting_data
+description: Texas Longhorns current recruiting class composite rating based on 247Sports, ESPN, Rivals average
+sport_scope: ["football"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 0.8000
+  max: 1.0000
+tags: ["longhorns", "ncaa", "recruiting", "composite", "talent_acquisition"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.05
+  missing_threshold: 0.15
+dependencies: ["247sports_rating", "espn_rating", "rivals_rating"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_third_down_conversion_rate_6g
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_situational_stats
+description: Texas Longhorns third down conversion percentage over last 6 games, indicating situational execution
+sport_scope: ["football"]
+version: 1
+window: 6g
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 100.0
+tags: ["longhorns", "ncaa", "third_down", "situational", "conversion"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.22
+  missing_threshold: 0.03
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_big_12_strength_of_schedule
+owner: blaze_ncaa_team
+dtype: float
+source: curated.schedule_data
+description: Texas Longhorns strength of schedule rating within Big 12 conference play, weighted by opponent win percentage
+sport_scope: ["football"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 0.200
+  max: 0.900
+tags: ["longhorns", "ncaa", "big12", "strength_of_schedule", "competition"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.10
+dependencies: ["opponent_win_percentage", "conference_weights"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

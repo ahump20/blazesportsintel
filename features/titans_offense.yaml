@@ -1,0 +1,114 @@
+name: titans_qb_pressure_to_sack_rate_adj_4g
+owner: blaze_football_team
+dtype: float
+source: curated.qb_dropbacks
+description: Tennessee Titans quarterback pressure-to-sack conversion rate over last 4 games, adjusted for opponent pass rush strength
+sport_scope: ["football"]
+version: 1
+window: 4g
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 1.0
+tags: ["titans", "quarterback", "pressure", "protection", "offensive_line"]
+latency_requirement: near_real_time
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_qb_epa_per_play_clean_pocket_5g
+owner: blaze_football_team
+dtype: float
+source: curated.play_by_play
+description: Titans QB expected points added per play when pocket is clean (no pressure) over last 5 games
+sport_scope: ["football"]
+version: 1
+window: 5g
+agg: mean
+validation:
+  not_null: true
+  min: -1.0
+  max: 1.5
+tags: ["titans", "quarterback", "epa", "clean_pocket", "efficiency"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.08
+dependencies: ["pressure_indicator", "expected_points"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_rb_yards_after_contact_per_attempt_3g
+owner: blaze_football_team
+dtype: float
+source: curated.rushing_stats
+description: Titans running backs yards after contact per rushing attempt over last 3 games, indicating power and elusiveness
+sport_scope: ["football"]
+version: 1
+window: 3g
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 8.0
+tags: ["titans", "running_back", "yac", "power", "elusiveness"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.18
+  missing_threshold: 0.02
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_oline_pass_block_win_rate_season
+owner: blaze_football_team
+dtype: float
+source: curated.oline_grades
+description: Titans offensive line pass blocking win rate for the season, measuring protection effectiveness
+sport_scope: ["football"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 30.0
+  max: 85.0
+tags: ["titans", "offensive_line", "pass_protection", "blocking"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.10
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_hidden_yardage_per_drive_5g
+owner: blaze_football_team
+dtype: float
+source: curated.drive_data
+description: Titans hidden yardage per drive over 5 games, accounting for field position advantages from returns and penalties
+sport_scope: ["football"]
+version: 1
+window: 5g
+agg: mean
+validation:
+  not_null: true
+  min: -30.0
+  max: 30.0
+tags: ["titans", "field_position", "special_teams", "hidden_yardage"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.22
+  missing_threshold: 0.05
+dependencies: ["expected_field_position", "return_yards", "penalty_yards"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

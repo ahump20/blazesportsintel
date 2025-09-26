@@ -1,0 +1,113 @@
+name: cardinals_pitcher_whiff_rate_15d
+owner: blaze_baseball_team
+dtype: float
+source: curated.pitch_data
+description: Cardinals pitcher swing-and-miss rate over the last 15 days, indicating strikeout potential
+sport_scope: ["baseball"]
+version: 1
+window: 15d
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 60.0
+tags: ["cardinals", "pitching", "strikeouts", "whiff_rate"]
+latency_requirement: near_real_time
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.03
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_pitcher_command_plus_30d
+owner: blaze_baseball_team
+dtype: float
+source: curated.pitch_data
+description: Cardinals pitcher command+ metric over 30 days, measuring location precision relative to league average (100 = average)
+sport_scope: ["baseball"]
+version: 1
+window: 30d
+agg: mean
+validation:
+  not_null: true
+  min: 50.0
+  max: 200.0
+tags: ["cardinals", "pitching", "command", "location", "advanced_metrics"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.18
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_bullpen_fatigue_index_3d
+owner: blaze_baseball_team
+dtype: float
+source: curated.pitcher_usage
+description: Cardinals bullpen fatigue index based on pitch counts, innings, and back-to-back appearances over 3 days (0=fresh, 1=overworked)
+sport_scope: ["baseball"]
+version: 1
+window: 3d
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 1.0
+tags: ["cardinals", "pitching", "bullpen", "fatigue", "workload"]
+latency_requirement: real_time
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.01
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_pitcher_tto_penalty_delta_2to3
+owner: blaze_baseball_team
+dtype: float
+source: curated.pitcher_stats
+description: Cardinals pitcher performance degradation from 2nd to 3rd time through batting order (wOBA difference)
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: false
+  min: -0.200
+  max: 0.300
+tags: ["cardinals", "pitching", "times_through_order", "fatigue", "strategy"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.15
+dependencies: ["times_through_order", "woba_allowed"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_pitcher_stuff_plus_rolling_7g
+owner: blaze_baseball_team
+dtype: float
+source: curated.pitch_models
+description: Cardinals pitcher Stuff+ rating over last 7 games, measuring raw stuff quality relative to league (100 = average)
+sport_scope: ["baseball"]
+version: 1
+window: 7g
+agg: mean
+validation:
+  not_null: true
+  min: 60.0
+  max: 180.0
+tags: ["cardinals", "pitching", "stuff_plus", "velocity", "movement"]
+latency_requirement: near_real_time
+quality_checks:
+  drift_threshold: 0.12
+  missing_threshold: 0.02
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

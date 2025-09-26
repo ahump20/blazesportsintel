@@ -1,0 +1,46 @@
+name = "blazesportsintel-main"
+main = "apps/web/public/index.html"
+compatibility_date = "2025-09-25"
+
+[build]
+command = "npm run build:web"
+cwd = "."
+
+[[kv_namespaces]]
+binding = "SPORTS_DATA"
+id = "blaze-sports-kv"
+preview_id = "blaze-sports-kv-preview"
+
+[[r2_buckets]]
+binding = "MEDIA_STORAGE"
+bucket_name = "blazesportsintel-assets"
+
+[[r2_buckets]]
+binding = "DATA_STORAGE"
+bucket_name = "blazesportsintel-data"
+
+[vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://blazesportsintel.com"
+ANALYTICS_ENABLED = "true"
+VISION_AI_ENABLED = "true"
+
+[[routes]]
+pattern = "blazesportsintel.com/*"
+zone_id = "YOUR_ZONE_ID"
+
+[[routes]]
+pattern = "www.blazesportsintel.com/*"
+zone_id = "YOUR_ZONE_ID"
+
+[site]
+bucket = "blazesportsintel-static"
+
+# Security headers
+[env.production.vars]
+CSP_ENABLED = "true"
+CAMERA_PERMISSIONS = "true"
+
+# Development overrides
+[env.preview]
+vars = { ENVIRONMENT = "preview", ANALYTICS_ENABLED = "false" }

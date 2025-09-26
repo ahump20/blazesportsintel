@@ -1,0 +1,44 @@
+{
+  "name": "@blazesportsintel/sports-data",
+  "version": "1.0.0",
+  "description": "Comprehensive sports data collection and normalization for Blaze Sports Intelligence",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "refresh": "tsx src/cli/refresh.ts",
+    "validate": "tsx src/cli/validate.ts",
+    "collect:texas-hs": "tsx src/collectors/texas-hs-football.ts",
+    "collect:perfect-game": "tsx src/collectors/perfect-game-baseball.ts",
+    "collect:ncaa": "tsx src/collectors/ncaa.ts",
+    "collect:nfl": "tsx src/collectors/nfl.ts",
+    "collect:mlb": "tsx src/collectors/mlb.ts",
+    "collect:nba": "tsx src/collectors/nba.ts"
+  },
+  "dependencies": {
+    "@blazesportsintel/schemas": "workspace:*",
+    "@blazesportsintel/utils": "workspace:*",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "date-fns": "^3.0.0",
+    "date-fns-tz": "^2.0.0",
+    "jsonlines": "^0.1.1",
+    "p-limit": "^5.0.0",
+    "p-retry": "^6.0.0",
+    "parquetjs-lite": "^0.8.7",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.11.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

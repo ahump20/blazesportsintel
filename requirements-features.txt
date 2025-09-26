@@ -1,0 +1,41 @@
+# Blaze Sports Intelligence Feature Engineering Requirements
+
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# YAML and JSON processing
+PyYAML>=6.0
+jsonschema>=4.17.0
+
+# Property-based testing
+hypothesis>=6.70.0
+pytest>=7.2.0
+pytest-json-report>=1.5.0
+
+# Statistical analysis and drift detection
+scikit-learn>=1.2.0
+statsmodels>=0.13.0
+
+# Real-time processing and caching
+redis>=4.5.0
+asyncio-mqtt>=0.11.0
+
+# Logging and monitoring
+structlog>=22.3.0
+
+# Development and testing
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
+pre-commit>=3.0.0
+
+# Optional: For advanced drift detection
+evidently>=0.4.0
+
+# Optional: For time series features
+statsforecast>=1.4.0
+
+# Optional: For enhanced caching
+diskcache>=5.4.0

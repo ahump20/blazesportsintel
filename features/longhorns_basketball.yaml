@@ -1,0 +1,113 @@
+name: longhorns_basketball_effective_field_goal_pct_5g
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_basketball_stats
+description: Texas Longhorns basketball effective field goal percentage over last 5 games, accounting for 3-point value
+sport_scope: ["basketball"]
+version: 1
+window: 5g
+agg: mean
+validation:
+  not_null: true
+  min: 0.300
+  max: 0.750
+tags: ["longhorns", "ncaa", "basketball", "shooting", "efficiency"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.02
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_basketball_defensive_rating_season
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_basketball_stats
+description: Texas Longhorns basketball defensive rating for season - points allowed per 100 possessions
+sport_scope: ["basketball"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 80.0
+  max: 130.0
+tags: ["longhorns", "ncaa", "basketball", "defense", "efficiency"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.12
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_basketball_assist_to_turnover_ratio_8g
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_basketball_stats
+description: Texas Longhorns basketball team assist-to-turnover ratio over last 8 games, indicating ball security and playmaking
+sport_scope: ["basketball"]
+version: 1
+window: 8g
+agg: mean
+validation:
+  not_null: true
+  min: 0.5
+  max: 4.0
+tags: ["longhorns", "ncaa", "basketball", "ball_handling", "playmaking"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.03
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_basketball_three_point_rate_season
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_basketball_stats
+description: Percentage of Texas Longhorns field goal attempts that are three-pointers for the season
+sport_scope: ["basketball"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 15.0
+  max: 70.0
+tags: ["longhorns", "ncaa", "basketball", "three_point", "shot_selection"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.18
+  missing_threshold: 0.04
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: longhorns_basketball_pace_adjusted_margin_6g
+owner: blaze_ncaa_team
+dtype: float
+source: curated.college_basketball_stats
+description: Texas Longhorns pace-adjusted scoring margin over last 6 games, normalizing for tempo differences
+sport_scope: ["basketball"]
+version: 1
+window: 6g
+agg: mean
+validation:
+  not_null: false
+  min: -40.0
+  max: 40.0
+tags: ["longhorns", "ncaa", "basketball", "pace", "margin", "tempo"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.08
+dependencies: ["possessions_per_game", "scoring_margin"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

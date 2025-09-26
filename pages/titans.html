@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titans Analytics - Blaze Intelligence | NFL Performance Dashboard</title>
+    <meta name="description" content="Comprehensive Tennessee Titans NFL analytics dashboard. Real-time statistics, advanced metrics, game film analysis, and championship insights from Blaze Intelligence.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Titans Analytics - Blaze Intelligence">
+    <meta property="og:description" content="Real-time Tennessee Titans NFL analytics, advanced metrics, and performance insights.">
+    <meta property="og:image" content="https://blazesportsintel.com/images/titans-og.jpg">
+    <meta property="og:url" content="https://blazesportsintel.com/titans">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SportsTeam",
+        "name": "Tennessee Titans",
+        "sport": "American Football",
+        "league": "NFL",
+        "memberOf": "AFC South",
+        "url": "https://blazesportsintel.com/titans"
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --titans-navy: #0C2340;
+            --titans-blue: #4B92DB;
+            --titans-red: #C8102E;
+            --titans-silver: #8A8D8F;
+            --titans-white: #FFFFFF;
+            --burnt-orange: #BF5700;
+            --pearl: #FAFAFA;
+            --graphite: #36454F;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--titans-navy) 0%, #000 50%, var(--titans-navy) 100%);
+            color: var(--pearl);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Titans-themed particles */
+        #titans-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        /* Navigation */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(12, 35, 64, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--titans-blue);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--titans-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--pearl);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--titans-blue);
+        }
+
+        .nav-link.active {
+            color: var(--titans-blue);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .team-header {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .team-logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--titans-navy), var(--titans-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 25px 50px rgba(75, 146, 219, 0.3);
+            position: relative;
+        }
+
+        .team-logo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--titans-blue), var(--titans-red));
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .team-name {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--titans-blue) 0%, var(--titans-red) 50%, var(--titans-navy) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .team-record {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--titans-red);
+            margin-bottom: 1rem;
+        }
+
+        .season-status {
+            font-size: 1.25rem;
+            color: var(--titans-silver);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--titans-blue);
+        }
+
+        .stat-value.negative {
+            color: var(--titans-red);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .live-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(75, 146, 219, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid var(--titans-blue);
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--titans-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Dashboard Grid */
+        .dashboard-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--titans-blue);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(75, 146, 219, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(75, 146, 219, 0.2);
+            border-color: var(--titans-blue);
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--titans-blue), var(--titans-red));
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--titans-blue);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--titans-blue), var(--titans-navy));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .metric:hover {
+            background: rgba(75, 146, 219, 0.1);
+            transform: scale(1.02);
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: var(--titans-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value.negative {
+            color: var(--titans-red);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Performance Chart */
+        .chart-container {
+            height: 300px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(75, 146, 219, 0.1), rgba(12, 35, 64, 0.2));
+            border-radius: 10px;
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Stadium Info */
+        .stadium-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .stadium-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(75, 146, 219, 0.1), rgba(12, 35, 64, 0.2));
+            border: 1px solid var(--titans-blue);
+            border-radius: 20px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stadium-info {
+            padding: 1rem;
+        }
+
+        .stadium-name {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--titans-blue);
+            margin-bottom: 1rem;
+        }
+
+        .stadium-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stadium-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stadium-visual {
+            background: linear-gradient(135deg, var(--titans-navy), var(--titans-blue));
+            border-radius: 15px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            padding: 4rem 2rem;
+            background: rgba(200, 16, 46, 0.05);
+        }
+
+        .analysis-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(200, 16, 46, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .analysis-card:hover {
+            background: rgba(200, 16, 46, 0.1);
+            transform: scale(1.02);
+        }
+
+        .analysis-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--titans-red), var(--titans-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .analysis-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--titans-red);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .analysis-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--titans-blue);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .analysis-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .team-stats {
+                gap: 1.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stadium-card {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading states */
+        .loading {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(75, 146, 219, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Titans Three.js Background -->
+    <canvas id="titans-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="nav-header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span>🔥</span>
+                BLAZE INTELLIGENCE
+            </a>
+            <div class="nav-links">
+                <a href="/cardinals" class="nav-link">Cardinals</a>
+                <a href="/titans" class="nav-link active">Titans</a>
+                <a href="/longhorns" class="nav-link">Longhorns</a>
+                <a href="/grizzlies" class="nav-link">Grizzlies</a>
+                <a href="/" class="nav-link">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="team-header">
+            <div class="team-logo">TEN</div>
+            <h1 class="team-name">TENNESSEE TITANS</h1>
+            <div class="team-record">3-14 (.177)</div>
+            <div class="season-status">2024 NFL Season</div>
+
+            <div class="team-stats">
+                <div class="stat-item">
+                    <div class="stat-value">4th</div>
+                    <div class="stat-label">AFC South</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">16th</div>
+                    <div class="stat-label">AFC Rank</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value negative">-149</div>
+                    <div class="stat-label">Point Diff</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value negative">L6</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+
+            <div class="live-status">
+                <div class="status-dot"></div>
+                <span>REBUILDING MODE - 2025 OUTLOOK</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+        <h2 class="section-title">TITANS PERFORMANCE DASHBOARD</h2>
+
+        <div class="dashboard-grid">
+            <!-- Offensive Performance -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Offensive Analysis</h3>
+                    <div class="card-icon">🏈</div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-value">311</div>
+                        <div class="metric-label">Points For</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">18.3</div>
+                        <div class="metric-label">PPG</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">33</div>
+                        <div class="metric-label">Touchdowns</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">6.6</div>
+                        <div class="metric-label">Yards/Play</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <span>📊 Offensive Efficiency Trends</span>
+                        <small>Red Zone: 74.6% | Turnovers: -10</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Defensive Performance -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Defensive Analysis</h3>
+                    <div class="card-icon">🛡️</div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-value negative">460</div>
+                        <div class="metric-label">Points Against</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value negative">27.1</div>
+                        <div class="metric-label">PPG Against</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value negative">32nd</div>
+                        <div class="metric-label">NFL Rank</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value negative">-10</div>
+                        <div class="metric-label">TO Diff</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <span>📉 Defensive Breakdown</span>
+                        <small>Major improvements needed across all units</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Home/Away Splits -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Home vs Away</h3>
+                    <div class="card-icon">🏟️</div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-value">1-7</div>
+                        <div class="metric-label">Home Record</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">2-7</div>
+                        <div class="metric-label">Away Record</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">1-5</div>
+                        <div class="metric-label">Division</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">3-9</div>
+                        <div class="metric-label">Conference</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <span>🏠 Nashville Struggles</span>
+                        <small>Even home field advantage couldn't help</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Capital & Future -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">2025 Outlook</h3>
+                    <div class="card-icon">🎯</div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-value">1st</div>
+                        <div class="metric-label">Draft Pick</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">$85M</div>
+                        <div class="metric-label">Cap Space</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">QB</div>
+                        <div class="metric-label">Top Need</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">High</div>
+                        <div class="metric-label">Rebuild Mode</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <span>⬆️ Building for Future</span>
+                        <small>Prime position for franchise QB</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stadium Section -->
+    <section class="stadium-section">
+        <div class="stadium-card">
+            <div class="stadium-info">
+                <h3 class="stadium-name">Nissan Stadium</h3>
+                <div class="stadium-details">
+                    <div class="stadium-detail">
+                        <span>Location:</span>
+                        <strong>Nashville, TN</strong>
+                    </div>
+                    <div class="stadium-detail">
+                        <span>Capacity:</span>
+                        <strong>69,143</strong>
+                    </div>
+                    <div class="stadium-detail">
+                        <span>Surface:</span>
+                        <strong>Grass</strong>
+                    </div>
+                    <div class="stadium-detail">
+                        <span>Type:</span>
+                        <strong>Outdoor</strong>
+                    </div>
+                    <div class="stadium-detail">
+                        <span>Opened:</span>
+                        <strong>1999</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="stadium-visual">
+                🏟️
+                <div style="position: absolute; bottom: 10px; right: 15px; font-size: 0.875rem; color: rgba(255,255,255,0.7);">
+                    Home of the Titans
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analysis Section -->
+    <section class="analysis-section">
+        <h2 class="section-title">ADVANCED METRICS ANALYSIS</h2>
+
+        <div class="analysis-grid">
+            <div class="analysis-card">
+                <div class="analysis-icon">📊</div>
+                <h3 class="analysis-title">Point Differential</h3>
+                <div class="analysis-value">-8.8</div>
+                <p class="analysis-description">
+                    Per game deficit indicates systematic issues on both sides of the ball. Worst in AFC South.
+                </p>
+            </div>
+
+            <div class="analysis-card">
+                <div class="analysis-icon">🎯</div>
+                <h3 class="analysis-title">Red Zone Efficiency</h3>
+                <div class="analysis-value">74.6%</div>
+                <p class="analysis-description">
+                    One bright spot - when they get in scoring position, they convert at a decent rate.
+                </p>
+            </div>
+
+            <div class="analysis-card">
+                <div class="analysis-icon">⚡</div>
+                <h3 class="analysis-title">Yards Per Play</h3>
+                <div class="analysis-value">6.6</div>
+                <p class="analysis-description">
+                    Offensive efficiency shows potential despite struggles. Building blocks for future success.
+                </p>
+            </div>
+
+            <div class="analysis-card">
+                <div class="analysis-icon">🔄</div>
+                <h3 class="analysis-title">Turnover Margin</h3>
+                <div class="analysis-value">-10</div>
+                <p class="analysis-description">
+                    Critical weakness. Protecting the ball and creating takeaways must improve dramatically.
+                </p>
+            </div>
+
+            <div class="analysis-card">
+                <div class="analysis-icon">🏠</div>
+                <h3 class="analysis-title">Home Field</h3>
+                <div class="analysis-value">1-7</div>
+                <p class="analysis-description">
+                    Nashville wasn't kind to the Titans. Fan support waned as losses mounted throughout season.
+                </p>
+            </div>
+
+            <div class="analysis-card">
+                <div class="analysis-icon">🚀</div>
+                <h3 class="analysis-title">Rebuild Grade</h3>
+                <div class="analysis-value">A+</div>
+                <p class="analysis-description">
+                    Perfect position with #1 pick, cap space, and young talent. Future looks bright in Nashville.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Three.js and Animations -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+    <script>
+        // Titans-themed Three.js Background
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('titans-canvas'),
+            alpha: true,
+            antialias: true
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Titans-themed particles (navy, blue, red)
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 1200;
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            positions[i3] = (Math.random() - 0.5) * 100;
+            positions[i3 + 1] = (Math.random() - 0.5) * 100;
+            positions[i3 + 2] = (Math.random() - 0.5) * 100;
+
+            // Titans team colors
+            const color = new THREE.Color();
+            const rand = Math.random();
+            if (rand > 0.6) {
+                color.setHex(0x0C2340); // Titans navy
+            } else if (rand > 0.3) {
+                color.setHex(0x4B92DB); // Titans blue
+            } else {
+                color.setHex(0xC8102E); // Titans red
+            }
+
+            colors[i3] = color.r;
+            colors[i3 + 1] = color.g;
+            colors[i3 + 2] = color.b;
+
+            sizes[i] = Math.random() * 3 + 1;
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 2,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.8,
+            sizeAttenuation: true
+        });
+
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
+        // Add floating football geometries
+        const footballGeometry = new THREE.SphereGeometry(0.3, 8, 6);
+        footballGeometry.scale(1.5, 1, 1); // Make it football shaped
+        const footballMaterial = new THREE.MeshBasicMaterial({
+            color: 0x4B92DB,
+            transparent: true,
+            opacity: 0.5
+        });
+
+        for (let i = 0; i < 15; i++) {
+            const football = new THREE.Mesh(footballGeometry, footballMaterial);
+            football.position.x = (Math.random() - 0.5) * 120;
+            football.position.y = (Math.random() - 0.5) * 120;
+            football.position.z = (Math.random() - 0.5) * 120;
+            scene.add(football);
+        }
+
+        camera.position.z = 50;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            particles.rotation.x += 0.0002;
+            particles.rotation.y += 0.0005;
+
+            // Float particles
+            const positions = particles.geometry.attributes.position.array;
+            const time = Date.now() * 0.001;
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i + 1] += Math.sin(time + positions[i] * 0.01) * 0.008;
+                positions[i] += Math.cos(time + positions[i + 1] * 0.01) * 0.004;
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+
+            // Rotate footballs
+            scene.children.forEach((child, index) => {
+                if (child.geometry && child.geometry.type === 'SphereGeometry') {
+                    child.rotation.x += 0.008;
+                    child.rotation.z += 0.012;
+                    child.position.y += Math.sin(time + index) * 0.015;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Responsive canvas
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Live data simulation
+        function updateTitansData() {
+            console.log('Updating Titans performance data...');
+
+            // Simulate rebuilding status updates
+            document.querySelectorAll('.status-dot').forEach(dot => {
+                dot.style.animation = 'none';
+                setTimeout(() => {
+                    dot.style.animation = 'pulse 2s infinite';
+                }, 100);
+            });
+
+            // Add loading state simulation
+            document.querySelectorAll('.metric').forEach(metric => {
+                metric.classList.add('loading');
+                setTimeout(() => {
+                    metric.classList.remove('loading');
+                }, 1500);
+            });
+        }
+
+        // Update every 45 seconds
+        setInterval(updateTitansData, 45000);
+
+        // Enhanced card interactions
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px) scale(1.02)';
+                card.style.boxShadow = '0 30px 60px rgba(75, 146, 219, 0.25)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+                card.style.boxShadow = '0 10px 30px rgba(75, 146, 219, 0.1)';
+            });
+        });
+
+        // Analysis card hover effects
+        document.querySelectorAll('.analysis-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const icon = card.querySelector('.analysis-icon');
+                if (icon) {
+                    icon.style.transform = 'rotateY(180deg) scale(1.1)';
+                }
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const icon = card.querySelector('.analysis-icon');
+                if (icon) {
+                    icon.style.transform = 'rotateY(0deg) scale(1)';
+                }
+            });
+        });
+
+        // Performance optimization - Intersection Observer
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all dashboard elements for animation
+        document.querySelectorAll('.dashboard-card, .analysis-card, .stadium-card').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(40px) scale(0.95)';
+            element.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(element);
+        });
+
+        // Add click tracking
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+            card.addEventListener('click', () => {
+                console.log('Titans analytics card clicked:', card.querySelector('.card-title').textContent);
+                // Could integrate with analytics platform
+            });
+        });
+
+        // Simulate real-time updates for rebuild progress
+        function simulateRebuildProgress() {
+            const elements = document.querySelectorAll('.analysis-value, .metric-value');
+            elements.forEach(element => {
+                if (Math.random() > 0.9) {
+                    element.style.color = 'var(--titans-blue)';
+                    element.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        element.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            });
+        }
+
+        setInterval(simulateRebuildProgress, 8000);
+    </script>
+</body>
+</html>

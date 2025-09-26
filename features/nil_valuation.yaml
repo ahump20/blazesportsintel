@@ -1,0 +1,116 @@
+name: nil_social_media_engagement_score_30d
+owner: blaze_nil_team
+dtype: float
+source: curated.social_media_metrics
+description: NIL athlete social media engagement score over 30 days, weighted by platform reach and interaction quality
+sport_scope: ["football", "basketball", "baseball"]
+version: 1
+window: 30d
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 100.0
+tags: ["nil", "social_media", "engagement", "brand_value"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.30
+  missing_threshold: 0.15
+dependencies: ["instagram_followers", "tiktok_views", "twitter_engagement"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: nil_performance_consistency_index_season
+owner: blaze_nil_team
+dtype: float
+source: curated.athlete_performance
+description: NIL athlete performance consistency index for season, measuring reliability across games/matches
+sport_scope: ["football", "basketball", "baseball"]
+version: 1
+window: season
+agg: std
+validation:
+  not_null: true
+  min: 0.0
+  max: 5.0
+tags: ["nil", "performance", "consistency", "reliability"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.10
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: nil_character_assessment_score
+owner: blaze_nil_team
+dtype: float
+source: curated.character_metrics
+description: NIL athlete character assessment score based on micro-expressions, body language, and leadership indicators from video analysis
+sport_scope: ["football", "basketball", "baseball"]
+version: 1
+window: career
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 10.0
+tags: ["nil", "character", "leadership", "video_analysis", "micro_expressions"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.20
+dependencies: ["video_analysis_confidence", "leadership_events", "teammate_interactions"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: nil_market_value_estimate_current
+owner: blaze_nil_team
+dtype: float
+source: curated.nil_market_data
+description: Current estimated NIL market value based on performance, social media, character, and comparable athlete deals
+sport_scope: ["football", "basketball", "baseball"]
+version: 1
+window: 30d
+agg: last
+validation:
+  not_null: true
+  min: 100.0
+  max: 2000000.0
+tags: ["nil", "market_value", "estimation", "valuation"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.40
+  missing_threshold: 0.05
+dependencies: ["performance_score", "social_media_score", "character_score", "comparable_deals"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: nil_brand_compatibility_score
+owner: blaze_nil_team
+dtype: float
+source: curated.brand_analysis
+description: NIL athlete brand compatibility score measuring alignment with potential sponsor values and target demographics
+sport_scope: ["football", "basketball", "baseball"]
+version: 1
+window: 90d
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 100.0
+tags: ["nil", "brand", "compatibility", "sponsorship", "alignment"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.12
+dependencies: ["brand_values_match", "demographic_overlap", "controversy_score"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

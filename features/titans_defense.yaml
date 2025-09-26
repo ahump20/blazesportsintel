@@ -1,0 +1,90 @@
+name: titans_defense_epa_allowed_per_play_4g
+owner: blaze_football_team
+dtype: float
+source: curated.defensive_stats
+description: Tennessee Titans defense expected points allowed per play over last 4 games, measuring overall unit effectiveness
+sport_scope: ["football"]
+version: 1
+window: 4g
+agg: mean
+validation:
+  not_null: true
+  min: -0.5
+  max: 0.8
+tags: ["titans", "defense", "epa", "unit_performance"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.03
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_pass_rush_win_rate_season
+owner: blaze_football_team
+dtype: float
+source: curated.pass_rush_stats
+description: Titans pass rush win rate for the season, percentage of pass rush snaps resulting in pressure within 2.5 seconds
+sport_scope: ["football"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 15.0
+  max: 65.0
+tags: ["titans", "defense", "pass_rush", "pressure_rate"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.12
+  missing_threshold: 0.08
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_defense_red_zone_td_rate_allowed_6g
+owner: blaze_football_team
+dtype: float
+source: curated.red_zone_stats
+description: Percentage of red zone drives allowed to result in touchdowns by Titans defense over last 6 games
+sport_scope: ["football"]
+version: 1
+window: 6g
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 100.0
+tags: ["titans", "defense", "red_zone", "goal_line", "situational"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: titans_coverage_grade_vs_wr1_season
+owner: blaze_football_team
+dtype: float
+source: curated.coverage_stats
+description: Titans secondary coverage grade when defending opponent's WR1 for the season (PFF-style 0-100 scale)
+sport_scope: ["football"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: 40.0
+  max: 95.0
+tags: ["titans", "defense", "coverage", "secondary", "wr1"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.12
+dependencies: ["receiver_designation", "target_coverage"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

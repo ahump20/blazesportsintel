@@ -1,0 +1,543 @@
+# Blaze Sports Intelligence Analytics Configuration
+# Production-ready configuration for blazesportsintel.com
+# Last Updated: September 25, 2025
+
+# =============================================================================
+# SYSTEM CONFIGURATION
+# =============================================================================
+
+system:
+  name: "Blaze Sports Intelligence Analytics Engine"
+  version: "2.0.0"
+  environment: "production"
+  timezone: "America/Chicago"
+  debug: false
+
+  # Performance requirements
+  max_latency_ms: 100
+  target_throughput_rps: 1000
+  memory_limit_gb: 8
+  cpu_cores: 4
+
+# =============================================================================
+# REDIS CONFIGURATION
+# =============================================================================
+
+redis:
+  host: "blazesportsintel-redis.cluster.local"
+  port: 6379
+  db: 0
+  password: "${REDIS_PASSWORD}"
+  ssl: true
+  connection_pool:
+    max_connections: 50
+    retry_on_timeout: true
+    socket_keepalive: true
+    socket_keepalive_options: {}
+
+  # Cache TTL settings (seconds)
+  cache_ttl:
+    features: 300      # 5 minutes
+    raw_data: 60       # 1 minute
+    aggregations: 600  # 10 minutes
+    metadata: 3600     # 1 hour
+    live_games: 30     # 30 seconds for live data
+
+# =============================================================================
+# DASK DISTRIBUTED COMPUTING
+# =============================================================================
+
+dask:
+  scheduler_address: "tcp://blazesportsintel-dask:8786"
+  dashboard_port: 8787
+  worker_threads: 2
+  worker_memory_limit: "2GB"
+  worker_death_timeout: 60
+
+  # Auto-scaling configuration
+  adaptive_scaling:
+    minimum_workers: 2
+    maximum_workers: 10
+    target_duration: "5s"
+
+# =============================================================================
+# DATABASE CONNECTIONS
+# =============================================================================
+
+databases:
+  # Primary analytics database
+  analytics:
+    host: "${POSTGRES_HOST}"
+    port: 5432
+    database: "blaze_analytics"
+    username: "${POSTGRES_USER}"
+    password: "${POSTGRES_PASSWORD}"
+    ssl_mode: "require"
+    pool_size: 10
+    max_overflow: 20
+    pool_timeout: 30
+    pool_recycle: 3600
+
+  # Time-series database for real-time data
+  timeseries:
+    host: "${INFLUXDB_HOST}"
+    port: 8086
+    database: "sports_metrics"
+    username: "${INFLUXDB_USER}"
+    password: "${INFLUXDB_PASSWORD}"
+    ssl: true
+    timeout: 10
+
+# =============================================================================
+# SPORTS DATA SOURCES
+# =============================================================================
+
+data_sources:
+  # MLB Data
+  mlb:
+    statsapi:
+      base_url: "https://statsapi.mlb.com/api/v1"
+      rate_limit: 100  # requests per minute
+      timeout: 10
+      retry_attempts: 3
+
+    statcast:
+      base_url: "https://baseballsavant.mlb.com/statcast_search"
+      rate_limit: 50
+      timeout: 15
+
+  # NFL Data
+  nfl:
+    api:
+      base_url: "https://api.nfl.com/v1"
+      timeout: 10
+      rate_limit: 200
+
+  # NBA Data
+  nba:
+    stats:
+      base_url: "https://stats.nba.com/stats"
+      timeout: 10
+      rate_limit: 60
+
+  # College Sports
+  college:
+    cfb_data:
+      base_url: "https://api.collegefootballdata.com"
+      api_key: "${COLLEGE_FB_API_KEY}"
+      timeout: 15
+
+# =============================================================================
+# FEATURE DEFINITIONS
+# =============================================================================
+
+features:
+  # Cardinals Baseball Features
+  cardinals_baseball:
+    - name: "cardinals_batter_xwoba_30d"
+      description: "Expected wOBA for Cardinals batters (30-day rolling)"
+      computation_type: "rolling_window"
+      window: "30D"
+      min_periods: 10
+      output_range: [0.200, 0.600]
+      priority: "high"
+
+    - name: "cardinals_batter_barrel_rate_7g"
+      description: "Barrel rate percentage (7-game rolling)"
+      computation_type: "rolling_window"
+      window: "7G"
+      min_periods: 3
+      output_range: [0.0, 50.0]
+      priority: "high"
+
+    - name: "cardinals_bullpen_fatigue_index_3d"
+      description: "Bullpen fatigue index (3-day rolling)"
+      computation_type: "rolling_window"
+      window: "3D"
+      min_periods: 1
+      output_range: [0.0, 1.0]
+      priority: "critical"
+
+    - name: "cardinals_pitcher_whiff_rate_15d"
+      description: "Swing-and-miss rate (15-day rolling)"
+      computation_type: "rolling_window"
+      window: "15D"
+      min_periods: 10
+      output_range: [0.0, 60.0]
+      priority: "high"
+
+  # Titans Football Features
+  titans_football:
+    - name: "titans_qb_pressure_to_sack_rate_adj_4g"
+      description: "Adjusted pressure-to-sack rate (4-game rolling)"
+      computation_type: "rolling_window"
+      window: "4G"
+      min_periods: 2
+      output_range: [0.0, 1.0]
+      priority: "high"
+
+    - name: "titans_qb_epa_per_play_clean_pocket_5g"
+      description: "EPA per play with clean pocket (5-game rolling)"
+      computation_type: "rolling_window"
+      window: "5G"
+      min_periods: 2
+      output_range: [-1.0, 1.5]
+      priority: "high"
+
+    - name: "titans_hidden_yardage_per_drive_5g"
+      description: "Hidden yardage per drive (5-game rolling)"
+      computation_type: "rolling_window"
+      window: "5G"
+      min_periods: 2
+      output_range: [-30.0, 30.0]
+      priority: "medium"
+
+  # Grizzlies Basketball Features
+  grizzlies_basketball:
+    - name: "grizzlies_player_defensive_rating_10g"
+      description: "Player defensive rating (10-game rolling)"
+      computation_type: "rolling_window"
+      window: "10G"
+      min_periods: 5
+      output_range: [80.0, 130.0]
+      priority: "high"
+
+    - name: "grizzlies_player_grit_grind_score_season"
+      description: "Grit and Grind defensive intensity score"
+      computation_type: "season_aggregate"
+      output_range: [0.0, 100.0]
+      priority: "medium"
+
+  # Longhorns College Features
+  longhorns_college:
+    - name: "longhorns_qb_passing_efficiency_rating_3g"
+      description: "QB passing efficiency rating (3-game rolling)"
+      computation_type: "rolling_window"
+      window: "3G"
+      min_periods: 1
+      output_range: [0.0, 200.0]
+      priority: "high"
+
+    - name: "longhorns_nil_valuation_index"
+      description: "NIL valuation index for college athletes"
+      computation_type: "real_time"
+      output_range: [0.0, 100.0]
+      priority: "medium"
+
+  # Cross-Sport Analytics
+  cross_sport:
+    - name: "injury_risk_prediction_score"
+      description: "Multi-sport injury risk prediction"
+      computation_type: "real_time"
+      output_range: [0.0, 1.0]
+      priority: "critical"
+
+    - name: "performance_trajectory_slope"
+      description: "Performance trajectory using regression"
+      computation_type: "time_series"
+      output_range: [-1.0, 1.0]
+      priority: "medium"
+
+# =============================================================================
+# API CONFIGURATION
+# =============================================================================
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+  workers: 4
+  max_request_size: 16777216  # 16MB
+  timeout: 30
+
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 1000
+    burst_limit: 100
+
+  # CORS settings
+  cors:
+    allow_origins:
+      - "https://blazesportsintel.com"
+      - "https://*.blazesportsintel.com"
+    allow_methods: ["GET", "POST", "PUT", "DELETE"]
+    allow_headers: ["*"]
+    allow_credentials: true
+
+  # Authentication
+  auth:
+    jwt_secret: "${JWT_SECRET}"
+    jwt_expiration: 3600  # 1 hour
+    api_key_header: "X-Blaze-API-Key"
+
+# =============================================================================
+# MONITORING & ALERTING
+# =============================================================================
+
+monitoring:
+  # Prometheus metrics
+  prometheus:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+
+  # Health checks
+  health_checks:
+    interval_seconds: 30
+    timeout_seconds: 10
+    failure_threshold: 3
+
+    endpoints:
+      - name: "redis"
+        type: "redis_ping"
+      - name: "database"
+        type: "db_query"
+        query: "SELECT 1"
+      - name: "dask"
+        type: "dask_scheduler"
+
+  # Alerting thresholds
+  alerts:
+    cpu_usage_percent: 80
+    memory_usage_percent: 85
+    response_time_ms: 100
+    error_rate_percent: 5
+    cache_hit_rate_percent: 70
+
+# =============================================================================
+# LOGGING CONFIGURATION
+# =============================================================================
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  handlers:
+    console:
+      enabled: true
+      level: "INFO"
+
+    file:
+      enabled: true
+      level: "DEBUG"
+      filename: "/var/log/blaze/analytics.log"
+      max_size_mb: 100
+      backup_count: 10
+
+    syslog:
+      enabled: true
+      level: "WARNING"
+      address: ["localhost", 514]
+
+  # Structured logging for analytics
+  structured:
+    enabled: true
+    format: "json"
+    fields:
+      - timestamp
+      - level
+      - feature_name
+      - processing_time_ms
+      - data_points
+      - cache_hit
+      - error_details
+
+# =============================================================================
+# SECURITY CONFIGURATION
+# =============================================================================
+
+security:
+  # Encryption
+  encryption:
+    algorithm: "AES-256-GCM"
+    key_rotation_days: 90
+
+  # Input validation
+  validation:
+    max_data_points: 100000
+    allowed_file_types: [".csv", ".json", ".parquet"]
+    max_file_size_mb: 100
+
+  # Network security
+  network:
+    allowed_ips:
+      - "10.0.0.0/8"     # Internal network
+      - "172.16.0.0/12"  # Docker networks
+      - "192.168.0.0/16" # Private networks
+    blocked_countries: ["CN", "RU", "KP"]  # Block certain countries
+
+# =============================================================================
+# PERFORMANCE OPTIMIZATION
+# =============================================================================
+
+performance:
+  # Caching strategy
+  caching:
+    strategy: "write-through"
+    compression: "gzip"
+    serialization: "msgpack"
+
+  # Memory management
+  memory:
+    garbage_collection: true
+    gc_threshold: 1000
+    max_memory_per_worker: "2GB"
+
+  # Parallel processing
+  parallel:
+    max_workers: 8
+    chunk_size: 1000
+    batch_size: 100
+    queue_size: 10000
+
+  # Database optimization
+  database:
+    connection_pooling: true
+    query_timeout: 30
+    batch_insert_size: 1000
+    index_maintenance: true
+
+# =============================================================================
+# DEPLOYMENT CONFIGURATION
+# =============================================================================
+
+deployment:
+  # Docker settings
+  docker:
+    image: "blazesportsintel/analytics:2.0.0"
+    registry: "registry.blazesportsintel.com"
+    pull_policy: "Always"
+
+  # Kubernetes settings
+  kubernetes:
+    namespace: "blaze-analytics"
+    replicas: 3
+    resources:
+      requests:
+        cpu: "1"
+        memory: "2Gi"
+      limits:
+        cpu: "2"
+        memory: "4Gi"
+
+    # Auto-scaling
+    hpa:
+      min_replicas: 3
+      max_replicas: 10
+      target_cpu_percent: 70
+      target_memory_percent: 80
+
+  # Load balancer
+  load_balancer:
+    type: "nginx"
+    algorithm: "least_conn"
+    health_check_path: "/health"
+    timeout: 5
+
+# =============================================================================
+# BACKUP & DISASTER RECOVERY
+# =============================================================================
+
+backup:
+  # Database backups
+  database:
+    frequency: "daily"
+    retention_days: 30
+    compression: true
+    encryption: true
+    storage_location: "s3://blaze-backups/analytics/"
+
+  # Redis backups
+  redis:
+    frequency: "hourly"
+    retention_hours: 72
+    format: "rdb"
+
+  # Disaster recovery
+  disaster_recovery:
+    rto_minutes: 15  # Recovery Time Objective
+    rpo_minutes: 5   # Recovery Point Objective
+    backup_regions: ["us-west-2", "us-east-1"]
+
+# =============================================================================
+# FEATURE FLAGS
+# =============================================================================
+
+feature_flags:
+  enable_real_time_processing: true
+  enable_batch_processing: true
+  enable_ml_predictions: true
+  enable_cross_sport_analytics: true
+  enable_nil_calculations: true
+  enable_injury_prediction: true
+  enable_performance_projections: true
+  enable_advanced_caching: true
+  enable_distributed_computing: true
+  enable_streaming_analytics: true
+
+# =============================================================================
+# INTEGRATION SETTINGS
+# =============================================================================
+
+integrations:
+  # Cloudflare Workers
+  cloudflare:
+    account_id: "${CLOUDFLARE_ACCOUNT_ID}"
+    api_token: "${CLOUDFLARE_API_TOKEN}"
+    workers:
+      - name: "analytics-api"
+        route: "blazesportsintel.com/api/analytics/*"
+      - name: "real-time-features"
+        route: "blazesportsintel.com/api/live/*"
+
+  # External APIs
+  external_apis:
+    sportsdata_io:
+      api_key: "${SPORTSDATA_API_KEY}"
+      base_url: "https://api.sportsdata.io"
+      rate_limit: 1000
+
+    perfect_game:
+      api_key: "${PERFECT_GAME_API_KEY}"
+      base_url: "https://api.perfectgame.org"
+      rate_limit: 500
+
+  # Webhooks
+  webhooks:
+    - name: "game_updates"
+      url: "https://blazesportsintel.com/webhooks/game-updates"
+      secret: "${WEBHOOK_SECRET}"
+      events: ["game_start", "game_end", "score_update"]
+
+    - name: "feature_alerts"
+      url: "https://blazesportsintel.com/webhooks/feature-alerts"
+      secret: "${WEBHOOK_SECRET}"
+      events: ["anomaly_detected", "threshold_exceeded"]
+
+# =============================================================================
+# TESTING CONFIGURATION
+# =============================================================================
+
+testing:
+  # Unit tests
+  unit_tests:
+    framework: "pytest"
+    coverage_threshold: 85
+    test_data_size: 1000
+
+  # Integration tests
+  integration_tests:
+    test_environments: ["staging", "production"]
+    test_duration_minutes: 30
+
+  # Performance tests
+  performance_tests:
+    target_latency_ms: 50
+    concurrent_users: 1000
+    test_duration_minutes: 15
+
+  # Data quality tests
+  data_quality:
+    null_value_threshold: 0.05
+    outlier_threshold: 0.01
+    consistency_checks: true

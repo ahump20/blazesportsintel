@@ -1,0 +1,482 @@
+# =============================================================================
+# BLAZE SPORTS INTELLIGENCE - ADVANCED FEATURE ENGINEERING SCHEMAS
+# =============================================================================
+# Last Updated: September 25, 2025
+# Compatible with: blazesportsintel.com platform and MCP server integration
+# =============================================================================
+
+version: "2.0"
+platform: "blazesportsintel"
+namespace: "blaze.features"
+
+# =============================================================================
+# BASEBALL FEATURES - Cardinals Analytics & League-Wide
+# =============================================================================
+
+baseball:
+  bullpen_fatigue_index_3d:
+    name: "Bullpen Fatigue Index (3-Day Rolling)"
+    description: "Advanced fatigue metric for relief pitchers using 3-day rolling windows with back-to-back appearance penalties"
+    category: "pitcher_usage"
+    sport_scope: ["mlb", "college", "high_school"]
+    team_focus: ["cardinals", "rangers", "astros"] # Texas/Cardinals focus
+
+    input_columns:
+      required:
+        - team_id: {type: "string", description: "Team identifier"}
+        - pitcher_id: {type: "string", description: "Unique pitcher identifier"}
+        - ts: {type: "datetime", description: "Appearance timestamp"}
+        - role: {type: "string", enum: ["SP", "RP"], description: "Pitcher role"}
+        - pitches: {type: "integer", range: [0, 150], description: "Pitches thrown in appearance"}
+        - back_to_back: {type: "boolean", description: "Pitched in consecutive games"}
+
+    validation:
+      output_range: [0.0, 1.0]
+      null_handling: "forward_fill"
+      min_sample_size: 3
+      performance_target: "<50ms"
+
+    computation:
+      window: "3D" # 3-day rolling window
+      normalization_cap: 150.0 # Max expected pitches in 3-day period
+      back_to_back_penalty: 0.15
+      min_periods: 1
+
+    business_logic:
+      - "Only applied to relief pitchers (role='RP')"
+      - "Higher values indicate greater fatigue risk"
+      - "Used for bullpen management decisions"
+      - "Integrates with Cardinals readiness dashboard"
+
+  batter_chase_rate_below_zone_30d:
+    name: "Batter Chase Rate Below Strike Zone (30-Day)"
+    description: "Measures batter discipline by tracking swing rates on pitches below the strike zone over rolling 30-day periods"
+    category: "batter_discipline"
+    sport_scope: ["mlb", "college"]
+    team_focus: ["cardinals", "rangers", "astros"]
+
+    input_columns:
+      required:
+        - batter_id: {type: "string", description: "Unique batter identifier"}
+        - ts: {type: "datetime", description: "Pitch timestamp"}
+        - swing: {type: "boolean", description: "Did batter swing"}
+        - sz_bot: {type: "float", description: "Bottom of strike zone (inches)"}
+        - plate_z: {type: "float", description: "Pitch height at plate (inches)"}
+
+    validation:
+      output_range: [0.0, 1.0]
+      min_sample_size: 15
+      performance_target: "<75ms"
+
+    computation:
+      window: "30D"
+      zone_threshold: 2.0 # inches below strike zone
+      min_pitches_seen: 15
+
+    business_logic:
+      - "Below zone defined as plate_z < (sz_bot - 2.0)"
+      - "Lower values indicate better plate discipline"
+      - "Used for scouting and development"
+
+  pitcher_tto_penalty_delta_2to3:
+    name: "Times Through Order Penalty (2nd to 3rd Pass)"
+    description: "Calculates performance degradation when facing batters for the third time vs. second time"
+    category: "pitcher_effectiveness"
+    sport_scope: ["mlb", "college"]
+    team_focus: ["cardinals", "rangers", "astros"]
+
+    input_columns:
+      required:
+        - pitcher_id: {type: "string", description: "Unique pitcher identifier"}
+        - game_id: {type: "string", description: "Game identifier"}
+        - ts: {type: "datetime", description: "Plate appearance timestamp"}
+        - tto: {type: "integer", enum: [1, 2, 3], description: "Times through order"}
+        - woba_value: {type: "float", range: [0.0, 2.0], description: "wOBA value for outcome"}
+
+    validation:
+      output_range: [-1.0, 1.0]
+      min_sample_size: 20
+      performance_target: "<60ms"
+
+    computation:
+      aggregation: "season_level"
+      comparison: "tto_3_mean - tto_2_mean"
+
+    business_logic:
+      - "Positive values indicate worse performance on 3rd time through"
+      - "Used for starter usage decisions"
+      - "Critical for bullpen timing"
+
+  cardinals_readiness_index:
+    name: "Cardinals Team Readiness Index"
+    description: "Cardinals-specific readiness metric combining fatigue, performance trends, and matchup factors"
+    category: "team_readiness"
+    sport_scope: ["mlb"]
+    team_focus: ["cardinals"]
+
+    input_columns:
+      required:
+        - team_id: {type: "string", enum: ["STL"], description: "Cardinals team ID"}
+        - game_date: {type: "date", description: "Game date"}
+        - rest_days: {type: "integer", range: [0, 10], description: "Days of rest"}
+        - recent_performance: {type: "float", range: [0.0, 1.0], description: "Last 10 games win rate"}
+        - bullpen_fatigue: {type: "float", range: [0.0, 1.0], description: "Average bullpen fatigue"}
+        - injury_count: {type: "integer", range: [0, 15], description: "Current injuries"}
+
+    validation:
+      output_range: [0.0, 1.0]
+      performance_target: "<25ms"
+
+    business_logic:
+      - "Higher values indicate better readiness"
+      - "Integrates with live Cardinals MCP server"
+      - "Used for daily roster decisions"
+
+# =============================================================================
+# FOOTBALL FEATURES - Titans Analytics & SEC/Texas Focus
+# =============================================================================
+
+football:
+  qb_pressure_to_sack_rate_adj_4g:
+    name: "QB Pressure-to-Sack Rate Adjusted (4-Game Rolling)"
+    description: "Quarterback sack rate when under pressure, adjusted for opponent pass blocking quality over last 4 games"
+    category: "quarterback_pressure"
+    sport_scope: ["nfl", "college", "high_school"]
+    team_focus: ["titans", "longhorns", "cowboys", "texans"]
+
+    input_columns:
+      required:
+        - offense_team: {type: "string", description: "Offensive team identifier"}
+        - qb_id: {type: "string", description: "Quarterback identifier"}
+        - game_no: {type: "integer", description: "Game number in season"}
+        - pressure: {type: "boolean", description: "Was QB under pressure"}
+        - sack: {type: "boolean", description: "Did pressure result in sack"}
+        - opp_pass_block_win_rate: {type: "float", range: [0.0, 1.0], description: "Opponent pass block win rate"}
+
+    validation:
+      output_range: [0.0, 1.0]
+      min_sample_size: 8 # 2 games minimum
+      performance_target: "<80ms"
+
+    computation:
+      window: "4_games"
+      adjustment_factor: "opp_pass_block_win_rate"
+      aggregation: "game_level_first"
+
+    business_logic:
+      - "Adjusted rate accounts for opponent quality"
+      - "Used for pass protection evaluation"
+      - "Critical for Titans QB development"
+
+  hidden_yardage_per_drive_5g:
+    name: "Hidden Yardage per Drive (5-Game Rolling)"
+    description: "Measures additional yardage gained through field position, returns, and penalty avoidance over 5 games"
+    category: "field_position"
+    sport_scope: ["nfl", "college", "high_school"]
+    team_focus: ["titans", "longhorns", "cowboys", "texans"]
+
+    input_columns:
+      required:
+        - offense_team: {type: "string", description: "Offensive team identifier"}
+        - game_no: {type: "integer", description: "Game number"}
+        - drive_id: {type: "string", description: "Drive identifier"}
+        - start_yardline: {type: "integer", range: [1, 99], description: "Drive start yardline"}
+        - expected_start: {type: "float", range: [1.0, 99.0], description: "Expected start based on model"}
+        - return_yards: {type: "integer", range: [0, 109], description: "Return yards in drive"}
+        - penalty_yards: {type: "integer", range: [0, 50], description: "Penalty yards against"}
+
+    validation:
+      output_range: [-30.0, 30.0]
+      min_sample_size: 10 # 2 games minimum
+      performance_target: "<70ms"
+
+    computation:
+      formula: "(start_yardline - expected_start) + return_yards - penalty_yards"
+      window: "5_games"
+      aggregation: "drive_to_game_to_rolling"
+
+    business_logic:
+      - "Positive values indicate better field position management"
+      - "Accounts for special teams and discipline"
+      - "Used for coaching decisions"
+
+  titans_readiness_index:
+    name: "Titans Team Readiness Index"
+    description: "Titans-specific readiness combining injury reports, practice participation, and recent performance"
+    category: "team_readiness"
+    sport_scope: ["nfl"]
+    team_focus: ["titans"]
+
+    input_columns:
+      required:
+        - team_id: {type: "string", enum: ["TEN"], description: "Titans team ID"}
+        - week: {type: "integer", range: [1, 18], description: "NFL week"}
+        - injury_report_severity: {type: "float", range: [0.0, 1.0], description: "Injury report impact"}
+        - practice_participation: {type: "float", range: [0.0, 1.0], description: "Full practice participation rate"}
+        - recent_performance: {type: "float", range: [0.0, 1.0], description: "Last 4 games performance"}
+
+    validation:
+      output_range: [0.0, 1.0]
+      performance_target: "<30ms"
+
+    business_logic:
+      - "Higher values indicate better team readiness"
+      - "Integrates with live Titans MCP data"
+      - "Used for weekly preparation decisions"
+
+# =============================================================================
+# BASKETBALL FEATURES - Grizzlies Analytics & NBA Focus
+# =============================================================================
+
+basketball:
+  shooting_efficiency_composite:
+    name: "Composite Shooting Efficiency Rating"
+    description: "Advanced shooting metric combining accuracy, shot selection, and situational performance"
+    category: "shooting_performance"
+    sport_scope: ["nba", "college", "high_school"]
+    team_focus: ["grizzlies", "mavericks", "spurs", "rockets"]
+
+    input_columns:
+      required:
+        - player_id: {type: "string", description: "Player identifier"}
+        - game_date: {type: "date", description: "Game date"}
+        - fg_made: {type: "integer", range: [0, 30], description: "Field goals made"}
+        - fg_attempted: {type: "integer", range: [0, 40], description: "Field goals attempted"}
+        - three_made: {type: "integer", range: [0, 20], description: "Three pointers made"}
+        - three_attempted: {type: "integer", range: [0, 25], description: "Three pointers attempted"}
+        - shot_quality: {type: "float", range: [0.0, 1.0], description: "Expected FG% based on shot selection"}
+        - clutch_time: {type: "boolean", description: "Shot taken in clutch time"}
+
+    validation:
+      output_range: [0.0, 200.0] # Scaled like PER
+      min_sample_size: 5
+      performance_target: "<45ms"
+
+    computation:
+      base_efficiency: "fg_made / fg_attempted"
+      three_point_bonus: "three_made * 0.5"
+      quality_adjustment: "shot_quality_variance"
+      clutch_multiplier: 1.2
+
+    business_logic:
+      - "Higher values indicate better shooting efficiency"
+      - "Accounts for shot difficulty and game situation"
+      - "Used for player evaluation and rotation decisions"
+
+  defensive_rating_advanced:
+    name: "Advanced Defensive Rating"
+    description: "Comprehensive defensive metric incorporating individual and team defensive impact"
+    category: "defensive_performance"
+    sport_scope: ["nba", "college"]
+    team_focus: ["grizzlies", "mavericks", "spurs", "rockets"]
+
+    input_columns:
+      required:
+        - player_id: {type: "string", description: "Player identifier"}
+        - minutes_played: {type: "float", range: [0.0, 48.0], description: "Minutes played"}
+        - opponent_fg_when_defending: {type: "integer", range: [0, 20], description: "Opponent FG when player defending"}
+        - opponent_fga_when_defending: {type: "integer", range: [0, 30], description: "Opponent FGA when defending"}
+        - steals: {type: "integer", range: [0, 10], description: "Steals recorded"}
+        - blocks: {type: "integer", range: [0, 10], description: "Blocks recorded"}
+        - deflections: {type: "integer", range: [0, 15], description: "Deflections recorded"}
+        - team_defensive_rating: {type: "float", range: [80.0, 130.0], description: "Team defensive rating"}
+
+    validation:
+      output_range: [80.0, 130.0]
+      min_sample_size: 3
+      performance_target: "<55ms"
+
+    business_logic:
+      - "Lower values indicate better defense"
+      - "Normalized to possessions per 100 possessions"
+      - "Used for defensive player evaluation"
+
+  grizzlies_grit_index:
+    name: "Grizzlies Grit and Grind Index"
+    description: "Team-specific metric measuring hustle stats and defensive intensity characteristic of Grizzlies culture"
+    category: "team_culture"
+    sport_scope: ["nba"]
+    team_focus: ["grizzlies"]
+
+    input_columns:
+      required:
+        - team_id: {type: "string", enum: ["MEM"], description: "Grizzlies team ID"}
+        - game_date: {type: "date", description: "Game date"}
+        - hustle_stats: {type: "object", description: "Hustle statistics object"}
+        - defensive_stops: {type: "integer", range: [0, 50], description: "Defensive stops"}
+        - offensive_rebounds: {type: "integer", range: [0, 20], description: "Offensive rebounds"}
+        - loose_balls_recovered: {type: "integer", range: [0, 15], description: "Loose balls recovered"}
+        - charges_taken: {type: "integer", range: [0, 5], description: "Charges taken"}
+
+    validation:
+      output_range: [0.0, 100.0]
+      performance_target: "<35ms"
+
+    business_logic:
+      - "Higher values indicate more 'grit and grind'"
+      - "Reflects team identity and culture"
+      - "Used for fan engagement and team branding"
+
+# =============================================================================
+# CROSS-SPORT FEATURES - Multi-Sport Athletes & Character Assessment
+# =============================================================================
+
+cross_sport:
+  multi_sport_performance_correlation:
+    name: "Multi-Sport Performance Correlation Analysis"
+    description: "Analyzes performance patterns across different sports for multi-sport athletes"
+    category: "athlete_development"
+    sport_scope: ["all"]
+    team_focus: ["youth", "high_school", "college"]
+
+    input_columns:
+      required:
+        - athlete_id: {type: "string", description: "Unique athlete identifier"}
+        - sport_1: {type: "string", description: "Primary sport"}
+        - sport_2: {type: "string", description: "Secondary sport"}
+        - performance_1: {type: "float", range: [0.0, 100.0], description: "Performance percentile in sport 1"}
+        - performance_2: {type: "float", range: [0.0, 100.0], description: "Performance percentile in sport 2"}
+        - shared_skills: {type: "array", description: "List of shared skill sets"}
+        - training_overlap: {type: "float", range: [0.0, 1.0], description: "Training time overlap"}
+
+    validation:
+      output_range: [-1.0, 1.0] # Correlation coefficient
+      min_sample_size: 10
+      performance_target: "<90ms"
+
+    business_logic:
+      - "Identifies skill transfer between sports"
+      - "Used for athlete development planning"
+      - "Critical for recruiting decisions"
+
+  character_assessment_vision_ai:
+    name: "Character Assessment via Vision AI"
+    description: "Analyzes micro-expressions and body language to assess character traits like grit and determination"
+    category: "character_evaluation"
+    sport_scope: ["all"]
+    team_focus: ["all"]
+
+    input_columns:
+      required:
+        - athlete_id: {type: "string", description: "Athlete identifier"}
+        - video_timestamp: {type: "datetime", description: "Video capture timestamp"}
+        - micro_expressions: {type: "object", description: "Facial expression analysis data"}
+        - body_language_score: {type: "float", range: [0.0, 1.0], description: "Body language confidence score"}
+        - pressure_situation: {type: "boolean", description: "High-pressure situation indicator"}
+        - game_context: {type: "string", description: "Game situation context"}
+
+    validation:
+      output_range: [0.0, 1.0]
+      min_sample_size: 5
+      performance_target: "<100ms"
+
+    computation:
+      vision_ai_model: "mediapipe_plus_custom"
+      confidence_threshold: 0.7
+      pressure_multiplier: 1.3
+
+    business_logic:
+      - "Higher scores indicate stronger character traits"
+      - "Integrates with Vision AI platform"
+      - "Used for recruiting and development"
+
+  nil_valuation_composite:
+    name: "NIL Valuation Composite Score"
+    description: "Comprehensive NIL valuation combining performance metrics, social media presence, and market factors"
+    category: "market_valuation"
+    sport_scope: ["college"]
+    team_focus: ["longhorns", "aggies", "sec_teams"]
+
+    input_columns:
+      required:
+        - athlete_id: {type: "string", description: "College athlete identifier"}
+        - sport: {type: "string", description: "Primary sport"}
+        - performance_percentile: {type: "float", range: [0.0, 100.0], description: "Performance vs peers"}
+        - social_media_followers: {type: "integer", range: [0, 5000000], description: "Total social media followers"}
+        - engagement_rate: {type: "float", range: [0.0, 20.0], description: "Social media engagement rate"}
+        - market_size: {type: "string", enum: ["small", "medium", "large", "major"], description: "School market size"}
+        - team_success: {type: "float", range: [0.0, 1.0], description: "Team success factor"}
+
+    validation:
+      output_range: [0.0, 1000000.0] # Dollar valuation
+      performance_target: "<85ms"
+
+    business_logic:
+      - "Output in annual dollar valuation"
+      - "Used for NIL deal negotiations"
+      - "Integrates with existing NIL calculator"
+
+# =============================================================================
+# FEATURE COMPUTATION ENGINE CONFIGURATION
+# =============================================================================
+
+computation_engine:
+  performance_targets:
+    individual_feature: "<100ms"
+    batch_computation: "<500ms"
+    real_time_dashboard: "<50ms"
+
+  validation_framework:
+    unit_tests: true
+    integration_tests: true
+    performance_benchmarks: true
+    data_quality_checks: true
+
+  deployment:
+    platforms: ["cloudflare_workers", "next_js", "mcp_server"]
+    caching_strategy: "redis_with_ttl"
+    fallback_behavior: "graceful_degradation"
+    monitoring: "sentry_plus_custom"
+
+  data_sources:
+    primary: ["mcp_blaze_intelligence", "sportsdataio", "perfect_game"]
+    secondary: ["web_scraping", "api_fallbacks"]
+    validation: "cross_source_comparison"
+
+# =============================================================================
+# INTEGRATION SPECIFICATIONS
+# =============================================================================
+
+integrations:
+  mcp_server:
+    endpoint_mapping:
+      - feature_category: "team_readiness"
+        mcp_function: "getTeamPerformance"
+      - feature_category: "character_evaluation"
+        mcp_function: "getCharacterAssessment"
+      - feature_category: "market_valuation"
+        mcp_function: "getNILValuation"
+
+  vision_ai:
+    models: ["mediapipe_pose", "facial_expression", "biomechanics"]
+    processing_pipeline: "real_time_inference"
+    integration_points: ["character_assessment", "form_analysis"]
+
+  blazesportsintel_platform:
+    dashboard_integration: true
+    live_updates: true
+    mobile_compatibility: true
+    championship_dashboard: true
+
+# =============================================================================
+# QUALITY ASSURANCE
+# =============================================================================
+
+quality_assurance:
+  accuracy_targets:
+    baseball: ">94%"
+    football: ">91%"
+    basketball: ">89%"
+    cross_sport: ">87%"
+
+  performance_monitoring:
+    latency_alerts: true
+    accuracy_degradation_detection: true
+    data_freshness_checks: true
+    error_rate_monitoring: true
+
+  testing_framework:
+    automated_unit_tests: true
+    integration_test_suite: true
+    performance_benchmarking: true
+    regression_testing: true

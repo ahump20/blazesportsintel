@@ -1,0 +1,135 @@
+name: perfect_game_exit_velocity_percentile_season
+owner: blaze_youth_baseball_team
+dtype: float
+source: curated.perfect_game_metrics
+description: Youth baseball player exit velocity percentile within Perfect Game database for current season
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: p90
+validation:
+  not_null: true
+  min: 1.0
+  max: 99.0
+tags: ["perfect_game", "youth_baseball", "exit_velocity", "power", "percentile"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.08
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: perfect_game_pop_time_catcher_best
+owner: blaze_youth_baseball_team
+dtype: float
+source: curated.perfect_game_metrics
+description: Youth baseball catcher's best pop time (home to second base) recorded at Perfect Game events
+sport_scope: ["baseball"]
+version: 1
+window: career
+agg: min
+validation:
+  not_null: true
+  min: 1.60
+  max: 2.50
+tags: ["perfect_game", "youth_baseball", "catcher", "pop_time", "defense"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.10
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: perfect_game_sixty_yard_dash_time
+owner: blaze_youth_baseball_team
+dtype: float
+source: curated.perfect_game_metrics
+description: Youth baseball player's 60-yard dash time in seconds from Perfect Game showcases
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: min
+validation:
+  not_null: true
+  min: 6.00
+  max: 8.50
+tags: ["perfect_game", "youth_baseball", "speed", "sixty_yard", "athleticism"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.08
+  missing_threshold: 0.03
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: perfect_game_pitching_velocity_max_season
+owner: blaze_youth_baseball_team
+dtype: float
+source: curated.perfect_game_metrics
+description: Youth pitcher's maximum fastball velocity recorded at Perfect Game events during season
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: max
+validation:
+  not_null: true
+  min: 70.0
+  max: 105.0
+tags: ["perfect_game", "youth_baseball", "pitching", "velocity", "power"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.12
+  missing_threshold: 0.02
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: perfect_game_overall_grade_current
+owner: blaze_youth_baseball_team
+dtype: float
+source: curated.perfect_game_grades
+description: Youth baseball player's current Perfect Game overall grade (20-80 scale)
+sport_scope: ["baseball"]
+version: 1
+window: 365d
+agg: last
+validation:
+  not_null: true
+  min: 20.0
+  max: 80.0
+tags: ["perfect_game", "youth_baseball", "overall_grade", "scouting", "projection"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.10
+dependencies: ["hitting_grade", "power_grade", "speed_grade", "fielding_grade", "arm_grade"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: perfect_game_commitment_level
+owner: blaze_youth_baseball_team
+dtype: category
+source: curated.perfect_game_recruiting
+description: Youth baseball player's current college commitment level (D1, D2, D3, JUCO, Uncommitted)
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: last
+validation:
+  not_null: false
+  categories: ["D1", "D2", "D3", "JUCO", "Uncommitted", "Professional"]
+tags: ["perfect_game", "youth_baseball", "commitment", "recruiting", "college"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.30
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

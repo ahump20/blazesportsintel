@@ -1,0 +1,431 @@
+# Blaze Intelligence GraphQL Schema
+# Championship-tier sports analytics API
+
+scalar DateTime
+scalar Vector3
+scalar JSON
+
+enum Sport {
+  MLB
+  NFL
+  NBA
+  NCAA
+}
+
+enum EventType {
+  SCORE
+  PENALTY
+  SUBSTITUTION
+  TIMEOUT
+  INJURY
+  GOAL
+  TOUCHDOWN
+  HOMERUN
+  STRIKEOUT
+  TURNOVER
+  HIGHLIGHT
+}
+
+enum PlayerPosition {
+  # Baseball
+  PITCHER
+  CATCHER
+  FIRST_BASE
+  SECOND_BASE
+  THIRD_BASE
+  SHORTSTOP
+  LEFT_FIELD
+  CENTER_FIELD
+  RIGHT_FIELD
+  DESIGNATED_HITTER
+
+  # Football
+  QUARTERBACK
+  RUNNING_BACK
+  WIDE_RECEIVER
+  TIGHT_END
+  OFFENSIVE_LINE
+  DEFENSIVE_LINE
+  LINEBACKER
+  CORNERBACK
+  SAFETY
+  KICKER
+  PUNTER
+
+  # Basketball
+  POINT_GUARD
+  SHOOTING_GUARD
+  SMALL_FORWARD
+  POWER_FORWARD
+  CENTER
+}
+
+type Player {
+  id: ID!
+  name: String!
+  team: String!
+  sport: Sport!
+  position: PlayerPosition!
+  jerseyNumber: Int!
+  position3D: Vector3!
+  rotation: Vector3!
+  velocity: Vector3!
+  acceleration: Vector3!
+  stats: PlayerStats!
+  biometrics: BiometricData
+  isActive: Boolean!
+  timestamp: DateTime!
+}
+
+type PlayerStats {
+  primary: Float!
+  secondary: Float!
+  tertiary: Float!
+  efficiency: Float!
+  trend: String!
+  customMetrics: JSON!
+}
+
+type BiometricData {
+  skeleton: [SkeletonPoint!]!
+  velocity: Float!
+  fatigue: Float!
+  stressLevel: Float!
+  microExpressions: [MicroExpression!]
+  heartRate: Int
+  muscleActivation: JSON
+}
+
+type SkeletonPoint {
+  joint: String!
+  position: Vector3!
+  rotation: Vector3!
+  confidence: Float!
+}
+
+type MicroExpression {
+  type: String!
+  intensity: Float!
+  duration: Float!
+  timestamp: DateTime!
+}
+
+type GameEvent {
+  id: ID!
+  type: EventType!
+  position: Vector3!
+  players: [String!]!
+  outcome: String!
+  impact: Float!
+  timestamp: DateTime!
+  particles: ParticleConfig
+  metadata: JSON
+}
+
+type ParticleConfig {
+  type: String!
+  count: Int!
+  colors: [String!]!
+  lifetime: Float!
+  velocity: Vector3!
+  size: Float!
+  physics: Boolean!
+}
+
+type Trajectory {
+  id: ID!
+  type: String!
+  points: [Vector3!]!
+  velocities: [Float!]!
+  spin: Vector3
+  outcome: String!
+  probability: Float
+  timestamp: DateTime!
+}
+
+type HeatZone {
+  id: ID!
+  position: Vector3!
+  radius: Float!
+  intensity: Float!
+  color: String!
+  label: String!
+  type: String!
+  playerActivity: [Float!]!
+}
+
+type Field {
+  sport: Sport!
+  dimensions: FieldDimensions!
+  zones: [HeatZone!]!
+  trajectories: [Trajectory!]!
+  events: [GameEvent!]!
+  weather: WeatherConditions
+}
+
+type FieldDimensions {
+  width: Float!
+  length: Float!
+  height: Float
+  boundaries: [Vector3!]!
+  importantPoints: JSON!
+}
+
+type WeatherConditions {
+  temperature: Float!
+  humidity: Float!
+  windSpeed: Float!
+  windDirection: Vector3!
+  precipitation: Float!
+  visibility: Float!
+}
+
+type Analytics {
+  id: ID!
+  type: String!
+  data: [DataPoint3D!]!
+  axes: [Axis3D!]!
+  legends: [Legend3D!]!
+  interactions: InteractionConfig!
+}
+
+type DataPoint3D {
+  position: Vector3!
+  value: Float!
+  label: String!
+  color: String!
+  size: Float!
+  connections: [String!]
+  metadata: JSON
+}
+
+type Axis3D {
+  dimension: String!
+  label: String!
+  min: Float!
+  max: Float!
+  ticks: Int!
+  unit: String!
+}
+
+type Legend3D {
+  label: String!
+  color: String!
+  shape: String!
+  value: String!
+}
+
+type InteractionConfig {
+  hover: Boolean!
+  click: Boolean!
+  drag: Boolean!
+  zoom: Boolean!
+  rotate: Boolean!
+}
+
+type GameState {
+  id: ID!
+  sport: Sport!
+  homeTeam: String!
+  awayTeam: String!
+  homeScore: Int!
+  awayScore: Int!
+  period: String!
+  timeRemaining: String!
+  isLive: Boolean!
+  stadium: String!
+  weather: WeatherConditions
+  players: [Player!]!
+  field: Field!
+  events: [GameEvent!]!
+  lastUpdate: DateTime!
+}
+
+type PerformanceMetrics {
+  fps: Float!
+  frameTime: Float!
+  drawCalls: Int!
+  triangles: Int!
+  points: Int!
+  memory: Float!
+  latency: Float!
+}
+
+type Tenant {
+  id: ID!
+  name: String!
+  theme: TenantTheme!
+  sports: [Sport!]!
+  features: [String!]!
+  customizations: JSON!
+}
+
+type TenantTheme {
+  primaryColor: String!
+  secondaryColor: String!
+  accentColor: String!
+  fontFamily: String!
+  logo: String
+  watermark: Boolean!
+}
+
+# Input types
+input PlayerUpdateInput {
+  id: ID!
+  position3D: Vector3
+  velocity: Vector3
+  acceleration: Vector3
+  stats: PlayerStatsInput
+  biometrics: BiometricDataInput
+  isActive: Boolean
+}
+
+input PlayerStatsInput {
+  primary: Float
+  secondary: Float
+  tertiary: Float
+  efficiency: Float
+  trend: String
+  customMetrics: JSON
+}
+
+input BiometricDataInput {
+  skeleton: [SkeletonPointInput!]
+  velocity: Float
+  fatigue: Float
+  stressLevel: Float
+  heartRate: Int
+  muscleActivation: JSON
+}
+
+input SkeletonPointInput {
+  joint: String!
+  position: Vector3!
+  rotation: Vector3!
+  confidence: Float!
+}
+
+input GameEventInput {
+  type: EventType!
+  position: Vector3!
+  players: [String!]!
+  outcome: String!
+  impact: Float!
+  particles: ParticleConfigInput
+  metadata: JSON
+}
+
+input ParticleConfigInput {
+  type: String!
+  count: Int!
+  colors: [String!]!
+  lifetime: Float!
+  velocity: Vector3!
+  size: Float!
+  physics: Boolean!
+}
+
+input TrajectoryInput {
+  type: String!
+  points: [Vector3!]!
+  velocities: [Float!]!
+  spin: Vector3
+  outcome: String!
+  probability: Float
+}
+
+input HeatZoneInput {
+  position: Vector3!
+  radius: Float!
+  intensity: Float!
+  color: String!
+  label: String!
+  type: String!
+  playerActivity: [Float!]!
+}
+
+input AnalyticsFilter {
+  sport: Sport
+  team: String
+  player: String
+  timeRange: [DateTime!]
+  eventTypes: [EventType!]
+  positions: [PlayerPosition!]
+}
+
+# Query type
+type Query {
+  # Current game state
+  gameState(sport: Sport!, team: String!): GameState
+
+  # Player queries
+  player(id: ID!): Player
+  players(sport: Sport!, team: String, active: Boolean): [Player!]!
+  playerStats(id: ID!, timeRange: [DateTime!]): PlayerStats!
+
+  # Field and analytics
+  field(sport: Sport!, team: String!): Field!
+  heatZones(sport: Sport!, team: String!, timeRange: [DateTime!]): [HeatZone!]!
+  trajectories(sport: Sport!, team: String!, limit: Int): [Trajectory!]!
+
+  # Events
+  gameEvents(sport: Sport!, team: String!, timeRange: [DateTime!]): [GameEvent!]!
+
+  # Analytics
+  analytics(filter: AnalyticsFilter!): [Analytics!]!
+  performanceMetrics: PerformanceMetrics!
+
+  # Multi-tenant
+  tenant(id: ID!): Tenant
+  tenants: [Tenant!]!
+
+  # Real-time status
+  connectionStatus: JSON!
+}
+
+# Mutation type
+type Mutation {
+  # Player updates
+  updatePlayer(input: PlayerUpdateInput!): Player!
+  updatePlayers(inputs: [PlayerUpdateInput!]!): [Player!]!
+
+  # Events
+  addGameEvent(input: GameEventInput!): GameEvent!
+
+  # Trajectories
+  addTrajectory(input: TrajectoryInput!): Trajectory!
+
+  # Heat zones
+  updateHeatZones(inputs: [HeatZoneInput!]!): [HeatZone!]!
+
+  # Tenant management
+  createTenant(name: String!, theme: JSON!): Tenant!
+  updateTenant(id: ID!, name: String, theme: JSON): Tenant!
+
+  # System
+  updatePerformanceMetrics(metrics: JSON!): PerformanceMetrics!
+}
+
+# Subscription type
+type Subscription {
+  # Real-time player updates
+  playerUpdated(sport: Sport!, team: String): Player!
+  playersUpdated(sport: Sport!, team: String): [Player!]!
+
+  # Real-time events
+  gameEventAdded(sport: Sport!, team: String): GameEvent!
+  trajectoryAdded(sport: Sport!, team: String): Trajectory!
+
+  # Field updates
+  heatZoneUpdated(sport: Sport!, team: String): HeatZone!
+  fieldUpdated(sport: Sport!, team: String): Field!
+
+  # Game state
+  gameStateUpdated(sport: Sport!, team: String!): GameState!
+
+  # Performance
+  performanceMetricsUpdated: PerformanceMetrics!
+
+  # Connection status
+  connectionStatusChanged: JSON!
+}

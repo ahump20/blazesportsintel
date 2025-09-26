@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blaze Sports Intel - The Deep South's Sports Intelligence Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .hero-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF4500 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .nav-pills {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .nav-pill {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-pill.active, .nav-pill:hover {
+            background: linear-gradient(135deg, #FF4500, #FF6B35);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 69, 0, 0.3);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(42, 42, 42, 0.9));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 69, 0, 0.2);
+            border-color: rgba(255, 69, 0, 0.6);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFA500;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FF4500, #FF6B35);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #39FF14;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .vision-container {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border: 2px dashed rgba(255, 69, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .vision-placeholder:hover {
+            color: rgba(255, 165, 0, 0.8);
+        }
+
+        .video-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .pose-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .metrics-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #39FF14;
+        }
+
+        .biomechanics-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover, .control-btn.active {
+            background: linear-gradient(135deg, #FF4500, #FF6B35);
+            transform: translateY(-1px);
+        }
+
+        .control-btn.stop {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border: 1px solid rgba(220, 38, 38, 0.5);
+        }
+
+        .scores-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #FF4500;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-logo {
+            font-size: 2rem;
+        }
+
+        .team-name {
+            font-weight: 600;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #39FF14;
+        }
+
+        .live-indicator {
+            background: #dc143c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .standings-table th {
+            background: linear-gradient(135deg, #FF4500, #FF6B35);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .standings-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .standings-table tr:hover {
+            background: rgba(255, 69, 0, 0.1);
+        }
+
+        .player-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #FFD700;
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF4500, #FFD700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .player-position {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        .player-stat {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #39FF14;
+        }
+
+        .heat-map {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .heat-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .heat-point:hover {
+            transform: scale(1.5);
+        }
+
+        .mobile-section {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(42, 42, 42, 0.9));
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+
+        .mobile-mockup {
+            width: 200px;
+            height: 400px;
+            background: linear-gradient(135deg, #1a1a1a, #333333);
+            border-radius: 25px;
+            margin: 0 auto 2rem;
+            border: 8px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FF4500, #FFA500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .nav-pills {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav-pill {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+
+    <header class="header">
+        <h1 class="title">BLAZE SPORTS INTEL</h1>
+        <p class="subtitle">The Deep South's Sports Intelligence Hub • From Friday Night Lights to Sunday in the Show</p>
+
+        <nav class="nav-pills">
+            <a href="#" class="nav-pill active" onclick="switchSport('mlb')">⚾ Baseball</a>
+            <a href="#" class="nav-pill" onclick="switchSport('nfl')">🏈 Football</a>
+            <a href="#" class="nav-pill" onclick="switchSport('nba')">🏀 Basketball</a>
+            <a href="#" class="nav-pill" onclick="switchSport('ncaa')">🏃 Track & Field</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Live Scores Section -->
+        <section class="scores-section">
+            <h2 style="color: #FFA500; margin-bottom: 1rem;">🔥 Live Scores & Games</h2>
+            <div id="live-scores">
+                <!-- Dynamic content -->
+            </div>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Team Performance Dashboard -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Team Performance Analytics</h3>
+                    <div class="card-icon">📊</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-value" id="winPct">0.735</span>
+                        <span class="stat-label">Win %</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value" id="teamRank">2nd</span>
+                        <span class="stat-label">Division</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value" id="streak">W5</span>
+                        <span class="stat-label">Streak</span>
+                    </div>
+                </div>
+                <div class="heat-map" id="performance-heatmap">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.6);">
+                        📈 Performance Heat Map
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vision AI Analysis -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Vision AI Analysis</h3>
+                    <div class="card-icon">👁️</div>
+                </div>
+                <div class="vision-container" id="vision-container">
+                    <div class="vision-placeholder" onclick="activateVisionAI()">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📹</div>
+                        <div>Click to activate pose detection</div>
+                    </div>
+                    <video id="video-feed" class="video-feed" style="display: none;" muted playsinline></video>
+                    <canvas id="pose-overlay" class="pose-overlay"></canvas>
+                    <div id="metrics-overlay" class="metrics-overlay" style="display: none;">
+                        Form: <span id="form-score">0</span>% | Confidence: <span id="confidence">0</span>%
+                    </div>
+                </div>
+
+                <div id="biomechanics-panel" class="biomechanics-panel" style="display: none;">
+                    <h4 style="color: #FFA500; margin-bottom: 0.5rem; font-size: 1rem;">Biomechanical Analysis</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-row">
+                            <span style="color: rgba(255, 255, 255, 0.7);">Hip Rotation:</span>
+                            <span style="color: #39FF14;" id="hip-rotation">0°</span>
+                        </div>
+                        <div class="metric-row">
+                            <span style="color: rgba(255, 255, 255, 0.7);">Shoulder Tilt:</span>
+                            <span style="color: #FFD700;" id="shoulder-tilt">0°</span>
+                        </div>
+                        <div class="metric-row">
+                            <span style="color: rgba(255, 255, 255, 0.7);">Weight Transfer:</span>
+                            <span style="color: #FF6B35;" id="weight-transfer">0%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span style="color: rgba(255, 255, 255, 0.7);">Form Score:</span>
+                            <span id="form-score-detail" style="color: #39FF14;">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-buttons" id="vision-controls">
+                    <button class="control-btn active" onclick="setVisionMode('pose_detection')">Pose Detection</button>
+                    <button class="control-btn" onclick="setVisionMode('form_analysis')">Form Analysis</button>
+                    <button class="control-btn" onclick="setVisionMode('character_read')">Character Read</button>
+                </div>
+            </div>
+
+            <!-- Top Players -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Elite Performers</h3>
+                    <div class="card-icon">🏆</div>
+                </div>
+                <div id="top-players">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- Standings -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">League Standings</h3>
+                    <div class="card-icon">📋</div>
+                </div>
+                <table class="standings-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>W</th>
+                            <th>L</th>
+                            <th>PCT</th>
+                            <th>GB</th>
+                            <th>Streak</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile App Section -->
+        <section class="mobile-section">
+            <h2 style="color: #FFA500; margin-bottom: 1rem;">📱 Mobile App Preview</h2>
+            <div class="mobile-mockup">
+                <div class="mobile-screen">📲</div>
+            </div>
+            <h3 style="color: #FFA500; margin-bottom: 1rem;">Blaze Vision Mobile</h3>
+            <p style="color: rgba(255, 255, 255, 0.7);">
+                Real-time pose detection and performance analysis on iOS and Android
+            </p>
+        </section>
+    </main>
+
+    <script>
+        // Live Sports Data
+        const SPORTS_DATA = {
+            mlb: {
+                scores: [
+                    {
+                        home: { name: 'St. Louis Cardinals', logo: '🔴', score: 7, city: 'STL' },
+                        away: { name: 'Houston Astros', logo: '🟠', score: 5, city: 'HOU' },
+                        inning: '8th',
+                        isLive: true,
+                        stadium: 'Busch Stadium'
+                    },
+                    {
+                        home: { name: 'Texas Rangers', logo: '🔵', score: 4, city: 'TEX' },
+                        away: { name: 'Oakland Athletics', logo: '🟢', score: 8, city: 'OAK' },
+                        inning: 'Final',
+                        isLive: false,
+                        stadium: 'Globe Life Field'
+                    }
+                ],
+                standings: [
+                    { rank: 1, team: 'Houston Astros', wins: 89, losses: 73, pct: 0.549, gb: '-', streak: 'W3' },
+                    { rank: 2, team: 'Texas Rangers', wins: 85, losses: 77, pct: 0.525, gb: '4.0', streak: 'L1' },
+                    { rank: 3, team: 'Seattle Mariners', wins: 82, losses: 80, pct: 0.506, gb: '7.0', streak: 'W2' },
+                    { rank: 4, team: 'Los Angeles Angels', wins: 76, losses: 86, pct: 0.469, gb: '13.0', streak: 'L2' },
+                    { rank: 5, team: 'Oakland Athletics', wins: 69, losses: 93, pct: 0.426, gb: '20.0', streak: 'W1' }
+                ],
+                topPlayers: [
+                    { name: 'Yordan Alvarez', position: 'DH', team: 'HOU', stat: '31', statType: 'HR', avg: '.293' },
+                    { name: 'Jose Altuve', position: '2B', team: 'HOU', stat: '.311', statType: 'AVG', hr: '15' },
+                    { name: 'Corey Seager', position: 'SS', team: 'TEX', stat: '33', statType: 'HR', avg: '.327' },
+                    { name: 'Nolan Goldschmidt', position: '1B', team: 'STL', stat: '.317', statType: 'AVG', hr: '22' }
+                ]
+            },
+            nfl: {
+                scores: [
+                    {
+                        home: { name: 'Tennessee Titans', logo: '⚔️', score: 17, city: 'TEN' },
+                        away: { name: 'Houston Texans', logo: '🐂', score: 24, city: 'HOU' },
+                        quarter: 'Final',
+                        isLive: false,
+                        stadium: 'Nissan Stadium'
+                    },
+                    {
+                        home: { name: 'Dallas Cowboys', logo: '⭐', score: 28, city: 'DAL' },
+                        away: { name: 'Green Bay Packers', logo: '🧀', score: 21, city: 'GB' },
+                        quarter: '4Q - 2:47',
+                        isLive: true,
+                        stadium: 'AT&T Stadium'
+                    }
+                ],
+                standings: [
+                    { rank: 1, team: 'Houston Texans', wins: 11, losses: 6, pct: 0.647, gb: '-', streak: 'W2' },
+                    { rank: 2, team: 'Dallas Cowboys', wins: 10, losses: 7, pct: 0.588, gb: '1.0', streak: 'W1' },
+                    { rank: 3, team: 'Tennessee Titans', wins: 6, losses: 11, pct: 0.353, gb: '5.0', streak: 'L3' },
+                    { rank: 4, team: 'Green Bay Packers', wins: 9, losses: 8, pct: 0.529, gb: '2.0', streak: 'L1' }
+                ],
+                topPlayers: [
+                    { name: 'Dak Prescott', position: 'QB', team: 'DAL', stat: '3,895', statType: 'YDS', tds: '24' },
+                    { name: 'CJ Stroud', position: 'QB', team: 'HOU', stat: '4,108', statType: 'YDS', tds: '28' },
+                    { name: 'Derrick Henry', position: 'RB', team: 'TEN', stat: '1,234', statType: 'YDS', tds: '12' },
+                    { name: 'Micah Parsons', position: 'LB', team: 'DAL', stat: '14.0', statType: 'SACKS', tackles: '89' }
+                ]
+            },
+            nba: {
+                scores: [
+                    {
+                        home: { name: 'Memphis Grizzlies', logo: '🐻', score: 118, city: 'MEM' },
+                        away: { name: 'San Antonio Spurs', logo: '🏀', score: 112, city: 'SAS' },
+                        quarter: 'Final',
+                        isLive: false,
+                        arena: 'FedEx Forum'
+                    },
+                    {
+                        home: { name: 'Dallas Mavericks', logo: '🐴', score: 105, city: 'DAL' },
+                        away: { name: 'Houston Rockets', logo: '🚀', score: 98, city: 'HOU' },
+                        quarter: '3Q - 5:23',
+                        isLive: true,
+                        arena: 'American Airlines Center'
+                    }
+                ],
+                standings: [
+                    { rank: 1, team: 'Denver Nuggets', wins: 42, losses: 28, pct: 0.600, gb: '-', streak: 'W3' },
+                    { rank: 2, team: 'Memphis Grizzlies', wins: 38, losses: 32, pct: 0.543, gb: '4.0', streak: 'W1' },
+                    { rank: 3, team: 'Dallas Mavericks', wins: 35, losses: 35, pct: 0.500, gb: '7.0', streak: 'W2' },
+                    { rank: 4, team: 'Houston Rockets', wins: 33, losses: 37, pct: 0.471, gb: '9.0', streak: 'L1' },
+                    { rank: 5, team: 'San Antonio Spurs', wins: 18, losses: 52, pct: 0.257, gb: '24.0', streak: 'L2' }
+                ],
+                topPlayers: [
+                    { name: 'Luka Dončić', position: 'PG', team: 'DAL', stat: '33.2', statType: 'PPG', ast: '8.9' },
+                    { name: 'Victor Wembanyama', position: 'C', team: 'SAS', stat: '21.8', statType: 'PPG', blk: '3.5' },
+                    { name: 'Ja Morant', position: 'PG', team: 'MEM', stat: '27.1', statType: 'PPG', ast: '8.2' },
+                    { name: 'Alperen Şengün', position: 'C', team: 'HOU', stat: '13.1', statType: 'PPG', ast: '7.2' }
+                ]
+            },
+            ncaa: {
+                scores: [
+                    {
+                        home: { name: 'Texas Longhorns', logo: '🤘', score: 24, city: 'TEX' },
+                        away: { name: 'Oklahoma Sooners', logo: '🌪️', score: 17, city: 'OU' },
+                        quarter: 'Final',
+                        isLive: false,
+                        stadium: 'Darrell K Royal Stadium'
+                    }
+                ],
+                standings: [
+                    { rank: 1, team: 'Texas Longhorns', wins: 12, losses: 1, pct: 0.923, gb: '-', streak: 'W8' },
+                    { rank: 2, team: 'Oklahoma Sooners', wins: 9, losses: 4, pct: 0.692, gb: '3.0', streak: 'L1' },
+                    { rank: 3, team: 'TCU Horned Frogs', wins: 8, losses: 5, pct: 0.615, gb: '4.0', streak: 'W2' },
+                    { rank: 4, team: 'Baylor Bears', wins: 7, losses: 6, pct: 0.538, gb: '5.0', streak: 'L2' }
+                ],
+                topPlayers: [
+                    { name: 'Quinn Ewers', position: 'QB', team: 'TEX', stat: '3,789', statType: 'YDS', tds: '31' },
+                    { name: 'Bijan Robinson', position: 'RB', team: 'TEX', stat: '1,756', statType: 'YDS', tds: '18' },
+                    { name: 'Dillon Gabriel', position: 'QB', team: 'OU', stat: '3,445', statType: 'YDS', tds: '28' },
+                    { name: 'Eric Gray', position: 'RB', team: 'OU', stat: '1,289', statType: 'YDS', tds: '14' }
+                ]
+            }
+        };
+
+        let currentSport = 'mlb';
+        let visionActive = false;
+        let poseMetrics = {
+            hipRotation: 0,
+            shoulderTilt: 0,
+            weightTransfer: 0,
+            formScore: 100,
+            confidence: 0
+        };
+
+        // Particle System
+        let particles = [];
+        let animationId;
+
+        function initParticles() {
+            const canvas = document.getElementById('heroCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            particles = [];
+            for (let i = 0; i < 200; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5,
+                    size: Math.random() * 4 + 1,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    hue: Math.random() * 60 + 10
+                });
+            }
+
+            function animate() {
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+
+                    if (particle.x <= 0 || particle.x >= canvas.width) particle.vx *= -1;
+                    if (particle.y <= 0 || particle.y >= canvas.height) particle.vy *= -1;
+
+                    const gradient = ctx.createRadialGradient(
+                        particle.x, particle.y, 0,
+                        particle.x, particle.y, particle.size * 4
+                    );
+                    gradient.addColorStop(0, `hsla(${particle.hue}, 100%, 60%, ${particle.opacity})`);
+                    gradient.addColorStop(1, `hsla(${particle.hue}, 100%, 20%, 0)`);
+
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // Draw connections
+                ctx.strokeStyle = 'rgba(255, 107, 53, 0.1)';
+                ctx.lineWidth = 0.5;
+
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p1 = particles[i];
+                        const p2 = particles[j];
+                        const distance = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+
+                        if (distance < 120) {
+                            ctx.globalAlpha = 1 - distance / 120;
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                ctx.globalAlpha = 1;
+                animationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Vision AI Functions
+        async function activateVisionAI() {
+            try {
+                const video = document.getElementById('video-feed');
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480 }
+                });
+
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.querySelector('.vision-placeholder').style.display = 'none';
+                document.getElementById('metrics-overlay').style.display = 'block';
+                document.getElementById('biomechanics-panel').style.display = 'block';
+
+                // Update control buttons
+                const controls = document.getElementById('vision-controls');
+                controls.innerHTML = '<button class="control-btn stop" onclick="stopVisionAI()">⏹️ Stop Analysis</button>';
+
+                visionActive = true;
+
+                // Simulate pose detection metrics
+                const updateMetrics = () => {
+                    if (!visionActive) return;
+
+                    poseMetrics.hipRotation = Math.round(30 + Math.sin(Date.now() * 0.001) * 20);
+                    poseMetrics.shoulderTilt = Math.round(15 + Math.cos(Date.now() * 0.0008) * 10);
+                    poseMetrics.weightTransfer = Math.round(70 + Math.sin(Date.now() * 0.0012) * 15);
+                    poseMetrics.formScore = Math.round(85 + Math.sin(Date.now() * 0.0005) * 10);
+                    poseMetrics.confidence = Math.round(75 + Math.cos(Date.now() * 0.0015) * 20);
+
+                    document.getElementById('form-score').textContent = poseMetrics.formScore;
+                    document.getElementById('confidence').textContent = poseMetrics.confidence;
+                    document.getElementById('hip-rotation').textContent = poseMetrics.hipRotation + '°';
+                    document.getElementById('shoulder-tilt').textContent = poseMetrics.shoulderTilt + '°';
+                    document.getElementById('weight-transfer').textContent = poseMetrics.weightTransfer + '%';
+                    document.getElementById('form-score-detail').textContent = poseMetrics.formScore + '%';
+                    document.getElementById('form-score-detail').style.color = poseMetrics.formScore > 85 ? '#39FF14' : '#FFA500';
+
+                    setTimeout(updateMetrics, 100);
+                };
+
+                updateMetrics();
+
+            } catch (error) {
+                alert('Camera access denied. Please enable camera permissions for pose detection.');
+            }
+        }
+
+        function stopVisionAI() {
+            const video = document.getElementById('video-feed');
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+
+            video.style.display = 'none';
+            document.querySelector('.vision-placeholder').style.display = 'block';
+            document.getElementById('metrics-overlay').style.display = 'none';
+            document.getElementById('biomechanics-panel').style.display = 'none';
+
+            // Reset control buttons
+            const controls = document.getElementById('vision-controls');
+            controls.innerHTML = `
+                <button class="control-btn active" onclick="setVisionMode('pose_detection')">Pose Detection</button>
+                <button class="control-btn" onclick="setVisionMode('form_analysis')">Form Analysis</button>
+                <button class="control-btn" onclick="setVisionMode('character_read')">Character Read</button>
+            `;
+
+            visionActive = false;
+        }
+
+        function setVisionMode(mode) {
+            // Update button states
+            document.querySelectorAll('#vision-controls .control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Sport switching
+        function switchSport(sport) {
+            currentSport = sport;
+
+            // Update nav pills
+            document.querySelectorAll('.nav-pill').forEach(pill => pill.classList.remove('active'));
+            event.target.classList.add('active');
+
+            updateContent();
+        }
+
+        function updateContent() {
+            const data = SPORTS_DATA[currentSport];
+
+            // Update live scores
+            updateLiveScores(data.scores);
+
+            // Update standings
+            updateStandings(data.standings);
+
+            // Update top players
+            updateTopPlayers(data.topPlayers);
+
+            // Update stats
+            if (data.standings.length > 0) {
+                const topTeam = data.standings[0];
+                document.getElementById('winPct').textContent = topTeam.pct.toFixed(3);
+                document.getElementById('teamRank').textContent = topTeam.rank + getSuffix(topTeam.rank);
+                document.getElementById('streak').textContent = topTeam.streak;
+            }
+        }
+
+        function updateLiveScores(scores) {
+            const container = document.getElementById('live-scores');
+            container.innerHTML = scores.map(game => `
+                <div class="score-item">
+                    <div class="team-info">
+                        <span class="team-logo">${game.away.logo}</span>
+                        <div>
+                            <div class="team-name">${game.away.name}</div>
+                            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${game.away.city}</div>
+                        </div>
+                    </div>
+                    <div class="score">${game.away.score}</div>
+                    <div style="text-align: center; color: rgba(255,255,255,0.8);">
+                        <div style="margin-bottom: 0.5rem;">@</div>
+                        <div style="font-size: 0.875rem;">${game.inning || game.quarter}</div>
+                        ${game.isLive ? '<div class="live-indicator">LIVE</div>' : ''}
+                    </div>
+                    <div class="score">${game.home.score}</div>
+                    <div class="team-info">
+                        <span class="team-logo">${game.home.logo}</span>
+                        <div>
+                            <div class="team-name">${game.home.name}</div>
+                            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${game.home.city}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStandings(standings) {
+            const tbody = document.getElementById('standings-body');
+            tbody.innerHTML = standings.map(team => {
+                const streakColor = team.streak.startsWith('W') ? '#00FF41' : '#DC143C';
+                return `
+                    <tr>
+                        <td style="font-weight: 900; color: #FFA500; font-size: 1.25rem;">${team.rank}</td>
+                        <td>${team.team}</td>
+                        <td>${team.wins}</td>
+                        <td>${team.losses}</td>
+                        <td>${team.pct.toFixed(3)}</td>
+                        <td>${team.gb}</td>
+                        <td style="color: ${streakColor}; font-weight: 600;">${team.streak}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateTopPlayers(players) {
+            const container = document.getElementById('top-players');
+            container.innerHTML = players.map(player => `
+                <div class="player-card">
+                    <div class="player-avatar">${player.name.split(' ').map(n => n[0]).join('')}</div>
+                    <div class="player-info">
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-position">${player.position} • ${player.team}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="player-stat">${player.stat}</div>
+                        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${player.statType}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getSuffix(num) {
+            const lastDigit = num % 10;
+            const lastTwoDigits = num % 100;
+
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 13) return 'th';
+            if (lastDigit === 1) return 'st';
+            if (lastDigit === 2) return 'nd';
+            if (lastDigit === 3) return 'rd';
+            return 'th';
+        }
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            initParticles();
+            updateContent();
+
+            // Generate heat map points
+            const heatmap = document.getElementById('performance-heatmap');
+            for (let i = 0; i < 30; i++) {
+                const point = document.createElement('div');
+                point.className = 'heat-point';
+                point.style.left = Math.random() * 100 + '%';
+                point.style.top = Math.random() * 100 + '%';
+                const intensity = Math.random();
+                point.style.backgroundColor = `hsl(${20 - intensity * 20}, 100%, ${50 + intensity * 30}%)`;
+                heatmap.appendChild(point);
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('heroCanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

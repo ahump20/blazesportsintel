@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longhorns Recruiting Hub - Blaze Intelligence | Texas Football Analytics</title>
+    <meta name="description" content="Comprehensive Texas Longhorns recruiting intelligence and SEC football analytics. Deep South's premier recruiting database, Friday Night Lights coverage, and championship insights.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Longhorns Recruiting Hub - Blaze Intelligence">
+    <meta property="og:description" content="Texas Longhorns recruiting intelligence, SEC football analytics, and Deep South high school coverage.">
+    <meta property="og:image" content="https://blazesportsintel.com/images/longhorns-og.jpg">
+    <meta property="og:url" content="https://blazesportsintel.com/longhorns">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SportsTeam",
+        "name": "Texas Longhorns",
+        "sport": "American Football",
+        "league": "NCAA Division I FBS",
+        "memberOf": "SEC",
+        "url": "https://blazesportsintel.com/longhorns"
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --longhorns-orange: #BF5700;
+            --longhorns-white: #FFFFFF;
+            --texas-black: #333333;
+            --sec-gold: #FFD700;
+            --friday-night: #1a1a2e;
+            --championship-red: #C8102E;
+            --pearl: #FAFAFA;
+            --graphite: #36454F;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--friday-night) 0%, var(--texas-black) 50%, var(--friday-night) 100%);
+            color: var(--pearl);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Texas-themed particles */
+        #longhorns-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        /* Navigation */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--longhorns-orange);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--longhorns-orange);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--pearl);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--longhorns-orange);
+        }
+
+        .nav-link.active {
+            color: var(--longhorns-orange);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--longhorns-orange), var(--sec-gold));
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(191, 87, 0, 0.5); }
+            to { box-shadow: 0 0 30px rgba(191, 87, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.3); }
+        }
+
+        .team-header {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .team-logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--longhorns-orange), var(--sec-gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 30px 60px rgba(191, 87, 0, 0.4);
+            position: relative;
+        }
+
+        .team-logo::before {
+            content: '🤘';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 2rem;
+            background: var(--championship-red);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-name {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--longhorns-orange) 0%, var(--sec-gold) 50%, var(--longhorns-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .team-subtitle {
+            font-size: 1.5rem;
+            color: var(--sec-gold);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .team-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--longhorns-orange);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Recruiting Dashboard */
+        .recruiting-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--longhorns-orange);
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--sec-gold);
+        }
+
+        .recruiting-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .recruiting-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(191, 87, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recruiting-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(191, 87, 0, 0.25);
+            border-color: var(--longhorns-orange);
+        }
+
+        .recruiting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--longhorns-orange), var(--sec-gold));
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--longhorns-orange);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--longhorns-orange), var(--sec-gold));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Prospect Table */
+        .prospects-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--longhorns-orange), var(--championship-red));
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 80px 80px 80px 80px;
+            gap: 1rem;
+            font-weight: 800;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .prospect-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 80px 80px 80px;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .prospect-row:hover {
+            background: rgba(191, 87, 0, 0.1);
+        }
+
+        .prospect-name {
+            font-weight: 700;
+            color: var(--sec-gold);
+        }
+
+        .prospect-school {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .prospect-stat {
+            font-weight: 600;
+            text-align: center;
+            color: var(--pearl);
+        }
+
+        .rating-high {
+            color: var(--sec-gold);
+            font-weight: 900;
+        }
+
+        /* Friday Night Lights Section */
+        .friday-night-section {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .friday-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .friday-card {
+            background: linear-gradient(135deg, rgba(191, 87, 0, 0.1), rgba(255, 215, 0, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .friday-card:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: scale(1.03);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .friday-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--sec-gold), var(--longhorns-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .friday-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--sec-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .friday-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--longhorns-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .friday-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        /* Pipeline Visualization */
+        .pipeline-section {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .pipeline-chart {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(191, 87, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .pipeline-bars {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .pipeline-bar {
+            text-align: center;
+        }
+
+        .bar-container {
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .bar-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, var(--longhorns-orange), var(--sec-gold));
+            border-radius: 0 0 10px 10px;
+            transition: height 1s ease;
+        }
+
+        .bar-label {
+            font-weight: 800;
+            color: var(--longhorns-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .bar-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--sec-gold);
+        }
+
+        /* Hot Bed Map */
+        .hotbed-section {
+            padding: 4rem 2rem;
+        }
+
+        .hotbed-map {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .hotbed-cities {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .hotbed-city {
+            background: linear-gradient(135deg, rgba(191, 87, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border: 1px solid var(--longhorns-orange);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .hotbed-city:hover {
+            background: rgba(191, 87, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        .city-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--longhorns-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .city-prospects {
+            font-size: 0.875rem;
+            color: var(--sec-gold);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .team-stats {
+                gap: 1.5rem;
+            }
+
+            .recruiting-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header, .prospect-row {
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .table-header > :nth-child(n+4),
+            .prospect-row > :nth-child(n+4) {
+                display: none;
+            }
+
+            .pipeline-bars {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hotbed-cities {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Longhorns Three.js Background -->
+    <canvas id="longhorns-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="nav-header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <span>🔥</span>
+                BLAZE INTELLIGENCE
+            </a>
+            <div class="nav-links">
+                <a href="/cardinals" class="nav-link">Cardinals</a>
+                <a href="/titans" class="nav-link">Titans</a>
+                <a href="/longhorns" class="nav-link active">Longhorns</a>
+                <a href="/grizzlies" class="nav-link">Grizzlies</a>
+                <a href="/" class="nav-link">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-badge">
+            ⚡ LIVE RECRUITING INTEL
+        </div>
+
+        <div class="team-header">
+            <div class="team-logo">TEX</div>
+            <h1 class="team-name">TEXAS LONGHORNS</h1>
+            <div class="team-subtitle">SEC Championship Recruiting Hub</div>
+
+            <div class="team-stats">
+                <div class="stat-item">
+                    <div class="stat-value">13-2</div>
+                    <div class="stat-label">2024 Season</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">#3</div>
+                    <div class="stat-label">CFP Ranking</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">SEC</div>
+                    <div class="stat-label">Conference</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">381</div>
+                    <div class="stat-label">TX Prospects</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recruiting Dashboard -->
+    <section class="recruiting-section">
+        <h2 class="section-title">TEXAS RECRUITING COMMAND CENTER</h2>
+        <p class="section-subtitle">Deep South's Premier High School Football Intelligence</p>
+
+        <div class="recruiting-grid">
+            <!-- Top Prospects -->
+            <div class="recruiting-card">
+                <div class="card-header">
+                    <h3 class="card-title">Elite 2026 Prospects</h3>
+                    <div class="card-icon">⭐</div>
+                </div>
+
+                <div class="prospects-table">
+                    <div class="table-header">
+                        <div>PROSPECT</div>
+                        <div>POS</div>
+                        <div>RATING</div>
+                        <div>OFFERS</div>
+                        <div>RANK</div>
+                    </div>
+
+                    <div class="prospect-row">
+                        <div>
+                            <div class="prospect-name">Elite QB Prospect</div>
+                            <div class="prospect-school">North Texas HS</div>
+                        </div>
+                        <div class="prospect-stat">QB</div>
+                        <div class="prospect-stat rating-high">0.962</div>
+                        <div class="prospect-stat">9</div>
+                        <div class="prospect-stat">#2</div>
+                    </div>
+
+                    <div class="prospect-row">
+                        <div>
+                            <div class="prospect-name">Dynamic Athlete</div>
+                            <div class="prospect-school">Houston Metro</div>
+                        </div>
+                        <div class="prospect-stat">ATH</div>
+                        <div class="prospect-stat rating-high">0.841</div>
+                        <div class="prospect-stat">8</div>
+                        <div class="prospect-stat">#4</div>
+                    </div>
+
+                    <div class="prospect-row">
+                        <div>
+                            <div class="prospect-name">Power RB</div>
+                            <div class="prospect-school">DFW Elite</div>
+                        </div>
+                        <div class="prospect-stat">RB</div>
+                        <div class="prospect-stat rating-high">0.826</div>
+                        <div class="prospect-stat">6</div>
+                        <div class="prospect-stat">#5</div>
+                    </div>
+
+                    <div class="prospect-row">
+                        <div>
+                            <div class="prospect-name">Shutdown Corner</div>
+                            <div class="prospect-school">Austin Area</div>
+                        </div>
+                        <div class="prospect-stat">CB</div>
+                        <div class="prospect-stat">0.797</div>
+                        <div class="prospect-stat">10</div>
+                        <div class="prospect-stat">#1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transfer Portal -->
+            <div class="recruiting-card">
+                <div class="card-header">
+                    <h3 class="card-title">Transfer Portal Intel</h3>
+                    <div class="card-icon">🔄</div>
+                </div>
+
+                <div style="padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        <span style="color: var(--sec-gold); font-weight: 700;">Incoming</span>
+                        <span style="color: var(--longhorns-orange); font-size: 1.5rem; font-weight: 900;">12</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        <span style="color: var(--sec-gold); font-weight: 700;">Outgoing</span>
+                        <span style="color: var(--championship-red); font-size: 1.5rem; font-weight: 900;">8</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        <span style="color: var(--sec-gold); font-weight: 700;">Net Gain</span>
+                        <span style="color: var(--longhorns-orange); font-size: 1.5rem; font-weight: 900;">+4</span>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(191,87,0,0.1); border-radius: 10px; border: 1px solid var(--longhorns-orange);">
+                        <div style="color: var(--longhorns-orange); font-weight: 800; margin-bottom: 0.5rem;">Key Additions:</div>
+                        <div style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">
+                            • All-Conference WR from Pac-12<br>
+                            • Elite Edge Rusher (Big 12)<br>
+                            • Starting OL from ACC
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEC Impact */
+            <div class="recruiting-card">
+                <div class="card-header">
+                    <h3 class="card-title">SEC Competition</h3>
+                    <div class="card-icon">🏆</div>
+                </div>
+
+                <div style="padding: 1rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="color: var(--sec-gold); font-weight: 700; margin-bottom: 0.5rem;">Recruiting Rank vs SEC</div>
+                        <div style="color: var(--longhorns-orange); font-size: 2rem; font-weight: 900;">#4</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">Behind UGA, Bama, LSU</div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="color: var(--sec-gold); font-weight: 700; margin-bottom: 0.5rem;">5-Star Commits</div>
+                        <div style="color: var(--longhorns-orange); font-size: 2rem; font-weight: 900;">3</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">Tied for 3rd in SEC</div>
+                    </div>
+
+                    <div style="background: rgba(255,215,0,0.1); padding: 1rem; border-radius: 10px; border: 1px solid var(--sec-gold);">
+                        <div style="color: var(--sec-gold); font-weight: 800; margin-bottom: 0.5rem;">Championship Window:</div>
+                        <div style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">
+                            Prime position for SEC title run with this recruiting class strength.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NIL Impact -->
+            <div class="recruiting-card">
+                <div class="card-header">
+                    <h3 class="card-title">NIL Influence</h3>
+                    <div class="card-icon">💰</div>
+                </div>
+
+                <div style="padding: 1rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="color: var(--sec-gold); font-weight: 700; margin-bottom: 0.5rem;">Collective Value</div>
+                        <div style="color: var(--longhorns-orange); font-size: 2rem; font-weight: 900;">$8.2M</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">Annual commitment</div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="color: var(--sec-gold); font-weight: 700; margin-bottom: 0.5rem;">Avg Per Player</div>
+                        <div style="color: var(--longhorns-orange); font-size: 2rem; font-weight: 900;">$95K</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.875rem;">Top 25 nationally</div>
+                    </div>
+
+                    <div style="background: rgba(200,16,46,0.1); padding: 1rem; border-radius: 10px; border: 1px solid var(--championship-red);">
+                        <div style="color: var(--championship-red); font-weight: 800; margin-bottom: 0.5rem;">NIL Advantage:</div>
+                        <div style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">
+                            Texas brand + Austin market = recruiting edge in SEC arms race.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Friday Night Lights Section -->
+    <section class="friday-night-section">
+        <h2 class="section-title">FRIDAY NIGHT LIGHTS PIPELINE</h2>
+        <p class="section-subtitle">Dave Campbell's Style Deep South Coverage</p>
+
+        <div class="friday-grid">
+            <div class="friday-card">
+                <div class="friday-icon">🏈</div>
+                <h3 class="friday-title">Total Prospects</h3>
+                <div class="friday-value">381</div>
+                <p class="friday-description">
+                    Texas Class of 2026 football prospects tracked in our comprehensive database
+                </p>
+            </div>
+
+            <div class="friday-card">
+                <div class="friday-icon">⭐</div>
+                <h3 class="friday-title">5-Star Talent</h3>
+                <div class="friday-value">12</div>
+                <p class="friday-description">
+                    Elite prospects with national championship potential across all positions
+                </p>
+            </div>
+
+            <div class="friday-card">
+                <div class="friday-icon">📈</div>
+                <h3 class="friday-title">D1 Commits</h3>
+                <div class="friday-value">30</div>
+                <p class="friday-description">
+                    Early commitments to Division I programs, with more announcements expected
+                </p>
+            </div>
+
+            <div class="friday-card">
+                <div class="friday-icon">🎯</div>
+                <h3 class="friday-title">Uncommitted</h3>
+                <div class="friday-value">91</div>
+                <p class="friday-description">
+                    Blue-chip prospects still available in the Texas recruiting market
+                </p>
+            </div>
+
+            <div class="friday-card">
+                <div class="friday-icon">🚀</div>
+                <h3 class="friday-title">NFL Projection</h3>
+                <div class="friday-value">5</div>
+                <p class="friday-description">
+                    Projected future NFL draft picks from current Texas high school class
+                </p>
+            </div>
+
+            <div class="friday-card">
+                <div class="friday-icon">📊</div>
+                <h3 class="friday-title">Trend Analysis</h3>
+                <div class="friday-value">↑</div>
+                <p class="friday-description">
+                    Texas talent pipeline momentum increasing with SEC move and NIL success
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pipeline Visualization -->
+    <section class="pipeline-section">
+        <h2 class="section-title">RECRUITING PIPELINE ANALYSIS</h2>
+
+        <div class="pipeline-chart">
+            <h3 style="text-align: center; color: var(--sec-gold); font-size: 1.5rem; margin-bottom: 2rem;">
+                Texas High School Football Commitment Pipeline
+            </h3>
+
+            <div class="pipeline-bars">
+                <div class="pipeline-bar">
+                    <div class="bar-container">
+                        <div class="bar-fill" style="height: 60%;"></div>
+                    </div>
+                    <div class="bar-label">D1 FBS</div>
+                    <div class="bar-value">30</div>
+                </div>
+
+                <div class="pipeline-bar">
+                    <div class="bar-container">
+                        <div class="bar-fill" style="height: 22%;"></div>
+                    </div>
+                    <div class="bar-label">D2</div>
+                    <div class="bar-value">11</div>
+                </div>
+
+                <div class="pipeline-bar">
+                    <div class="bar-container">
+                        <div class="bar-fill" style="height: 58%;"></div>
+                    </div>
+                    <div class="bar-label">D3</div>
+                    <div class="bar-value">29</div>
+                </div>
+
+                <div class="pipeline-bar">
+                    <div class="bar-container">
+                        <div class="bar-fill" style="height: 91%;"></div>
+                    </div>
+                    <div class="bar-label">Open</div>
+                    <div class="bar-value">91</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Texas Hotbeds -->
+    <section class="hotbed-section">
+        <h2 class="section-title">TEXAS RECRUITING HOTBEDS</h2>
+
+        <div class="hotbed-map">
+            <h3 style="color: var(--sec-gold); font-size: 1.5rem; margin-bottom: 1rem;">
+                Elite Talent Concentration Areas
+            </h3>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;">
+                Prime regions producing championship-level high school football talent
+            </p>
+
+            <div class="hotbed-cities">
+                <div class="hotbed-city">
+                    <h4 class="city-name">Houston Metro</h4>
+                    <p class="city-prospects">95+ Elite Prospects</p>
+                </div>
+
+                <div class="hotbed-city">
+                    <h4 class="city-name">Dallas-Fort Worth</h4>
+                    <p class="city-prospects">87+ Elite Prospects</p>
+                </div>
+
+                <div class="hotbed-city">
+                    <h4 class="city-name">Austin Area</h4>
+                    <p class="city-prospects">52+ Elite Prospects</p>
+                </div>
+
+                <div class="hotbed-city">
+                    <h4 class="city-name">San Antonio</h4>
+                    <p class="city-prospects">41+ Elite Prospects</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(191,87,0,0.1); border-radius: 15px; border: 1px solid var(--longhorns-orange);">
+                <h4 style="color: var(--longhorns-orange); font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem;">
+                    Emerging Talent Pipeline
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; color: rgba(255,255,255,0.9);">
+                    <div style="text-align: center;">
+                        <div style="color: var(--sec-gold); font-weight: 700;">Rising Star 1</div>
+                        <div style="font-size: 0.875rem;">WR • High D1 Potential</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: var(--sec-gold); font-weight: 700;">Rising Star 2</div>
+                        <div style="font-size: 0.875rem;">WR • High D1 Potential</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: var(--sec-gold); font-weight: 700;">Rising Star 3</div>
+                        <div style="font-size: 0.875rem;">WR • High D1 Potential</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Three.js and Animations -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+    <script>
+        // Longhorns-themed Three.js Background
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('longhorns-canvas'),
+            alpha: true,
+            antialias: true
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Longhorns-themed particles (orange, gold, black)
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 1000;
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            positions[i3] = (Math.random() - 0.5) * 120;
+            positions[i3 + 1] = (Math.random() - 0.5) * 120;
+            positions[i3 + 2] = (Math.random() - 0.5) * 120;
+
+            // Longhorns team colors
+            const color = new THREE.Color();
+            const rand = Math.random();
+            if (rand > 0.5) {
+                color.setHex(0xBF5700); // Longhorns orange
+            } else if (rand > 0.2) {
+                color.setHex(0xFFD700); // SEC gold
+            } else {
+                color.setHex(0x333333); // Texas black
+            }
+
+            colors[i3] = color.r;
+            colors[i3 + 1] = color.g;
+            colors[i3 + 2] = color.b;
+
+            sizes[i] = Math.random() * 2.5 + 0.5;
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 2.5,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            opacity: 0.9,
+            sizeAttenuation: true
+        });
+
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
+        // Add floating Texas star shapes
+        const starShape = new THREE.Shape();
+        const outerRadius = 0.8;
+        const innerRadius = 0.3;
+        const spikes = 5;
+
+        for (let i = 0; i < spikes * 2; i++) {
+            const angle = (i / (spikes * 2)) * Math.PI * 2;
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            if (i === 0) {
+                starShape.moveTo(x, y);
+            } else {
+                starShape.lineTo(x, y);
+            }
+        }
+
+        const starGeometry = new THREE.ShapeGeometry(starShape);
+        const starMaterial = new THREE.MeshBasicMaterial({
+            color: 0xFFD700,
+            transparent: true,
+            opacity: 0.6
+        });
+
+        for (let i = 0; i < 20; i++) {
+            const star = new THREE.Mesh(starGeometry, starMaterial);
+            star.position.x = (Math.random() - 0.5) * 150;
+            star.position.y = (Math.random() - 0.5) * 150;
+            star.position.z = (Math.random() - 0.5) * 150;
+            star.rotation.z = Math.random() * Math.PI * 2;
+            scene.add(star);
+        }
+
+        camera.position.z = 60;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            particles.rotation.x += 0.0001;
+            particles.rotation.y += 0.0004;
+
+            // Float particles
+            const positions = particles.geometry.attributes.position.array;
+            const time = Date.now() * 0.001;
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i + 1] += Math.sin(time + positions[i] * 0.008) * 0.006;
+                positions[i] += Math.cos(time + positions[i + 1] * 0.008) * 0.003;
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+
+            // Rotate Texas stars
+            scene.children.forEach((child, index) => {
+                if (child.geometry && child.geometry.type === 'ShapeGeometry') {
+                    child.rotation.z += 0.005;
+                    child.position.y += Math.sin(time + index * 0.5) * 0.01;
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Responsive canvas
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Recruiting data updates
+        function updateRecruitingData() {
+            console.log('Updating Longhorns recruiting intelligence...');
+
+            // Simulate real-time recruiting updates
+            document.querySelectorAll('.prospect-row').forEach(row => {
+                const ratingElement = row.querySelector('.rating-high');
+                if (ratingElement && Math.random() > 0.85) {
+                    ratingElement.style.color = 'var(--sec-gold)';
+                    ratingElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        ratingElement.style.transform = 'scale(1)';
+                    }, 500);
+                }
+            });
+        }
+
+        // Update every 20 seconds
+        setInterval(updateRecruitingData, 20000);
+
+        // Enhanced recruiting card interactions
+        document.querySelectorAll('.recruiting-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-12px) scale(1.02)';
+                card.style.boxShadow = '0 30px 60px rgba(191, 87, 0, 0.3)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+                card.style.boxShadow = '0 10px 30px rgba(191, 87, 0, 0.1)';
+            });
+        });
+
+        // Friday Night Lights card effects
+        document.querySelectorAll('.friday-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const icon = card.querySelector('.friday-icon');
+                if (icon) {
+                    icon.style.transform = 'scale(1.2) rotate(10deg)';
+                }
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const icon = card.querySelector('.friday-icon');
+                if (icon) {
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                }
+            });
+        });
+
+        // Animate pipeline bars on scroll
+        const pipelineBars = document.querySelectorAll('.bar-fill');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const height = bar.style.height;
+                    bar.style.height = '0%';
+                    setTimeout(() => {
+                        bar.style.height = height;
+                    }, 300);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        pipelineBars.forEach(bar => observer.observe(bar));
+
+        // Performance optimization - Intersection Observer for cards
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        // Observe all major elements
+        document.querySelectorAll('.recruiting-card, .friday-card, .pipeline-chart, .hotbed-map').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            cardObserver.observe(element);
+        });
+
+        // Add recruiting momentum simulation
+        function simulateRecruitingMomentum() {
+            const momentumElements = document.querySelectorAll('.friday-value, .bar-value');
+            momentumElements.forEach(element => {
+                if (Math.random() > 0.95) {
+                    element.style.color = 'var(--sec-gold)';
+                    element.style.textShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
+                    setTimeout(() => {
+                        element.style.color = 'var(--longhorns-orange)';
+                        element.style.textShadow = 'none';
+                    }, 1000);
+                }
+            });
+        }
+
+        setInterval(simulateRecruitingMomentum, 12000);
+    </script>
+</body>
+</html>

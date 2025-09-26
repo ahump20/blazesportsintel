@@ -1,0 +1,113 @@
+name: cardinals_batter_xwoba_30d
+owner: blaze_baseball_team
+dtype: float
+source: curated.batting_stats
+description: Expected weighted on-base average (xwOBA) for Cardinals batters over the last 30 days, incorporating exit velocity, launch angle, and sprint speed
+sport_scope: ["baseball"]
+version: 1
+window: 30d
+agg: mean
+validation:
+  not_null: true
+  min: 0.200
+  max: 0.600
+tags: ["cardinals", "batting", "advanced_metrics", "sabermetrics"]
+latency_requirement: near_real_time
+quality_checks:
+  drift_threshold: 0.15
+  missing_threshold: 0.02
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_batter_barrel_rate_7g
+owner: blaze_baseball_team
+dtype: float
+source: curated.batting_stats
+description: Percentage of plate appearances resulting in barreled balls for Cardinals batters over last 7 games
+sport_scope: ["baseball"]
+version: 1
+window: 7g
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 50.0
+tags: ["cardinals", "batting", "barrel_rate", "power"]
+latency_requirement: real_time
+quality_checks:
+  drift_threshold: 0.20
+  missing_threshold: 0.01
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_batter_chase_rate_below_zone_30d
+owner: blaze_baseball_team
+dtype: float
+source: curated.pitch_data
+description: Rate at which Cardinals batters swing at pitches below the strike zone over 30 days, indicating plate discipline
+sport_scope: ["baseball"]
+version: 1
+window: 30d
+agg: mean
+validation:
+  not_null: true
+  min: 0.0
+  max: 100.0
+tags: ["cardinals", "batting", "plate_discipline", "zone_control"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.12
+  missing_threshold: 0.05
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_batter_clutch_performance_season
+owner: blaze_baseball_team
+dtype: float
+source: curated.batting_stats
+description: Cardinals batter performance in high-leverage situations (WPA/LI > 1.5) during current season
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: mean
+validation:
+  not_null: true
+  min: -2.0
+  max: 2.0
+tags: ["cardinals", "batting", "clutch", "leverage", "situational"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.25
+  missing_threshold: 0.10
+dependencies: ["leverage_index", "win_probability_added"]
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"
+
+---
+
+name: cardinals_batter_sprint_speed_percentile
+owner: blaze_baseball_team
+dtype: float
+source: curated.statcast_data
+description: Cardinals batter sprint speed percentile ranking compared to MLB average, affecting stolen base and infield hit potential
+sport_scope: ["baseball"]
+version: 1
+window: season
+agg: p90
+validation:
+  not_null: true
+  min: 0.0
+  max: 100.0
+tags: ["cardinals", "baserunning", "speed", "athleticism"]
+latency_requirement: batch
+quality_checks:
+  drift_threshold: 0.10
+  missing_threshold: 0.08
+created_at: "2025-09-25T00:00:00Z"
+updated_at: "2025-09-25T00:00:00Z"

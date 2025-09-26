@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Blaze Sports Intelligence Feature Definition Schema",
+  "description": "Schema for validating ML feature definitions in the Blaze Sports Intelligence platform",
+  "type": "object",
+  "required": ["name", "owner", "dtype", "source", "description", "sport_scope", "version"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*[a-z0-9]$",
+      "description": "Feature name in snake_case format"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Feature owner (team or individual responsible)"
+    },
+    "dtype": {
+      "type": "string",
+      "enum": ["float", "int", "bool", "category", "datetime"],
+      "description": "Data type of the feature"
+    },
+    "source": {
+      "type": "string",
+      "description": "Data source table or system (e.g., 'curated.batting_stats')"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Detailed description of the feature and its business meaning"
+    },
+    "sport_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["baseball", "football", "basketball", "track"]
+      },
+      "minItems": 1,
+      "description": "Sports this feature applies to (NEVER include soccer)"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Feature version (monotonically increasing)"
+    },
+    "window": {
+      "type": "string",
+      "pattern": "^(\\d+[dg]|season|career)$",
+      "description": "Time window for aggregation (e.g., '30d', '5g', 'season')"
+    },
+    "agg": {
+      "type": "string",
+      "enum": ["mean", "sum", "count", "max", "min", "p90", "p95", "std", "last"],
+      "description": "Aggregation method for time-based features"
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "not_null": {
+          "type": "boolean",
+          "description": "Whether feature values can be null"
+        },
+        "min": {
+          "type": "number",
+          "description": "Minimum allowed value"
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum allowed value"
+        },
+        "categories": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Allowed categorical values"
+        }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Feature tags for discovery and grouping"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Other features this feature depends on"
+    },
+    "latency_requirement": {
+      "type": "string",
+      "enum": ["real_time", "near_real_time", "batch"],
+      "default": "batch",
+      "description": "Latency requirement for feature computation"
+    },
+    "quality_checks": {
+      "type": "object",
+      "properties": {
+        "drift_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.1,
+          "description": "PSI threshold for drift detection"
+        },
+        "missing_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.05,
+          "description": "Maximum allowed missing value rate"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Feature creation timestamp"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Feature last update timestamp"
+    }
+  }
+}
