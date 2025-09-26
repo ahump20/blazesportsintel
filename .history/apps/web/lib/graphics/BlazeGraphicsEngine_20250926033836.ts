@@ -20,6 +20,13 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 // GPU.js is optional for browser compatibility
 let GPU: any = null;
+if (typeof window !== 'undefined') {
+  try {
+    GPU = require('gpu.js');
+  } catch (e) {
+    console.warn('GPU.js not available, falling back to CPU computation');
+  }
+}
 
 // =============================================================================
 // CONFIGURATION & TYPES

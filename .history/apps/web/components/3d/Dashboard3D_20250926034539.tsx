@@ -237,7 +237,7 @@ const Scene3D: React.FC<{
       {/* Helper objects for development */}
       {process.env.NODE_ENV === 'development' && qualityMode === 'ultra' && (
         <>
-          <gridHelper args={[200, 50]} />
+          <gridHelper args={[200, 50]} color="#333333" />
           <axesHelper args={[10]} />
         </>
       )}

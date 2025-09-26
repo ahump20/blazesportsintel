@@ -142,7 +142,7 @@ export const Stadium3DVisualization: React.FC<Stadium3DVisualizationProps> = ({
         engineRef.current.dispose();
       }
     };
-  }, [team, quality, enableAR, enableVR, showParticles, showHeatMap, loadTeamAssets, onStatsUpdate, createTeamParticles]);
+  }, [team, quality, enableAR, enableVR, showParticles, showHeatMap, loadTeamAssets, onStatsUpdate]);
 
   // Load team-specific stadium and assets
   const loadTeamAssets = async (engine: BlazeGraphicsEngine) => {

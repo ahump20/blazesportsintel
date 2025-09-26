@@ -24,7 +24,7 @@
     "@blazesportsintel/schemas": "^1.0.0",
     "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.0.0",
     "date-fns-tz": "^2.0.0",
     "jsonlines": "^0.1.1",
     "p-limit": "^5.0.0",

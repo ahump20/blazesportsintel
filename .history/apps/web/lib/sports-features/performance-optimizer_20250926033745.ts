@@ -619,7 +619,7 @@ export class OptimizedBlazeFeatureClient extends BlazeFeatureIntegrationClient {
   private generateCacheKey(featureName: string, inputData: any): string {
     // Create a stable cache key from feature name and input data
     const dataHash = JSON.stringify(inputData);
-    return `${featureName}_${btoa(dataHash).slice(0, 20)}`;
+    return `${featureName}_${Buffer.from(dataHash).toString('base64').slice(0, 20)}`;
   }
 
   cleanup(): void {

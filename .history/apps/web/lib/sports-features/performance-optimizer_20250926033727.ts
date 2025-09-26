@@ -67,12 +67,8 @@ class PerformanceMonitor {
   }
 
   private getCurrentMemoryUsage(): number {
-    // Browser-compatible memory estimation
-    if ('memory' in performance) {
-      const memInfo = (performance as any).memory;
-      return Math.round((memInfo.usedJSHeapSize / 1024 / 1024) * 100) / 100;
-    }
-    return 0; // Fallback for browsers without memory API
+    const usage = process.memoryUsage();
+    return Math.round((usage.heapUsed / 1024 / 1024) * 100) / 100;
   }
 
   recordMetric(metric: PerformanceMetrics): void {
@@ -130,9 +126,7 @@ class PerformanceMonitor {
   }
 
   cleanup(): void {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    this.observer.disconnect();
   }
 }
 
@@ -270,8 +264,7 @@ class ParallelComputationEngine {
   private queuedTasks: any[] = [];
 
   constructor(maxWorkers: number = 4) {
-    // Browser-compatible worker count
-    this.maxWorkers = Math.min(maxWorkers, navigator.hardwareConcurrency || 4);
+    this.maxWorkers = Math.min(maxWorkers, require('os').cpus().length);
     console.log(`🚀 Parallel computation engine initialized with ${this.maxWorkers} workers`);
   }
 
@@ -619,7 +612,7 @@ export class OptimizedBlazeFeatureClient extends BlazeFeatureIntegrationClient {
   private generateCacheKey(featureName: string, inputData: any): string {
     // Create a stable cache key from feature name and input data
     const dataHash = JSON.stringify(inputData);
-    return `${featureName}_${btoa(dataHash).slice(0, 20)}`;
+    return `${featureName}_${Buffer.from(dataHash).toString('base64').slice(0, 20)}`;
   }
 
   cleanup(): void {

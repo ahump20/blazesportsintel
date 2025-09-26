@@ -25,7 +25,7 @@ import SportField3D from './fields/SportField3D';
 import ParticleSystem, { PARTICLE_PRESETS } from './particles/ParticleSystem';
 
 // Import types and stores
-import type { Player3DData, Field3D, GameEvent, Trajectory, ParticleConfig } from '../../types/3d.types';
+import type { Player3DData, Field3D, GameEvent, Trajectory } from '../../types/3d.types';
 import { useSportsStore } from '../../lib/stores/sportsStore';
 import { useWebSocket } from '../../lib/websocket/sportsWebSocket';
 
@@ -237,7 +237,7 @@ const Scene3D: React.FC<{
       {/* Helper objects for development */}
       {process.env.NODE_ENV === 'development' && qualityMode === 'ultra' && (
         <>
-          <gridHelper args={[200, 50]} />
+          <gridHelper args={[200, 50]} color="#333333" />
           <axesHelper args={[10]} />
         </>
       )}

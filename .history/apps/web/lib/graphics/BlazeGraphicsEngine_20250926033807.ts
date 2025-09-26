@@ -20,6 +20,13 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader';
 // GPU.js is optional for browser compatibility
 let GPU: any = null;
+if (typeof window !== 'undefined') {
+  try {
+    GPU = require('gpu.js');
+  } catch (e) {
+    console.warn('GPU.js not available, falling back to CPU computation');
+  }
+}
 
 // =============================================================================
 // CONFIGURATION & TYPES
@@ -156,13 +163,8 @@ export class BlazeGraphicsEngine {
       await this.initializeRenderer(container);
 
       // Initialize GPU.js for compute operations
-      if (GPU) {
-        try {
-          this.gpu = new GPU({ mode: 'gpu' });
-        } catch (e) {
-          console.warn('GPU.js initialization failed, using CPU mode');
-          this.gpu = new GPU({ mode: 'cpu' });
-        }
+      if (typeof GPU !== 'undefined') {
+        this.gpu = new GPU({ mode: 'gpu' });
       }
 
       // Setup scene

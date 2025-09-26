@@ -858,14 +858,11 @@ export class BlazeFeatureIntegrationClient {
    */
   monitorPerformance(): void {
     setInterval(() => {
-      // Browser-compatible memory monitoring
-      if ('memory' in performance) {
-        const memInfo = (performance as any).memory;
-        const heapUsed = Math.round((memInfo.usedJSHeapSize / 1024 / 1024) * 100) / 100;
+      const memUsage = process.memoryUsage();
+      const heapUsed = Math.round((memUsage.heapUsed / 1024 / 1024) * 100) / 100;
 
-        if (heapUsed > 100) { // Alert if over 100MB
-          console.warn(`High memory usage detected: ${heapUsed}MB`);
-        }
+      if (heapUsed > 100) { // Alert if over 100MB
+        console.warn(`High memory usage detected: ${heapUsed}MB`);
       }
 
       // Clear expired cache entries
