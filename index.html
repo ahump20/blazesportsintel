@@ -3,7 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blaze Sports Intel - Advanced sports analytics and AI-powered performance analysis for baseball, football, basketball, and track & field in the Deep South">
+    <meta name="keywords" content="sports analytics, AI sports analysis, baseball analytics, football analytics, basketball analytics, track and field, performance analysis, Deep South sports">
+    <meta name="author" content="Blaze Sports Intel">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#FF4500">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- Performance Hints -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"></noscript>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://blazesportsintel.com/">
+    <meta property="og:title" content="Blaze Sports Intel - The Deep South's Sports Intelligence Hub">
+    <meta property="og:description" content="Advanced sports analytics and AI-powered performance analysis for baseball, football, basketball, and track & field">
+    <meta property="og:image" content="https://blazesportsintel.com/assets/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://blazesportsintel.com/">
+    <meta property="twitter:title" content="Blaze Sports Intel - The Deep South's Sports Intelligence Hub">
+    <meta property="twitter:description" content="Advanced sports analytics and AI-powered performance analysis for baseball, football, basketball, and track & field">
+    <meta property="twitter:image" content="https://blazesportsintel.com/assets/twitter-image.jpg">
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
     <title>Blaze Sports Intel - The Deep South's Sports Intelligence Hub</title>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Blaze Sports Intel",
+        "description": "Advanced sports analytics and AI-powered performance analysis for baseball, football, basketball, and track & field in the Deep South",
+        "url": "https://blazesportsintel.com",
+        "logo": "https://blazesportsintel.com/assets/logo.png",
+        "sameAs": [
+            "https://twitter.com/blazesportsintel",
+            "https://facebook.com/blazesportsintel",
+            "https://linkedin.com/company/blazesportsintel"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "email": "info@blazesportsintel.com"
+        },
+        "offers": {
+            "@type": "Offer",
+            "description": "Sports analytics and AI-powered performance analysis services",
+            "category": "Sports Technology"
+        }
+    }
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -427,6 +498,59 @@
             font-size: 3rem;
         }
 
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles for accessibility */
+        .nav-pill:focus,
+        .control-btn:focus,
+        .vision-placeholder:focus {
+            outline: 2px solid #FFA500;
+            outline-offset: 2px;
+        }
+
+        /* Skip link for keyboard navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #FF4500;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        /* Keyboard navigation styles */
+        .keyboard-navigation .nav-pill:focus,
+        .keyboard-navigation .control-btn:focus,
+        .keyboard-navigation .vision-placeholder:focus {
+            outline: 2px solid #FFA500;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.3);
+        }
+
+        /* Improved focus styles for better accessibility */
+        .keyboard-navigation *:focus {
+            outline: 2px solid #FFA500;
+            outline-offset: 2px;
+        }
+
         @media (max-width: 768px) {
             .title {
                 font-size: 2.5rem;
@@ -454,146 +578,164 @@
     </style>
 </head>
 <body>
-    <canvas id="heroCanvas" class="hero-canvas"></canvas>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
 
-    <header class="header">
+    <header class="header" role="banner">
         <h1 class="title">BLAZE SPORTS INTEL</h1>
         <p class="subtitle">The Deep South's Sports Intelligence Hub • From Friday Night Lights to Sunday in the Show</p>
 
-        <nav class="nav-pills">
-            <a href="#" class="nav-pill active" onclick="switchSport('mlb')">⚾ Baseball</a>
-            <a href="#" class="nav-pill" onclick="switchSport('nfl')">🏈 Football</a>
-            <a href="#" class="nav-pill" onclick="switchSport('nba')">🏀 Basketball</a>
-            <a href="#" class="nav-pill" onclick="switchSport('ncaa')">🏃 Track & Field</a>
+        <nav class="nav-pills" role="navigation" aria-label="Sport selection">
+            <a href="#baseball" class="nav-pill active" onclick="switchSport('mlb')" aria-current="page" role="tab" aria-selected="true">
+                <span aria-hidden="true">⚾</span> Baseball
+            </a>
+            <a href="#football" class="nav-pill" onclick="switchSport('nfl')" role="tab" aria-selected="false">
+                <span aria-hidden="true">🏈</span> Football
+            </a>
+            <a href="#basketball" class="nav-pill" onclick="switchSport('nba')" role="tab" aria-selected="false">
+                <span aria-hidden="true">🏀</span> Basketball
+            </a>
+            <a href="#track-field" class="nav-pill" onclick="switchSport('ncaa')" role="tab" aria-selected="false">
+                <span aria-hidden="true">🏃</span> Track & Field
+            </a>
         </nav>
     </header>
 
-    <main class="main-content">
+    <main id="main-content" class="main-content" role="main">
         <!-- Live Scores Section -->
-        <section class="scores-section">
-            <h2 style="color: #FFA500; margin-bottom: 1rem;">🔥 Live Scores & Games</h2>
-            <div id="live-scores">
+        <section class="scores-section" aria-labelledby="live-scores-heading">
+            <h2 id="live-scores-heading" style="color: #FFA500; margin-bottom: 1rem;">
+                <span aria-hidden="true">🔥</span> Live Scores & Games
+            </h2>
+            <div id="live-scores" role="region" aria-live="polite" aria-label="Live sports scores">
                 <!-- Dynamic content -->
             </div>
         </section>
 
         <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
+        <div class="dashboard-grid" role="region" aria-label="Sports analytics dashboard">
             <!-- Team Performance Dashboard -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3 class="card-title">Team Performance Analytics</h3>
-                    <div class="card-icon">📊</div>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <span class="stat-value" id="winPct">0.735</span>
+            <article class="dashboard-card" role="article" aria-labelledby="performance-heading">
+                <header class="card-header">
+                    <h3 id="performance-heading" class="card-title">Team Performance Analytics</h3>
+                    <div class="card-icon" aria-hidden="true">📊</div>
+                </header>
+                <div class="stats-grid" role="group" aria-label="Team performance statistics">
+                    <div class="stat-box" role="img" aria-label="Win percentage: 73.5%">
+                        <span class="stat-value" id="winPct" aria-label="73.5 percent">0.735</span>
                         <span class="stat-label">Win %</span>
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-value" id="teamRank">2nd</span>
+                    <div class="stat-box" role="img" aria-label="Division rank: 2nd">
+                        <span class="stat-value" id="teamRank" aria-label="2nd place">2nd</span>
                         <span class="stat-label">Division</span>
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-value" id="streak">W5</span>
+                    <div class="stat-box" role="img" aria-label="Current streak: 5 wins">
+                        <span class="stat-value" id="streak" aria-label="5 wins">W5</span>
                         <span class="stat-label">Streak</span>
                     </div>
                 </div>
-                <div class="heat-map" id="performance-heatmap">
+                <div class="heat-map" id="performance-heatmap" role="img" aria-label="Performance heat map visualization">
                     <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.6);">
-                        📈 Performance Heat Map
+                        <span aria-hidden="true">📈</span> Performance Heat Map
                     </div>
                 </div>
-            </div>
+            </article>
 
             <!-- Vision AI Analysis -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3 class="card-title">Vision AI Analysis</h3>
-                    <div class="card-icon">👁️</div>
-                </div>
-                <div class="vision-container" id="vision-container">
-                    <div class="vision-placeholder" onclick="activateVisionAI()">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📹</div>
+            <article class="dashboard-card" role="article" aria-labelledby="vision-heading">
+                <header class="card-header">
+                    <h3 id="vision-heading" class="card-title">Vision AI Analysis</h3>
+                    <div class="card-icon" aria-hidden="true">👁️</div>
+                </header>
+                <div class="vision-container" id="vision-container" role="region" aria-label="AI-powered pose detection and analysis">
+                    <button class="vision-placeholder" onclick="activateVisionAI()" aria-label="Activate camera for pose detection and analysis">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;" aria-hidden="true">📹</div>
                         <div>Click to activate pose detection</div>
-                    </div>
-                    <video id="video-feed" class="video-feed" style="display: none;" muted playsinline></video>
-                    <canvas id="pose-overlay" class="pose-overlay"></canvas>
-                    <div id="metrics-overlay" class="metrics-overlay" style="display: none;">
+                    </button>
+                    <video id="video-feed" class="video-feed" style="display: none;" muted playsinline aria-label="Live camera feed for pose analysis"></video>
+                    <canvas id="pose-overlay" class="pose-overlay" aria-hidden="true"></canvas>
+                    <div id="metrics-overlay" class="metrics-overlay" style="display: none;" role="status" aria-live="polite" aria-label="Real-time analysis metrics">
                         Form: <span id="form-score">0</span>% | Confidence: <span id="confidence">0</span>%
                     </div>
                 </div>
 
-                <div id="biomechanics-panel" class="biomechanics-panel" style="display: none;">
-                    <h4 style="color: #FFA500; margin-bottom: 0.5rem; font-size: 1rem;">Biomechanical Analysis</h4>
-                    <div class="metrics-grid">
+                <div id="biomechanics-panel" class="biomechanics-panel" style="display: none;" role="region" aria-labelledby="biomechanics-heading">
+                    <h4 id="biomechanics-heading" style="color: #FFA500; margin-bottom: 0.5rem; font-size: 1rem;">Biomechanical Analysis</h4>
+                    <div class="metrics-grid" role="group" aria-label="Biomechanical analysis metrics">
                         <div class="metric-row">
                             <span style="color: rgba(255, 255, 255, 0.7);">Hip Rotation:</span>
-                            <span style="color: #39FF14;" id="hip-rotation">0°</span>
+                            <span style="color: #39FF14;" id="hip-rotation" aria-label="Hip rotation angle">0°</span>
                         </div>
                         <div class="metric-row">
                             <span style="color: rgba(255, 255, 255, 0.7);">Shoulder Tilt:</span>
-                            <span style="color: #FFD700;" id="shoulder-tilt">0°</span>
+                            <span style="color: #FFD700;" id="shoulder-tilt" aria-label="Shoulder tilt angle">0°</span>
                         </div>
                         <div class="metric-row">
                             <span style="color: rgba(255, 255, 255, 0.7);">Weight Transfer:</span>
-                            <span style="color: #FF6B35;" id="weight-transfer">0%</span>
+                            <span style="color: #FF6B35;" id="weight-transfer" aria-label="Weight transfer percentage">0%</span>
                         </div>
                         <div class="metric-row">
                             <span style="color: rgba(255, 255, 255, 0.7);">Form Score:</span>
-                            <span id="form-score-detail" style="color: #39FF14;">0%</span>
+                            <span id="form-score-detail" style="color: #39FF14;" aria-label="Overall form score">0%</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="control-buttons" id="vision-controls">
-                    <button class="control-btn active" onclick="setVisionMode('pose_detection')">Pose Detection</button>
-                    <button class="control-btn" onclick="setVisionMode('form_analysis')">Form Analysis</button>
-                    <button class="control-btn" onclick="setVisionMode('character_read')">Character Read</button>
+                <div class="control-buttons" id="vision-controls" role="group" aria-label="Vision AI analysis modes">
+                    <button class="control-btn active" onclick="setVisionMode('pose_detection')" aria-pressed="true" aria-describedby="pose-desc">Pose Detection</button>
+                    <button class="control-btn" onclick="setVisionMode('form_analysis')" aria-pressed="false" aria-describedby="form-desc">Form Analysis</button>
+                    <button class="control-btn" onclick="setVisionMode('character_read')" aria-pressed="false" aria-describedby="character-desc">Character Read</button>
                 </div>
-            </div>
+                <div id="pose-desc" class="sr-only">Analyze body pose and movement patterns</div>
+                <div id="form-desc" class="sr-only">Evaluate athletic form and technique</div>
+                <div id="character-desc" class="sr-only">Read player character and mental state</div>
+            </article>
 
             <!-- Top Players -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3 class="card-title">Elite Performers</h3>
-                    <div class="card-icon">🏆</div>
-                </div>
-                <div id="top-players">
+            <article class="dashboard-card" role="article" aria-labelledby="players-heading">
+                <header class="card-header">
+                    <h3 id="players-heading" class="card-title">Elite Performers</h3>
+                    <div class="card-icon" aria-hidden="true">🏆</div>
+                </header>
+                <div id="top-players" role="list" aria-label="Top performing players">
                     <!-- Dynamic content -->
                 </div>
-            </div>
+            </article>
 
             <!-- Standings -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3 class="card-title">League Standings</h3>
-                    <div class="card-icon">📋</div>
+            <article class="dashboard-card" role="article" aria-labelledby="standings-heading">
+                <header class="card-header">
+                    <h3 id="standings-heading" class="card-title">League Standings</h3>
+                    <div class="card-icon" aria-hidden="true">📋</div>
+                </header>
+                <div class="table-container" role="region" aria-label="League standings table">
+                    <table class="standings-table" role="table" aria-label="Current league standings">
+                        <thead>
+                            <tr role="row">
+                                <th scope="col" role="columnheader">Rank</th>
+                                <th scope="col" role="columnheader">Team</th>
+                                <th scope="col" role="columnheader">W</th>
+                                <th scope="col" role="columnheader">L</th>
+                                <th scope="col" role="columnheader">PCT</th>
+                                <th scope="col" role="columnheader">GB</th>
+                                <th scope="col" role="columnheader">Streak</th>
+                            </tr>
+                        </thead>
+                        <tbody id="standings-body" role="rowgroup">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
                 </div>
-                <table class="standings-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Team</th>
-                            <th>W</th>
-                            <th>L</th>
-                            <th>PCT</th>
-                            <th>GB</th>
-                            <th>Streak</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standings-body">
-                        <!-- Dynamic content -->
-                    </tbody>
-                </table>
-            </div>
+            </article>
         </div>
 
         <!-- Mobile App Section -->
-        <section class="mobile-section">
-            <h2 style="color: #FFA500; margin-bottom: 1rem;">📱 Mobile App Preview</h2>
-            <div class="mobile-mockup">
-                <div class="mobile-screen">📲</div>
+        <section class="mobile-section" aria-labelledby="mobile-heading">
+            <h2 id="mobile-heading" style="color: #FFA500; margin-bottom: 1rem;">
+                <span aria-hidden="true">📱</span> Mobile App Preview
+            </h2>
+            <div class="mobile-mockup" role="img" aria-label="Mobile app interface preview">
+                <div class="mobile-screen" aria-hidden="true">📲</div>
             </div>
             <h3 style="color: #FFA500; margin-bottom: 1rem;">Blaze Vision Mobile</h3>
             <p style="color: rgba(255, 255, 255, 0.7);">
@@ -738,16 +880,27 @@
 
         function initParticles() {
             const canvas = document.getElementById('heroCanvas');
+            if (!canvas) return;
+            
             const ctx = canvas.getContext('2d');
+            if (!ctx) return;
 
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            // Use device pixel ratio for crisp rendering
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.scale(dpr, dpr);
 
+            // Reduce particle count on mobile for better performance
+            const particleCount = window.innerWidth < 768 ? 100 : 200;
             particles = [];
-            for (let i = 0; i < 200; i++) {
+            
+            for (let i = 0; i < particleCount; i++) {
                 particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
                     vx: (Math.random() - 0.5) * 1.5,
                     vy: (Math.random() - 0.5) * 1.5,
                     size: Math.random() * 4 + 1,
@@ -758,14 +911,14 @@
 
             function animate() {
                 ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
                 particles.forEach(particle => {
                     particle.x += particle.vx;
                     particle.y += particle.vy;
 
-                    if (particle.x <= 0 || particle.x >= canvas.width) particle.vx *= -1;
-                    if (particle.y <= 0 || particle.y >= canvas.height) particle.vy *= -1;
+                    if (particle.x <= 0 || particle.x >= window.innerWidth) particle.vx *= -1;
+                    if (particle.y <= 0 || particle.y >= window.innerHeight) particle.vy *= -1;
 
                     const gradient = ctx.createRadialGradient(
                         particle.x, particle.y, 0,
@@ -810,9 +963,18 @@
         // Vision AI Functions
         async function activateVisionAI() {
             try {
+                // Check if getUserMedia is supported
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera access not supported in this browser');
+                }
+
                 const video = document.getElementById('video-feed');
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 640, height: 480 }
+                    video: { 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    }
                 });
 
                 video.srcObject = stream;
@@ -823,27 +985,43 @@
 
                 // Update control buttons
                 const controls = document.getElementById('vision-controls');
-                controls.innerHTML = '<button class="control-btn stop" onclick="stopVisionAI()">⏹️ Stop Analysis</button>';
+                controls.innerHTML = '<button class="control-btn stop" onclick="stopVisionAI()" aria-label="Stop camera analysis">⏹️ Stop Analysis</button>';
 
                 visionActive = true;
 
-                // Simulate pose detection metrics
+                // Simulate pose detection metrics with more realistic data
                 const updateMetrics = () => {
                     if (!visionActive) return;
 
-                    poseMetrics.hipRotation = Math.round(30 + Math.sin(Date.now() * 0.001) * 20);
-                    poseMetrics.shoulderTilt = Math.round(15 + Math.cos(Date.now() * 0.0008) * 10);
-                    poseMetrics.weightTransfer = Math.round(70 + Math.sin(Date.now() * 0.0012) * 15);
-                    poseMetrics.formScore = Math.round(85 + Math.sin(Date.now() * 0.0005) * 10);
-                    poseMetrics.confidence = Math.round(75 + Math.cos(Date.now() * 0.0015) * 20);
+                    // More realistic biomechanical ranges
+                    poseMetrics.hipRotation = Math.round(25 + Math.sin(Date.now() * 0.001) * 15);
+                    poseMetrics.shoulderTilt = Math.round(12 + Math.cos(Date.now() * 0.0008) * 8);
+                    poseMetrics.weightTransfer = Math.round(65 + Math.sin(Date.now() * 0.0012) * 20);
+                    poseMetrics.formScore = Math.round(82 + Math.sin(Date.now() * 0.0005) * 12);
+                    poseMetrics.confidence = Math.round(78 + Math.cos(Date.now() * 0.0015) * 15);
 
-                    document.getElementById('form-score').textContent = poseMetrics.formScore;
-                    document.getElementById('confidence').textContent = poseMetrics.confidence;
-                    document.getElementById('hip-rotation').textContent = poseMetrics.hipRotation + '°';
-                    document.getElementById('shoulder-tilt').textContent = poseMetrics.shoulderTilt + '°';
-                    document.getElementById('weight-transfer').textContent = poseMetrics.weightTransfer + '%';
-                    document.getElementById('form-score-detail').textContent = poseMetrics.formScore + '%';
-                    document.getElementById('form-score-detail').style.color = poseMetrics.formScore > 85 ? '#39FF14' : '#FFA500';
+                    // Update DOM elements safely
+                    const elements = {
+                        'form-score': poseMetrics.formScore,
+                        'confidence': poseMetrics.confidence,
+                        'hip-rotation': poseMetrics.hipRotation + '°',
+                        'shoulder-tilt': poseMetrics.shoulderTilt + '°',
+                        'weight-transfer': poseMetrics.weightTransfer + '%',
+                        'form-score-detail': poseMetrics.formScore + '%'
+                    };
+
+                    Object.entries(elements).forEach(([id, value]) => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = value;
+                        }
+                    });
+
+                    // Update form score color
+                    const formScoreDetail = document.getElementById('form-score-detail');
+                    if (formScoreDetail) {
+                        formScoreDetail.style.color = poseMetrics.formScore > 85 ? '#39FF14' : poseMetrics.formScore > 75 ? '#FFA500' : '#FF6B35';
+                    }
 
                     setTimeout(updateMetrics, 100);
                 };
@@ -851,135 +1029,261 @@
                 updateMetrics();
 
             } catch (error) {
-                alert('Camera access denied. Please enable camera permissions for pose detection.');
+                console.error('Vision AI activation failed:', error);
+                const errorMessage = error.message.includes('Permission denied') 
+                    ? 'Camera access denied. Please enable camera permissions for pose detection.'
+                    : 'Camera access not available. Please check your device and try again.';
+                
+                // Create user-friendly error display
+                const placeholder = document.querySelector('.vision-placeholder');
+                if (placeholder) {
+                    placeholder.innerHTML = `
+                        <div style="font-size: 2rem; margin-bottom: 1rem;" aria-hidden="true">⚠️</div>
+                        <div>${errorMessage}</div>
+                        <button onclick="activateVisionAI()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #FF4500; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
+                    `;
+                }
             }
         }
 
         function stopVisionAI() {
-            const video = document.getElementById('video-feed');
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
-                video.srcObject = null;
+            try {
+                const video = document.getElementById('video-feed');
+                if (video && video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => {
+                        track.stop();
+                    });
+                    video.srcObject = null;
+                }
+
+                if (video) {
+                    video.style.display = 'none';
+                }
+
+                const placeholder = document.querySelector('.vision-placeholder');
+                if (placeholder) {
+                    placeholder.style.display = 'block';
+                    placeholder.innerHTML = `
+                        <div style="font-size: 3rem; margin-bottom: 1rem;" aria-hidden="true">📹</div>
+                        <div>Click to activate pose detection</div>
+                    `;
+                }
+
+                const metricsOverlay = document.getElementById('metrics-overlay');
+                if (metricsOverlay) {
+                    metricsOverlay.style.display = 'none';
+                }
+
+                const biomechanicsPanel = document.getElementById('biomechanics-panel');
+                if (biomechanicsPanel) {
+                    biomechanicsPanel.style.display = 'none';
+                }
+
+                // Reset control buttons
+                const controls = document.getElementById('vision-controls');
+                if (controls) {
+                    controls.innerHTML = `
+                        <button class="control-btn active" onclick="setVisionMode('pose_detection')" aria-pressed="true">Pose Detection</button>
+                        <button class="control-btn" onclick="setVisionMode('form_analysis')" aria-pressed="false">Form Analysis</button>
+                        <button class="control-btn" onclick="setVisionMode('character_read')" aria-pressed="false">Character Read</button>
+                    `;
+                }
+
+                visionActive = false;
+            } catch (error) {
+                console.error('Error stopping vision AI:', error);
             }
-
-            video.style.display = 'none';
-            document.querySelector('.vision-placeholder').style.display = 'block';
-            document.getElementById('metrics-overlay').style.display = 'none';
-            document.getElementById('biomechanics-panel').style.display = 'none';
-
-            // Reset control buttons
-            const controls = document.getElementById('vision-controls');
-            controls.innerHTML = `
-                <button class="control-btn active" onclick="setVisionMode('pose_detection')">Pose Detection</button>
-                <button class="control-btn" onclick="setVisionMode('form_analysis')">Form Analysis</button>
-                <button class="control-btn" onclick="setVisionMode('character_read')">Character Read</button>
-            `;
-
-            visionActive = false;
         }
 
         function setVisionMode(mode) {
-            // Update button states
-            document.querySelectorAll('#vision-controls .control-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            try {
+                // Update button states
+                const buttons = document.querySelectorAll('#vision-controls .control-btn');
+                buttons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+                
+                if (event && event.target) {
+                    event.target.classList.add('active');
+                    event.target.setAttribute('aria-pressed', 'true');
+                }
+
+                // Update mode-specific UI if needed
+                console.log(`Vision mode switched to: ${mode}`);
+            } catch (error) {
+                console.error('Error setting vision mode:', error);
+            }
         }
 
         // Sport switching
         function switchSport(sport) {
-            currentSport = sport;
+            try {
+                if (!SPORTS_DATA[sport]) {
+                    console.error(`Invalid sport: ${sport}`);
+                    return;
+                }
 
-            // Update nav pills
-            document.querySelectorAll('.nav-pill').forEach(pill => pill.classList.remove('active'));
-            event.target.classList.add('active');
+                currentSport = sport;
 
-            updateContent();
+                // Update nav pills
+                const navPills = document.querySelectorAll('.nav-pill');
+                navPills.forEach(pill => {
+                    pill.classList.remove('active');
+                    pill.setAttribute('aria-selected', 'false');
+                    pill.removeAttribute('aria-current');
+                });
+                
+                if (event && event.target) {
+                    event.target.classList.add('active');
+                    event.target.setAttribute('aria-selected', 'true');
+                    event.target.setAttribute('aria-current', 'page');
+                }
+
+                updateContent();
+            } catch (error) {
+                console.error('Error switching sport:', error);
+            }
         }
 
         function updateContent() {
-            const data = SPORTS_DATA[currentSport];
+            try {
+                const data = SPORTS_DATA[currentSport];
+                if (!data) {
+                    console.error(`No data found for sport: ${currentSport}`);
+                    return;
+                }
 
-            // Update live scores
-            updateLiveScores(data.scores);
+                // Update live scores
+                if (data.scores) {
+                    updateLiveScores(data.scores);
+                }
 
-            // Update standings
-            updateStandings(data.standings);
+                // Update standings
+                if (data.standings) {
+                    updateStandings(data.standings);
+                }
 
-            // Update top players
-            updateTopPlayers(data.topPlayers);
+                // Update top players
+                if (data.topPlayers) {
+                    updateTopPlayers(data.topPlayers);
+                }
 
-            // Update stats
-            if (data.standings.length > 0) {
-                const topTeam = data.standings[0];
-                document.getElementById('winPct').textContent = topTeam.pct.toFixed(3);
-                document.getElementById('teamRank').textContent = topTeam.rank + getSuffix(topTeam.rank);
-                document.getElementById('streak').textContent = topTeam.streak;
+                // Update stats
+                if (data.standings && data.standings.length > 0) {
+                    const topTeam = data.standings[0];
+                    const winPctElement = document.getElementById('winPct');
+                    const teamRankElement = document.getElementById('teamRank');
+                    const streakElement = document.getElementById('streak');
+                    
+                    if (winPctElement) {
+                        winPctElement.textContent = topTeam.pct.toFixed(3);
+                        winPctElement.setAttribute('aria-label', `${topTeam.pct.toFixed(1)} percent win rate`);
+                    }
+                    if (teamRankElement) {
+                        teamRankElement.textContent = topTeam.rank + getSuffix(topTeam.rank);
+                        teamRankElement.setAttribute('aria-label', `${topTeam.rank}${getSuffix(topTeam.rank)} place`);
+                    }
+                    if (streakElement) {
+                        streakElement.textContent = topTeam.streak;
+                        streakElement.setAttribute('aria-label', `Current streak: ${topTeam.streak}`);
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating content:', error);
             }
         }
 
         function updateLiveScores(scores) {
-            const container = document.getElementById('live-scores');
-            container.innerHTML = scores.map(game => `
-                <div class="score-item">
-                    <div class="team-info">
-                        <span class="team-logo">${game.away.logo}</span>
-                        <div>
-                            <div class="team-name">${game.away.name}</div>
-                            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${game.away.city}</div>
+            try {
+                const container = document.getElementById('live-scores');
+                if (!container || !scores || !Array.isArray(scores)) {
+                    console.error('Invalid scores data or container not found');
+                    return;
+                }
+
+                container.innerHTML = scores.map((game, index) => `
+                    <div class="score-item" role="listitem" aria-label="Game ${index + 1}: ${game.away.name} vs ${game.home.name}">
+                        <div class="team-info">
+                            <span class="team-logo" aria-hidden="true">${game.away.logo}</span>
+                            <div>
+                                <div class="team-name">${game.away.name}</div>
+                                <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${game.away.city}</div>
+                            </div>
+                        </div>
+                        <div class="score" aria-label="Away team score: ${game.away.score}">${game.away.score}</div>
+                        <div style="text-align: center; color: rgba(255,255,255,0.8);">
+                            <div style="margin-bottom: 0.5rem;" aria-hidden="true">@</div>
+                            <div style="font-size: 0.875rem;">${game.inning || game.quarter}</div>
+                            ${game.isLive ? '<div class="live-indicator" aria-label="Live game">LIVE</div>' : ''}
+                        </div>
+                        <div class="score" aria-label="Home team score: ${game.home.score}">${game.home.score}</div>
+                        <div class="team-info">
+                            <span class="team-logo" aria-hidden="true">${game.home.logo}</span>
+                            <div>
+                                <div class="team-name">${game.home.name}</div>
+                                <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${game.home.city}</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="score">${game.away.score}</div>
-                    <div style="text-align: center; color: rgba(255,255,255,0.8);">
-                        <div style="margin-bottom: 0.5rem;">@</div>
-                        <div style="font-size: 0.875rem;">${game.inning || game.quarter}</div>
-                        ${game.isLive ? '<div class="live-indicator">LIVE</div>' : ''}
-                    </div>
-                    <div class="score">${game.home.score}</div>
-                    <div class="team-info">
-                        <span class="team-logo">${game.home.logo}</span>
-                        <div>
-                            <div class="team-name">${game.home.name}</div>
-                            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${game.home.city}</div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (error) {
+                console.error('Error updating live scores:', error);
+            }
         }
 
         function updateStandings(standings) {
-            const tbody = document.getElementById('standings-body');
-            tbody.innerHTML = standings.map(team => {
-                const streakColor = team.streak.startsWith('W') ? '#00FF41' : '#DC143C';
-                return `
-                    <tr>
-                        <td style="font-weight: 900; color: #FFA500; font-size: 1.25rem;">${team.rank}</td>
-                        <td>${team.team}</td>
-                        <td>${team.wins}</td>
-                        <td>${team.losses}</td>
-                        <td>${team.pct.toFixed(3)}</td>
-                        <td>${team.gb}</td>
-                        <td style="color: ${streakColor}; font-weight: 600;">${team.streak}</td>
-                    </tr>
-                `;
-            }).join('');
+            try {
+                const tbody = document.getElementById('standings-body');
+                if (!tbody || !standings || !Array.isArray(standings)) {
+                    console.error('Invalid standings data or container not found');
+                    return;
+                }
+
+                tbody.innerHTML = standings.map((team, index) => {
+                    const streakColor = team.streak.startsWith('W') ? '#00FF41' : '#DC143C';
+                    const streakDescription = team.streak.startsWith('W') ? 'Winning streak' : 'Losing streak';
+                    return `
+                        <tr role="row" aria-label="Team ${team.team} ranked ${team.rank}">
+                            <td style="font-weight: 900; color: #FFA500; font-size: 1.25rem;" role="cell" aria-label="Rank ${team.rank}">${team.rank}</td>
+                            <td role="cell">${team.team}</td>
+                            <td role="cell" aria-label="${team.wins} wins">${team.wins}</td>
+                            <td role="cell" aria-label="${team.losses} losses">${team.losses}</td>
+                            <td role="cell" aria-label="Win percentage ${team.pct.toFixed(3)}">${team.pct.toFixed(3)}</td>
+                            <td role="cell" aria-label="${team.gb === '-' ? 'First place' : team.gb + ' games behind'}">${team.gb}</td>
+                            <td style="color: ${streakColor}; font-weight: 600;" role="cell" aria-label="${streakDescription}: ${team.streak}">${team.streak}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error updating standings:', error);
+            }
         }
 
         function updateTopPlayers(players) {
-            const container = document.getElementById('top-players');
-            container.innerHTML = players.map(player => `
-                <div class="player-card">
-                    <div class="player-avatar">${player.name.split(' ').map(n => n[0]).join('')}</div>
-                    <div class="player-info">
-                        <div class="player-name">${player.name}</div>
-                        <div class="player-position">${player.position} • ${player.team}</div>
+            try {
+                const container = document.getElementById('top-players');
+                if (!container || !players || !Array.isArray(players)) {
+                    console.error('Invalid players data or container not found');
+                    return;
+                }
+
+                container.innerHTML = players.map((player, index) => `
+                    <div class="player-card" role="listitem" aria-label="Player ${index + 1}: ${player.name}">
+                        <div class="player-avatar" aria-hidden="true">${player.name.split(' ').map(n => n[0]).join('')}</div>
+                        <div class="player-info">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-position">${player.position} • ${player.team}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="player-stat" aria-label="${player.stat} ${player.statType}">${player.stat}</div>
+                            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${player.statType}</div>
+                        </div>
                     </div>
-                    <div style="text-align: right;">
-                        <div class="player-stat">${player.stat}</div>
-                        <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">${player.statType}</div>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (error) {
+                console.error('Error updating top players:', error);
+            }
         }
 
         function getSuffix(num) {
@@ -995,26 +1299,68 @@
 
         // Initialize app
         window.addEventListener('load', () => {
-            initParticles();
-            updateContent();
+            try {
+                initParticles();
+                updateContent();
 
-            // Generate heat map points
-            const heatmap = document.getElementById('performance-heatmap');
-            for (let i = 0; i < 30; i++) {
-                const point = document.createElement('div');
-                point.className = 'heat-point';
-                point.style.left = Math.random() * 100 + '%';
-                point.style.top = Math.random() * 100 + '%';
-                const intensity = Math.random();
-                point.style.backgroundColor = `hsl(${20 - intensity * 20}, 100%, ${50 + intensity * 30}%)`;
-                heatmap.appendChild(point);
+                // Generate heat map points
+                const heatmap = document.getElementById('performance-heatmap');
+                if (heatmap) {
+                    for (let i = 0; i < 30; i++) {
+                        const point = document.createElement('div');
+                        point.className = 'heat-point';
+                        point.style.left = Math.random() * 100 + '%';
+                        point.style.top = Math.random() * 100 + '%';
+                        const intensity = Math.random();
+                        point.style.backgroundColor = `hsl(${20 - intensity * 20}, 100%, ${50 + intensity * 30}%)`;
+                        point.setAttribute('aria-hidden', 'true');
+                        heatmap.appendChild(point);
+                    }
+                }
+
+                // Add keyboard navigation support
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        document.body.classList.add('keyboard-navigation');
+                    }
+                });
+
+                document.addEventListener('mousedown', () => {
+                    document.body.classList.remove('keyboard-navigation');
+                });
+
+            } catch (error) {
+                console.error('Error initializing app:', error);
             }
         });
 
         window.addEventListener('resize', () => {
-            const canvas = document.getElementById('heroCanvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            try {
+                const canvas = document.getElementById('heroCanvas');
+                if (canvas) {
+                    const dpr = window.devicePixelRatio || 1;
+                    canvas.width = window.innerWidth * dpr;
+                    canvas.height = window.innerHeight * dpr;
+                    canvas.style.width = window.innerWidth + 'px';
+                    canvas.style.height = window.innerHeight + 'px';
+                    
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        ctx.scale(dpr, dpr);
+                    }
+                }
+            } catch (error) {
+                console.error('Error handling resize:', error);
+            }
+        });
+
+        // Add error boundary for unhandled errors
+        window.addEventListener('error', (event) => {
+            console.error('Unhandled error:', event.error);
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
         });
     </script>
 </body>
