@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-BSI Unified v4.1 — One‑Shot Monorepo Spec (Full Stack: Frontend + Edge Backend + Data)
+    <script type="text/plain" id="bsi-one-shot-prompt" data-version="v4.1" data-updated="2025-09-26T00:00:00-05:00">
+BSI Unified v4.1 — One‑Shot Monorepo Spec (Full Stack: Frontend + Edge Backend)
 Date/Zone: 2025‑09‑26 • America/Chicago (CDT)
 
-ROLE
-You are an expert full‑stack engineer. Generate a complete, runnable monorepo (~100k LoC target) for Blaze Sports Intel (BSI) that integrates the existing `index.html` UI (IDs and structure must be preserved for hydration) and adds typed data connectors, analytics, on‑device Vision AI, tests, Storybook, CI, **and Cloudflare Pages Functions with data stores (D1/KV/R2)**. Produce concrete files with working code — no TODOs or placeholders.
+ROLE: You are an expert full‑stack engineer. Generate a complete, runnable monorepo (~100k LoC target) for Blaze Sports Intel (BSI) that integrates the existing `index.html` UI (IDs and structure must be preserved for hydration) and adds typed data connectors, analytics, on‑device Vision AI, tests, Storybook, CI, and Cloudflare Pages Functions (Edge API). Produce concrete files with working code — no TODOs or placeholders.
 
 NON‑NEGOTIABLE GUARDRAILS (Brand & Infra)
 1) Domain: blazesportsintel.com (canonical, **extensionless** URLs; assume 301 from *.html).
@@ -15,52 +15,38 @@ NON‑NEGOTIABLE GUARDRAILS (Brand & Infra)
 5) Tone: direct, neutral, professional. No hype.
 6) Secrets: **Do not** hardcode keys. Use env stubs; redact logs.
 
-DATA LAYER & STORES (Edge‑native)
-- **D1 (primary persistent)** — small tables for events, cache metadata, and analytics summaries.
-- **KV (ephemeral cache)** — per‑endpoint response cache keyed by URL + ETag.
-- **R2 (media/data)** — static datasets, fixture packs, and screenshots; CORS enabled for site.
-- **Optional: Hyperdrive Postgres** — only as a feature‑flagged module for heavier analytics; off by default. No direct server.
-
-Provide: `wrangler.toml` with bindings (`D1: BSI_DB`, `KV: BSI_CACHE`, `R2: BSI_MEDIA`), env examples, and local dev config.
-
 TARGET ARCHITECTURE (PNPM workspaces)
 .
 ├─ apps/
 │  ├─ web/                      # Vite app; hydrates islands into existing index.html
-│  │  ├─ public/                # favicons, manifest, robots
+│  │  ├─ public/                # static assets (favicons, manifest, robots)
 │  │  ├─ src/
 │  │  │  ├─ islands/            # React 18 islands: LiveScores, Standings, TopPerformers, DataIntelHub, VisionPanel
 │  │  │  ├─ styles/             # consumes packages/design tokens & utilities
 │  │  │  ├─ routes/             # extensionless route helpers + prefetch
 │  │  │  └─ main.tsx
-│  │  └─ index.html             # local preview only; production shell is the user’s file
+│  │  └─ index.html             # copied from provided baseline for local preview only; **real** production shell remains the user’s file
 │  ├─ docs/                     # Docusaurus/MDX docs + ADRs
 │  └─ playground/               # minimal fixture app for connectors/analytics
 ├─ functions/                   # Cloudflare Pages Functions (Edge API)
 │  ├─ api/
 │  │  ├─ scores/[league].ts     # GET /api/scores/:league → normalized schema w/ cache & ETag
 │  │  ├─ standings/[league].ts  # GET /api/standings/:league
-│  │  ├─ top/[league].ts        # GET /api/top/:league
-│  │  └─ events/ingest.ts       # POST analytics events → D1; rate‑limited; CORS restricted
-│  ├─ _middleware.ts            # CORS, security headers, response compression
-│  └─ _worker.types.d.ts        # env bindings typing
+│  │  └─ top/[league].ts        # GET /api/top/:league
+│  └─ _middleware.ts            # CORS, security headers, response compression
 ├─ packages/
 │  ├─ design/                   # tokens (CSS vars, TS), utilities, a11y helpers, high‑contrast toggle
 │  ├─ contracts/                # zod + TS types; Result<Ok, Err>, guards, codecs
 │  ├─ connectors/               # espn/scoreboard adapters → normalized models; backoff; cache TTL; fixtures
 │  ├─ analytics/                # Elo/PI, Monte Carlo (seeded), sensitivity, heatmaps
-│  ├─ vision/                   # MediaPipe wrappers, smoothing, biomech features, scoring; on‑device fallback canvas
+│  ├─ vision/                   # MediaPipe wrappers, smoothing, biomech features, scoring; on‑device only fallback canvas
 │  ├─ observability/            # RUM/perf marks, error boundaries, structured logs (PII‑safe)
 │  ├─ utils/                    # fetch wrappers (ETag/304), retry jitter, time, math, memoize
 │  └─ fixtures/                 # league fixtures for offline/dev & tests
-├─ db/
-│  ├─ migrations/               # D1 SQL migrations
-│  └─ seed/                     # optional seed data for demos
 ├─ .github/workflows/           # CI: typecheck, lint, test, axe, storybook, e2e
 ├─ package.json                 # workspaces + scripts
 ├─ pnpm-workspace.yaml
-├─ tsconfig.base.json
-└─ wrangler.toml                # bindings + dev config
+└─ tsconfig.base.json
 
 EXISTING DOM CONTRACTS TO HYDRATE (DO NOT BREAK)
 - #live-scores, #standings-body, #top-players, #video-feed, #pose-overlay, #metrics-overlay, #biomechanics-panel
@@ -78,58 +64,35 @@ B) packages/contracts
    • Runtime guards and type‑narrowing helpers.
 
 C) packages/connectors (Edge friendly)
-   • espn/scoreboard.fetch.ts: fetch with ETag/If‑Modified‑Since, backoff, Cache API integration, KV layer.
+   • espn/scoreboard.fetch.ts: fetch with ETag/If‑Modified‑Since, backoff, Cache API integration.
    • espn/scoreboard.normalize.ts: map ESPN payload → contracts.* types; fixture parity.
    • index.ts: `getScores(league)`, `getStandings(league)`, `getTop(league)` with fallback to fixtures.
    • tests: MLB happy path; offline fixtures; 304 path; invalid JSON; schema drift guard.
 
 D) functions/api/* (Cloudflare Pages Functions)
-   • Validate `league` param, call connectors, set cache headers (`public, max-age=0, s-maxage=120`), propagate ETag/304.
-   • Security headers: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: no-referrer`, `Strict-Transport-Security`, minimal `Content-Security-Policy` safe for islands.
-   • CORS: allow GET from blazesportsintel.com only; preflight; block credentials.
-   • `/api/events/ingest`: accept `{type, ts, meta}`; validate; write to D1; return `{ok:true}`.
+   • Validate `league` param, call connectors, set cache headers (s‑maxage), propagate ETag/304.
+   • Security headers: no‑sniff, frame‑deny (except sameorigin if needed), referrer‑policy, strict‑transport; CORS allow GET from site only.
 
-E) db/migrations (D1)
-   • 0001_init.sql
-     ```sql
-     CREATE TABLE IF NOT EXISTS events (
-       id INTEGER PRIMARY KEY AUTOINCREMENT,
-       type TEXT NOT NULL,
-       ts   TEXT NOT NULL,
-       meta TEXT NOT NULL  -- JSON string (PII‑redacted)
-     );
-     CREATE TABLE IF NOT EXISTS etag_cache (
-       key TEXT PRIMARY KEY,
-       etag TEXT,
-       updated_at TEXT NOT NULL
-     );
-     CREATE TABLE IF NOT EXISTS sim_runs (
-       id INTEGER PRIMARY KEY AUTOINCREMENT,
-       league TEXT NOT NULL,
-       params TEXT NOT NULL,
-       results TEXT NOT NULL,
-       created_at TEXT NOT NULL
-     );
-     CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
-     ```
-
-F) packages/analytics
+E) packages/analytics
    • Elo/PI with K‑factor schedule; Monte Carlo (seeded) for playoff odds; sensitivity to home/away.
-   • Heatmaps (2D binning) for baseball zones & basketball shot charts; route trees for football (typed models).
-   • Explainability traces: inputs → transforms → outputs (export helpers).
+   • Heatmaps (2D binning) for baseball zones & basketball shot charts; route trees for football (placeholder data + typed models).
+   • Explainability traces: inputs → transforms → outputs.
 
-G) packages/vision
+F) packages/vision
    • MediaPipe Pose/Hands/Face mesh loaders w/ wasm fallbacks; exponential smoothing; angle/tempo/weight‑transfer features.
    • Form scoring (0–100), confidence calibration; sandboxed Worker for CPU paths; **off by default** until user action.
    • Canvas fallback that mirrors current in‑page stub visuals.
 
-H) apps/web
+G) apps/web
    • islands/LiveScores.tsx: hydrates #live-scores → list items; league from `currentSport` global or default 'mlb'.
    • islands/Standings.tsx → table body #standings-body.
    • islands/TopPerformers.tsx → #top-players.
    • islands/DataIntelHub.tsx → autodetect dataset script (as in page) and render.
    • islands/VisionPanel.tsx → binds to #video-feed/#pose-overlay/#metrics-overlay with on‑device gating.
    • styles: import tokens.css; respect high‑contrast toggle from page.
+
+H) apps/docs
+   • MDX: “Add a Sport”, “Add a Metric”, “Connect a New Source”, ADRs for: hosting, data contracts, privacy gates.
 
 I) Observability & QA
    • RUM: LCP/CLS/INP + perf marks; hook into islands mount; console redaction.
@@ -139,20 +102,18 @@ I) Observability & QA
 J) CI
    • GitHub Actions: pnpm setup; typecheck, lint, unit, e2e (headless), axe; build Storybook; upload artifacts.
 
-EDGE API CONTRACTS (JSON)
-- Success: `{ ok: true, data: <typed>, cached: boolean, etag?: string }`
-- Error: `{ ok: false, error: { code, message, retriable } }`
+EDGE API CONTRACT (JSON)
+{ ok: true, data: …, cached: boolean, etag?: string } | { ok: false, error: { code, message, retriable } }
 
 PERF & CACHING
-- Use Cache API at Edge + KV as a secondary cache. Respect upstream ETag; short `s-maxage` for live.
-- Normalize all dates to ISO; UI presents America/Chicago explicitly.
+- Use Cache API at Edge; set `Cache-Control: public, max-age=0, s-maxage=120` for live endpoints.
+- Normalize all dates to ISO with timezone assumptions explicit in docs (America/Chicago for UI presentation).
 
 SECURITY & PRIVACY
-- No secrets in repo; env placeholders only. Strip PII from logs. Vision runs **on‑device** only after consent click.
-- Minimal CSP compatible with islands hydration; document in docs.
+- No secrets in repo; env placeholders only. Strip PII from logs. Vision runs **on‑device** only after click.
 
 ACCESSIBILITY & UX
-- Keyboard first (roving tabindex on pills). Aria labels on islands. High‑contrast preserved.
+- Keyboard first (tab order, roving tabindex on pills). Aria labels on islands. High‑contrast mode preserved.
 
 LINE‑BUDGET PLAN (~100k LoC, meaningful)
 1) Design system & utilities .......... 12–15k
@@ -172,28 +133,11 @@ CODING STANDARDS
 - TypeScript strict; zod for runtime validation. No implicit anys. Named exports. Small modules. JSDoc.
 - Lint: eslint+prettier. Commit hooks: typecheck, lint, unit.
 
-RUN & BUILD SCRIPTS (root)
+RUN & BUILD SCRIPTS (package.json root)
 - `pnpm i`
 - `pnpm -w build` (build all)
-- `pnpm -w dev`   (web + functions local)
+- `pnpm -w dev` (web + functions local)
 - `pnpm test` / `pnpm e2e` / `pnpm storybook`
-
-WRANGLER CONFIG (example)
-- `wrangler.toml` with:
-  ```toml
-  name = "bsi-unified"
-  compatibility_date = "2025-09-26"
-  [[d1_databases]]
-  binding = "BSI_DB"
-  database_name = "bsi-db"
-  database_id = "local-bsi-db"
-  [[kv_namespaces]]
-  binding = "BSI_CACHE"
-  id = "local-bsi-cache"
-  [[r2_buckets]]
-  binding = "BSI_MEDIA"
-  bucket_name = "bsi-media"
-  ```
 
 MIGRATING THE EXISTING PAGE
 - DO NOT change the production HTML shell (user’s file). Islands should mount into existing IDs.
@@ -208,9 +152,8 @@ OUTPUT REQUIREMENTS (WHAT TO PRINT NOW)
 6) Short README at repo root.
 
 CONTINUATION POLICY (token safety)
-- If near token limit, STOP after finishing MLB connector tests and the first D1 migration.
-- Print this baton exactly:
-  BATON→ Continue with: “Add NFL/NBA/Track connectors and wire league switching across islands; finalize KV caching; add observability hooks and Storybook stories; then implement `/api/events/ingest` tests and docs.”
+- If near token limit, STOP after finishing MLB connector tests. Print this baton exactly:
+  BATON→ Continue with: “Add NFL/NBA/Track connectors and wire league switching across islands; then add observability hooks and Storybook stories.”
 - The next run must resume from the baton without requiring any prior context.
 
 BEGIN NOW.
