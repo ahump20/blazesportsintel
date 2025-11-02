@@ -1,0 +1,433 @@
+// Blaze Sports Intelligence Database Schema
+// Production-grade schema for sports analytics platform
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER MANAGEMENT & AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String?
+  role          UserRole  @default(USER)
+  isActive      Boolean   @default(true)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  // Relations
+  sessions      Session[]
+  apiKeys       ApiKey[]
+  favorites     Favorite[]
+
+  @@index([email])
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  ANALYST
+  COACH
+  RECRUITER
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  key         String   @unique
+  permissions Json     @default("{}")
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([key])
+  @@map("api_keys")
+}
+
+// ============================================
+// LEAGUES & ORGANIZATIONS
+// ============================================
+
+model League {
+  id          String     @id @default(cuid())
+  name        String
+  shortName   String?
+  sport       Sport
+  level       LeagueLevel
+  country     String     @default("USA")
+  isActive    Boolean    @default(true)
+  logoUrl     String?
+  website     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  teams       Team[]
+  games       Game[]
+  seasons     Season[]
+
+  @@unique([name, sport, level])
+  @@index([sport])
+  @@index([level])
+  @@map("leagues")
+}
+
+enum Sport {
+  FOOTBALL
+  BASEBALL
+  BASKETBALL
+  TRACK_FIELD
+  SOCCER
+  HOCKEY
+  VOLLEYBALL
+  SOFTBALL
+}
+
+enum LeagueLevel {
+  YOUTH
+  HIGH_SCHOOL
+  COLLEGE_D1
+  COLLEGE_D2
+  COLLEGE_D3
+  PROFESSIONAL
+  SEMI_PRO
+}
+
+model Season {
+  id        String   @id @default(cuid())
+  leagueId  String
+  year      Int
+  name      String   // e.g., "2024-2025", "Fall 2024"
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  games  Game[]
+
+  @@unique([leagueId, year, name])
+  @@index([leagueId])
+  @@map("seasons")
+}
+
+// ============================================
+// TEAMS & PLAYERS
+// ============================================
+
+model Team {
+  id           String   @id @default(cuid())
+  leagueId     String
+  name         String
+  shortName    String?
+  city         String?
+  state        String?
+  mascot       String?
+  colors       String[] @default([])
+  logoUrl      String?
+  stadiumName  String?
+  website      String?
+  foundedYear  Int?
+  isActive     Boolean  @default(true)
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  league       League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  players      Player[]
+  homeGames    Game[]   @relation("HomeTeam")
+  awayGames    Game[]   @relation("AwayTeam")
+
+  @@unique([leagueId, name])
+  @@index([leagueId])
+  @@map("teams")
+}
+
+model Player {
+  id              String    @id @default(cuid())
+  teamId          String?
+  firstName       String
+  lastName        String
+  fullName        String
+  jerseyNumber    Int?
+  position        String?
+  height          Float?    // inches
+  weight          Float?    // pounds
+  birthDate       DateTime?
+  hometown        String?
+  highSchool      String?
+  college         String?
+  yearInSchool    String?   // Freshman, Sophomore, etc.
+  profileImageUrl String?
+  isActive        Boolean   @default(true)
+  metadata        Json      @default("{}")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  team            Team?           @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  stats           PlayerStat[]
+  analytics       PlayerAnalytics[]
+  recruiting      RecruitingProfile?
+  visionAnalysis  VisionAnalysis[]
+
+  @@index([teamId])
+  @@index([lastName, firstName])
+  @@map("players")
+}
+
+// ============================================
+// GAMES & EVENTS
+// ============================================
+
+model Game {
+  id             String    @id @default(cuid())
+  leagueId       String
+  seasonId       String?
+  homeTeamId     String
+  awayTeamId     String
+  scheduledAt    DateTime
+  startedAt      DateTime?
+  completedAt    DateTime?
+  venue          String?
+  status         GameStatus @default(SCHEDULED)
+  homeScore      Int?
+  awayScore      Int?
+  attendance     Int?
+  weather        Json?
+  metadata       Json      @default("{}")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  league         League    @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  season         Season?   @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  homeTeam       Team      @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam       Team      @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  stats          PlayerStat[]
+  events         GameEvent[]
+
+  @@index([leagueId])
+  @@index([seasonId])
+  @@index([homeTeamId])
+  @@index([awayTeamId])
+  @@index([scheduledAt])
+  @@map("games")
+}
+
+enum GameStatus {
+  SCHEDULED
+  LIVE
+  HALFTIME
+  FINAL
+  POSTPONED
+  CANCELLED
+}
+
+model GameEvent {
+  id          String   @id @default(cuid())
+  gameId      String
+  eventType   String   // touchdown, home_run, basket, etc.
+  timestamp   DateTime
+  period      String?  // quarter, inning, half
+  timeInPeriod String? // game clock
+  description String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId])
+  @@index([timestamp])
+  @@map("game_events")
+}
+
+// ============================================
+// STATISTICS & ANALYTICS
+// ============================================
+
+model PlayerStat {
+  id        String   @id @default(cuid())
+  playerId  String
+  gameId    String?
+  season    String?  // e.g., "2024"
+  statType  String   // points, yards, hits, etc.
+  value     Float
+  metadata  Json     @default("{}")
+  recordedAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  game   Game?  @relation(fields: [gameId], references: [id], onDelete: SetNull)
+
+  @@index([playerId])
+  @@index([gameId])
+  @@index([season])
+  @@map("player_stats")
+}
+
+model PlayerAnalytics {
+  id               String   @id @default(cuid())
+  playerId         String
+  analyticsType    String   // nil_valuation, character_score, readiness, etc.
+  value            Float
+  confidence       Float?   @default(0.0)
+  computedAt       DateTime @default(now())
+  validUntil       DateTime?
+  metadata         Json     @default("{}")
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([analyticsType])
+  @@map("player_analytics")
+}
+
+// ============================================
+// RECRUITING
+// ============================================
+
+model RecruitingProfile {
+  id              String   @id @default(cuid())
+  playerId        String   @unique
+  recruitingClass Int      // graduation year
+  stars           Int?     @default(0)
+  ranking         Int?
+  position        String
+  height          Float?
+  weight          Float?
+  fortyYardDash   Float?
+  verticalJump    Float?
+  broadJump       Float?
+  offers          Json     @default("[]")
+  committedTo     String?
+  committedAt     DateTime?
+  socialMedia     Json     @default("{}")
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([recruitingClass])
+  @@index([position])
+  @@map("recruiting_profiles")
+}
+
+// ============================================
+// VISION AI & BIOMECHANICS
+// ============================================
+
+model VisionAnalysis {
+  id                String   @id @default(cuid())
+  playerId          String?
+  sessionId         String
+  analysisType      String   // pose, biomechanics, character
+  videoUrl          String?
+  frameCount        Int
+  keypoints         Json     // MediaPipe pose data
+  metrics           Json     // Calculated metrics
+  characterScore    Float?
+  recommendations   Json     @default("[]")
+  processingTime    Int      // milliseconds
+  createdAt         DateTime @default(now())
+
+  player Player? @relation(fields: [playerId], references: [id], onDelete: SetNull)
+
+  @@index([playerId])
+  @@index([sessionId])
+  @@index([createdAt])
+  @@map("vision_analyses")
+}
+
+// ============================================
+// FEATURES & COMPUTED DATA
+// ============================================
+
+model ComputedFeature {
+  id          String   @id @default(cuid())
+  entityType  String   // player, team, game
+  entityId    String
+  featureName String
+  value       Float
+  computedAt  DateTime @default(now())
+  expiresAt   DateTime?
+  metadata    Json     @default("{}")
+
+  @@unique([entityType, entityId, featureName])
+  @@index([entityType, entityId])
+  @@index([featureName])
+  @@map("computed_features")
+}
+
+// ============================================
+// USER FAVORITES & PREFERENCES
+// ============================================
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  entityType String   // team, player, league
+  entityId   String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, entityType, entityId])
+  @@index([userId])
+  @@map("favorites")
+}
+
+// ============================================
+// AUDIT & LOGGING
+// ============================================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entityType String?
+  entityId  String?
+  metadata  Json     @default("{}")
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
