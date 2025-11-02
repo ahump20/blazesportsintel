@@ -15,9 +15,9 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.0",
     "@blazesportsintel/schemas": "^1.0.0",
     "@blazesportsintel/sports-data": "^1.0.0",
-    "@apollo/server": "^4.9.0",
     "@fastify/cors": "^9.0.0",
     "@fastify/helmet": "^11.1.0",
     "@fastify/rate-limit": "^9.1.0",
@@ -40,6 +40,6 @@
     "ts-jest": "^29.1.0",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
-    "wrangler": "^3.28.0"
+    "wrangler": "^4.45.3"
   }
 }
