@@ -33,18 +33,23 @@ preview_bucket_name = "blazesportsintel-youth-preview"
 # KV Namespaces for Caching
 [[kv_namespaces]]
 binding = "SPORTS_DATA"
-id = "blaze-sports-kv"
-preview_id = "blaze-sports-kv-preview"
+id = "c912d983175e4a1480225cfd57ed3434"
+preview_id = "c912d983175e4a1480225cfd57ed3434"
+
+[[kv_namespaces]]
+binding = "SPORTS_CACHE"
+id = "c912d983175e4a1480225cfd57ed3434"
+preview_id = "c912d983175e4a1480225cfd57ed3434"
 
 [[kv_namespaces]]
 binding = "ANALYTICS_CACHE"
-id = "blaze-analytics-cache"
-preview_id = "blaze-analytics-cache-preview"
+id = "30fde31341b147f8aa5c0817aa34c9e0"
+preview_id = "30fde31341b147f8aa5c0817aa34c9e0"
 
 [[kv_namespaces]]
 binding = "VISION_AI_CACHE"
-id = "blaze-vision-cache"
-preview_id = "blaze-vision-cache-preview"
+id = "2bb1b1aebb164d5aad9b2333704cf5c4"
+preview_id = "2bb1b1aebb164d5aad9b2333704cf5c4"
 
 # Durable Objects for Real-time Features
 [[durable_objects.bindings]]

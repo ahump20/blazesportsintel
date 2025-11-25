@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Baseball - Blaze Sports Intel</title>
+    <meta name="description" content="The most comprehensive college baseball coverage. D1 rankings, schedules, player stats, and live game tracking from Blaze Sports Intel.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: rgba(0,0,0,0.9);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #FF4500;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF4500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #FF4500; }
+
+        .hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(196, 30, 58, 0.2), transparent);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFD700, #FF4500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FFA500;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .grid { display: grid; gap: 2rem; margin-bottom: 3rem; }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+        .card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(42, 42, 42, 0.95));
+            border: 1px solid rgba(255, 69, 0, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 69, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(255, 69, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-title { font-size: 1.5rem; font-weight: 700; color: #FFA500; }
+        .card-icon { font-size: 2rem; }
+
+        .rankings-table { width: 100%; border-collapse: collapse; }
+        .rankings-table th {
+            background: linear-gradient(135deg, #C41E3A, #FF4500);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .rankings-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .rankings-table tr:hover { background: rgba(255, 69, 0, 0.1); }
+
+        .rank-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+        }
+
+        .rank-badge.top-5 { background: linear-gradient(135deg, #FFD700, #FF4500); }
+        .rank-badge.top-10 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); }
+
+        .conference-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .conference-tag.sec { background: rgba(30, 144, 255, 0.3); color: #1E90FF; }
+        .conference-tag.big12 { background: rgba(255, 69, 0, 0.3); color: #FF4500; }
+        .conference-tag.acc { background: rgba(0, 128, 128, 0.3); color: #20B2AA; }
+        .conference-tag.pac12 { background: rgba(128, 0, 128, 0.3); color: #DA70D6; }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #FF4500;
+        }
+
+        .game-teams { flex: 1; }
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .team-name { font-weight: 600; }
+        .team-score { font-size: 1.5rem; font-weight: 900; color: #39FF14; font-family: monospace; }
+
+        .game-info { text-align: right; }
+        .game-status { color: #FFA500; font-weight: 600; }
+        .game-venue { font-size: 0.875rem; color: rgba(255,255,255,0.6); }
+
+        .live-badge {
+            background: #dc143c;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .player-spotlight {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .player-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF4500, #FFD700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .player-details { flex: 1; }
+        .player-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .player-info { color: rgba(255,255,255,0.7); font-size: 0.875rem; }
+
+        .player-stats { display: flex; gap: 1.5rem; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 900; color: #39FF14; }
+        .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.6); text-transform: uppercase; }
+
+        .conference-standings { margin-bottom: 2rem; }
+        .conference-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .conference-name { font-size: 1.25rem; font-weight: 700; }
+
+        .footer {
+            background: rgba(0,0,0,0.9);
+            padding: 2rem;
+            text-align: center;
+            border-top: 2px solid #FF4500;
+            margin-top: 4rem;
+        }
+
+        .footer-text { color: rgba(255,255,255,0.6); }
+
+        .cta-banner {
+            background: linear-gradient(135deg, #C41E3A, #FF4500);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 20px;
+            margin: 3rem 0;
+        }
+
+        .cta-banner h3 { font-size: 1.75rem; margin-bottom: 1rem; }
+        .cta-banner p { color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #C41E3A;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 700;
+            transition: transform 0.3s;
+        }
+        .cta-btn:hover { transform: scale(1.05); }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .nav { flex-direction: column; gap: 1rem; }
+            .player-spotlight { flex-direction: column; text-align: center; }
+            .player-stats { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="/" class="nav-brand">BLAZE SPORTS INTEL</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/college-baseball">College Baseball</a>
+            <a href="#rankings">Rankings</a>
+            <a href="#games">Games</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>College Baseball</h1>
+        <p>The sport that mainstream media forgot. We're here to change that. Comprehensive D1 coverage, real-time scores, player tracking, and the analysis you won't find anywhere else.</p>
+    </section>
+
+    <main class="container">
+        <section id="rankings" class="card" style="margin-bottom: 3rem;">
+            <div class="card-header">
+                <h2 class="card-title">D1 Baseball Top 25</h2>
+                <span class="card-icon">🏆</span>
+            </div>
+            <table class="rankings-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Team</th>
+                        <th>Conference</th>
+                        <th>Record</th>
+                        <th>RPI</th>
+                        <th>Streak</th>
+                    </tr>
+                </thead>
+                <tbody id="rankings-body">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </section>
+
+        <div class="grid grid-2">
+            <section id="games" class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Today's Games</h2>
+                    <span class="card-icon">⚾</span>
+                </div>
+                <div id="games-list">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Player Spotlight</h2>
+                    <span class="card-icon">⭐</span>
+                </div>
+                <div id="player-spotlight">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </div>
+
+        <div class="cta-banner">
+            <h3>Why We're Here</h3>
+            <p>ESPN gives college baseball 30 seconds during SportsCenter. D1Baseball does great work, but there's so much more story to tell. From the 40-year family tradition of Longhorn football to understanding why certain programs consistently develop MLB talent—we're building the coverage college baseball deserves.</p>
+            <a href="/" class="cta-btn">Explore Full Platform</a>
+        </div>
+
+        <section class="card">
+            <div class="card-header">
+                <h2 class="card-title">Conference Standings</h2>
+                <span class="card-icon">📊</span>
+            </div>
+            <div id="conference-standings">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p class="footer-text">Born in Memphis. Rooted in Texas soil. Covering the sports that deserve better.</p>
+        <p class="footer-text" style="margin-top: 1rem;">&copy; 2025 Blaze Sports Intel</p>
+    </footer>
+
+    <script>
+        // College Baseball Data
+        const RANKINGS = [
+            { rank: 1, team: 'Texas Longhorns', conference: 'SEC', record: '45-15', rpi: '.612', streak: 'W6', conf: 'sec' },
+            { rank: 2, team: 'LSU Tigers', conference: 'SEC', record: '44-16', rpi: '.608', streak: 'W4', conf: 'sec' },
+            { rank: 3, team: 'Tennessee Volunteers', conference: 'SEC', record: '43-17', rpi: '.601', streak: 'W3', conf: 'sec' },
+            { rank: 4, team: 'Wake Forest Demon Deacons', conference: 'ACC', record: '42-18', rpi: '.595', streak: 'W5', conf: 'acc' },
+            { rank: 5, team: 'Florida Gators', conference: 'SEC', record: '41-19', rpi: '.590', streak: 'L1', conf: 'sec' },
+            { rank: 6, team: 'Virginia Cavaliers', conference: 'ACC', record: '40-18', rpi: '.585', streak: 'W2', conf: 'acc' },
+            { rank: 7, team: 'Stanford Cardinal', conference: 'ACC', record: '39-19', rpi: '.580', streak: 'W4', conf: 'acc' },
+            { rank: 8, team: 'Arkansas Razorbacks', conference: 'SEC', record: '38-20', rpi: '.575', streak: 'L2', conf: 'sec' },
+            { rank: 9, team: 'Vanderbilt Commodores', conference: 'SEC', record: '37-21', rpi: '.570', streak: 'W1', conf: 'sec' },
+            { rank: 10, team: 'TCU Horned Frogs', conference: 'Big 12', record: '36-22', rpi: '.565', streak: 'W3', conf: 'big12' },
+            { rank: 11, team: 'Texas A&M Aggies', conference: 'SEC', record: '35-23', rpi: '.560', streak: 'L1', conf: 'sec' },
+            { rank: 12, team: 'Oregon State Beavers', conference: 'Pac-12', record: '34-22', rpi: '.555', streak: 'W2', conf: 'pac12' },
+            { rank: 13, team: 'NC State Wolfpack', conference: 'ACC', record: '33-23', rpi: '.550', streak: 'W1', conf: 'acc' },
+            { rank: 14, team: 'Oklahoma State Cowboys', conference: 'Big 12', record: '32-24', rpi: '.545', streak: 'L3', conf: 'big12' },
+            { rank: 15, team: 'South Carolina Gamecocks', conference: 'SEC', record: '31-25', rpi: '.540', streak: 'W2', conf: 'sec' },
+        ];
+
+        const GAMES = [
+            { home: 'Texas', homeScore: 7, away: 'Texas A&M', awayScore: 4, status: 'Final', venue: 'UFCU Disch-Falk Field' },
+            { home: 'LSU', homeScore: 5, away: 'Ole Miss', awayScore: 3, status: 'Bot 8', venue: 'Alex Box Stadium', live: true },
+            { home: 'Tennessee', homeScore: 0, away: 'Vanderbilt', awayScore: 0, status: '7:00 PM CT', venue: 'Lindsey Nelson Stadium' },
+            { home: 'Florida', homeScore: 2, away: 'Georgia', awayScore: 1, status: 'Top 5', venue: 'Florida Ballpark', live: true },
+        ];
+
+        const PLAYERS = [
+            { name: 'Jace LaViolette', team: 'Texas A&M', position: 'OF', photo: 'JL', stats: { avg: '.342', hr: '18', rbi: '67' } },
+            { name: 'Dylan Crews', team: 'LSU', position: 'OF', photo: 'DC', stats: { avg: '.368', hr: '22', rbi: '71' } },
+            { name: 'Jacob Gonzalez', team: 'Ole Miss', position: 'SS', photo: 'JG', stats: { avg: '.355', hr: '15', rbi: '58' } },
+        ];
+
+        const CONFERENCES = [
+            {
+                name: 'SEC',
+                logo: '🏈',
+                teams: [
+                    { team: 'Texas', confRecord: '18-6', overall: '45-15' },
+                    { team: 'LSU', confRecord: '17-7', overall: '44-16' },
+                    { team: 'Tennessee', confRecord: '16-8', overall: '43-17' },
+                    { team: 'Florida', confRecord: '15-9', overall: '41-19' },
+                    { team: 'Arkansas', confRecord: '14-10', overall: '38-20' },
+                ]
+            },
+            {
+                name: 'Big 12',
+                logo: '🤠',
+                teams: [
+                    { team: 'TCU', confRecord: '14-4', overall: '36-22' },
+                    { team: 'Oklahoma State', confRecord: '12-6', overall: '32-24' },
+                    { team: 'Texas Tech', confRecord: '10-8', overall: '30-26' },
+                    { team: 'Baylor', confRecord: '8-10', overall: '28-28' },
+                ]
+            }
+        ];
+
+        function renderRankings() {
+            const tbody = document.getElementById('rankings-body');
+            tbody.innerHTML = RANKINGS.map(team => `
+                <tr>
+                    <td><span class="rank-badge ${team.rank <= 5 ? 'top-5' : team.rank <= 10 ? 'top-10' : ''}">${team.rank}</span></td>
+                    <td style="font-weight: 600;">${team.team}</td>
+                    <td><span class="conference-tag ${team.conf}">${team.conference}</span></td>
+                    <td>${team.record}</td>
+                    <td style="color: #FFD700; font-weight: 700;">${team.rpi}</td>
+                    <td style="color: ${team.streak.startsWith('W') ? '#39FF14' : '#dc143c'}; font-weight: 700;">${team.streak}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderGames() {
+            const container = document.getElementById('games-list');
+            container.innerHTML = GAMES.map(game => `
+                <div class="game-card">
+                    <div class="game-teams">
+                        <div class="team-row">
+                            <span class="team-name">${game.away}</span>
+                            <span class="team-score">${game.awayScore}</span>
+                        </div>
+                        <div class="team-row">
+                            <span class="team-name">${game.home}</span>
+                            <span class="team-score">${game.homeScore}</span>
+                        </div>
+                    </div>
+                    <div class="game-info">
+                        ${game.live ? '<span class="live-badge">LIVE</span>' : ''}
+                        <div class="game-status">${game.status}</div>
+                        <div class="game-venue">${game.venue}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPlayers() {
+            const container = document.getElementById('player-spotlight');
+            container.innerHTML = PLAYERS.map(player => `
+                <div class="player-spotlight">
+                    <div class="player-photo">${player.photo}</div>
+                    <div class="player-details">
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-info">${player.position} | ${player.team}</div>
+                    </div>
+                    <div class="player-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${player.stats.avg}</div>
+                            <div class="stat-label">AVG</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${player.stats.hr}</div>
+                            <div class="stat-label">HR</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${player.stats.rbi}</div>
+                            <div class="stat-label">RBI</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderConferences() {
+            const container = document.getElementById('conference-standings');
+            container.innerHTML = CONFERENCES.map(conf => `
+                <div class="conference-standings">
+                    <div class="conference-header">
+                        <span style="font-size: 2rem;">${conf.logo}</span>
+                        <span class="conference-name">${conf.name}</span>
+                    </div>
+                    <table class="rankings-table">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Conf</th>
+                                <th>Overall</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${conf.teams.map(team => `
+                                <tr>
+                                    <td style="font-weight: 600;">${team.team}</td>
+                                    <td style="color: #FFA500;">${team.confRecord}</td>
+                                    <td>${team.overall}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRankings();
+            renderGames();
+            renderPlayers();
+            renderConferences();
+        });
+    </script>
+</body>
+</html>

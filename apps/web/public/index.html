@@ -537,6 +537,195 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
+        /* AI Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF4500, #FFD700);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 4px 20px rgba(255, 69, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 69, 0, 0.6);
+        }
+
+        .chat-container {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            max-height: 500px;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.98), rgba(42, 42, 42, 0.98));
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 20px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+        }
+
+        .chat-container.open { display: flex; }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #FF4500, #C41E3A);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .chat-close:hover { opacity: 1; }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            padding: 0.75rem 1rem;
+            border-radius: 15px;
+            max-width: 85%;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, #FF4500, #FF6B35);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-message.assistant {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #FF4500;
+        }
+
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF4500, #FFD700);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: transform 0.2s;
+        }
+
+        .chat-send:hover { transform: scale(1.1); }
+        .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            align-self: flex-start;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #FF4500;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Data source badge */
+        .data-source {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                width: calc(100vw - 40px);
+                right: 0;
+                left: 20px;
+                bottom: 80px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -566,7 +755,8 @@
             <a href="#" class="nav-pill active" data-sport="mlb">⚾ Baseball</a>
             <a href="#" class="nav-pill" data-sport="nfl">🏈 Football</a>
             <a href="#" class="nav-pill" data-sport="nba">🏀 Basketball</a>
-            <a href="#" class="nav-pill" data-sport="ncaa">🏃 Track & Field</a>
+            <a href="#" class="nav-pill" data-sport="ncaa">🎓 NCAA</a>
+            <a href="/college-baseball" class="nav-pill" style="background: linear-gradient(135deg, #BF5700, #FFD700);">🏆 College Baseball</a>
         </nav>
     </header>
 
@@ -1247,6 +1437,196 @@
         window.activateVisionAI = activateVisionAI;
         window.stopVisionAI = stopVisionAI;
         window.switchSport = switchSport;
+
+        // ===============================
+        // LIVE DATA FETCHING
+        // ===============================
+        let liveDataCache = {};
+        let lastFetchTime = {};
+
+        async function fetchLiveScores(league) {
+            const cacheKey = `scores_${league}`;
+            const now = Date.now();
+
+            // Use cache if less than 30 seconds old
+            if (liveDataCache[cacheKey] && (now - lastFetchTime[cacheKey]) < 30000) {
+                return liveDataCache[cacheKey];
+            }
+
+            try {
+                const response = await fetch(`/api/scores/${league}`);
+                if (!response.ok) throw new Error('API error');
+
+                const data = await response.json();
+                liveDataCache[cacheKey] = data;
+                lastFetchTime[cacheKey] = now;
+
+                // Update data source indicator
+                updateDataSource(data.dataSource, data.lastUpdate);
+
+                return data;
+            } catch (error) {
+                console.warn('Live API unavailable, using cached data:', error);
+                return null;
+            }
+        }
+
+        function updateDataSource(source, lastUpdate) {
+            const sourceEl = document.getElementById('data-source');
+            if (sourceEl) {
+                const time = new Date(lastUpdate).toLocaleTimeString('en-US', {
+                    timeZone: 'America/Chicago',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                sourceEl.textContent = `Data: ${source} | Updated: ${time} CT`;
+            }
+        }
+
+        async function loadLiveData() {
+            const data = await fetchLiveScores(currentSport);
+            if (data && data.games && data.games.length > 0) {
+                // Transform API data to match our display format
+                const transformedScores = data.games.map(game => ({
+                    home: {
+                        name: game.homeTeam.name,
+                        logo: game.homeTeam.logo || '🏟️',
+                        score: game.homeTeam.score,
+                        city: game.homeTeam.abbreviation
+                    },
+                    away: {
+                        name: game.awayTeam.name,
+                        logo: game.awayTeam.logo || '🏟️',
+                        score: game.awayTeam.score,
+                        city: game.awayTeam.abbreviation
+                    },
+                    inning: game.period,
+                    quarter: game.period,
+                    isLive: game.status === 'live',
+                    stadium: game.venue
+                }));
+
+                updateLiveScores(transformedScores);
+            }
+        }
+
+        // Auto-refresh live data every 60 seconds
+        setInterval(() => {
+            loadLiveData();
+        }, 60000);
+
+        // ===============================
+        // AI CHAT FUNCTIONALITY
+        // ===============================
+        let chatOpen = false;
+
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            document.getElementById('chat-container').classList.toggle('open', chatOpen);
+            if (chatOpen) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message to chat
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator();
+
+                if (data.ok && data.response) {
+                    addChatMessage(data.response, 'assistant');
+                } else {
+                    addChatMessage('Had trouble processing that. Try asking differently!', 'assistant');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addChatMessage('Connection issue. Give it another shot in a sec.', 'assistant');
+            }
+        }
+
+        function addChatMessage(text, role) {
+            const messages = document.getElementById('chat-messages');
+            const msg = document.createElement('div');
+            msg.className = `chat-message ${role}`;
+            msg.textContent = text;
+            messages.appendChild(msg);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messages = document.getElementById('chat-messages');
+            const indicator = document.createElement('div');
+            indicator.id = 'typing-indicator';
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+            messages.appendChild(indicator);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        // Handle Enter key in chat input
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendChatMessage();
+                });
+            }
+
+            // Initial load of live data
+            loadLiveData();
+        });
+
+        // Make chat functions global
+        window.toggleChat = toggleChat;
+        window.sendChatMessage = sendChatMessage;
     </script>
+
+    <!-- AI Chat Widget -->
+    <div class="chat-widget">
+        <div id="chat-container" class="chat-container">
+            <div class="chat-header">
+                <h4>🔥 Ask Blaze</h4>
+                <button class="chat-close" onclick="toggleChat()">&times;</button>
+            </div>
+            <div id="chat-messages" class="chat-messages">
+                <div class="chat-message assistant">
+                    Hey there! I'm Blaze, your AI sports analyst. Ask me anything about MLB, NFL, NBA, or college athletics. What's on your mind?
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Ask about sports..." maxlength="500">
+                <button class="chat-send" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+        <button class="chat-toggle" onclick="toggleChat()">💬</button>
+    </div>
+
+    <!-- Data Source Indicator -->
+    <div id="data-source" class="data-source" style="position: fixed; bottom: 20px; left: 20px; z-index: 100;">
+        Data: Loading...
+    </div>
 </body>
 </html>
