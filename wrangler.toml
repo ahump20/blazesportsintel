@@ -1,4 +1,4 @@
-# Blaze Sports Intelligence - Production Configuration
+# Blaze Sports Intelligence - Cloudflare Pages Configuration
 # blazesportsintel.com
 
 name = "blazesportsintel"
@@ -9,107 +9,16 @@ pages_build_output_dir = "apps/web/public"
 [vars]
 ENVIRONMENT = "production"
 SITE_URL = "https://blazesportsintel.com"
-ANALYTICS_ENABLED = "true"
-VISION_AI_ENABLED = "true"
-CAMERA_PERMISSIONS = "true"
-CSP_ENABLED = "true"
 
-# R2 Storage Buckets for Media and Data
-[[r2_buckets]]
-binding = "MEDIA_STORAGE"
-bucket_name = "blazesportsintel-assets"
-preview_bucket_name = "blazesportsintel-assets-preview"
-
-[[r2_buckets]]
-binding = "DATA_STORAGE"
-bucket_name = "blazesportsintel-data"
-preview_bucket_name = "blazesportsintel-data-preview"
-
-[[r2_buckets]]
-binding = "YOUTH_DATA"
-bucket_name = "blazesportsintel-youth"
-preview_bucket_name = "blazesportsintel-youth-preview"
-
-# KV Namespaces for Caching
-[[kv_namespaces]]
-binding = "SPORTS_DATA"
-id = "c912d983175e4a1480225cfd57ed3434"
-preview_id = "c912d983175e4a1480225cfd57ed3434"
-
+# KV Namespaces for Caching (Pages-compatible)
 [[kv_namespaces]]
 binding = "SPORTS_CACHE"
 id = "c912d983175e4a1480225cfd57ed3434"
-preview_id = "c912d983175e4a1480225cfd57ed3434"
 
 [[kv_namespaces]]
 binding = "ANALYTICS_CACHE"
 id = "30fde31341b147f8aa5c0817aa34c9e0"
-preview_id = "30fde31341b147f8aa5c0817aa34c9e0"
 
-[[kv_namespaces]]
-binding = "VISION_AI_CACHE"
-id = "2bb1b1aebb164d5aad9b2333704cf5c4"
-preview_id = "2bb1b1aebb164d5aad9b2333704cf5c4"
-
-# Durable Objects for Real-time Features
-[[durable_objects.bindings]]
-name = "SCORE_HUB"
-class_name = "ScoreHub"
-
-[[durable_objects.bindings]]
-name = "VISION_PROCESSOR"
-class_name = "VisionProcessor"
-
-[[durable_objects.bindings]]
-name = "ANALYTICS_ENGINE"
-class_name = "AnalyticsEngine"
-
-# Migration Configuration
-[[migrations]]
-tag = "v1"
-new_classes = ["ScoreHub", "VisionProcessor", "AnalyticsEngine"]
-
-# Environment-specific configurations
-[env.production]
-vars = { ENVIRONMENT = "production", DEBUG = "false" }
-
-[env.staging]
-vars = { ENVIRONMENT = "staging", DEBUG = "true", ANALYTICS_ENABLED = "false" }
-
-[env.development]
-vars = { ENVIRONMENT = "development", DEBUG = "true", ANALYTICS_ENABLED = "false" }
-
-# Build Configuration
-[build]
-command = "npm run build:web"
-cwd = "."
-
-# Custom Domain Routes
-[[routes]]
-pattern = "blazesportsintel.com/*"
-custom_domain = true
-
-[[routes]]
-pattern = "www.blazesportsintel.com/*"
-custom_domain = true
-
-# Queue Configuration for Data Processing
-[[queues.producers]]
-binding = "SPORTS_DATA_QUEUE"
-queue = "sports-data-processing"
-
-[[queues.consumers]]
-queue = "sports-data-processing"
-max_batch_size = 10
-max_batch_timeout = 30
-
-# Analytics and Observability
-[observability]
-enabled = true
-
+# AI binding for Workers AI
 [ai]
 binding = "AI"
-
-# Browser Rendering for Vision AI
-[browser]
-binding = "BROWSER"
