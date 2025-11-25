@@ -1,7 +1,6 @@
 /**
  * Cloudflare Pages Function: Live Scores API
- * Real-time scores for MLB, NFL, NBA, NCAA
- * Uses ESPN's free public API (no auth required)
+ * Multi-source data: KV Cache (ESPN cron) -> SportsDataIO -> Demo fallback
  *
  * Endpoint: /api/scores/:league
  * Methods: GET
@@ -9,6 +8,7 @@
 
 interface Env {
   SPORTS_CACHE?: KVNamespace;
+  SPORTSDATAIO_API_KEY?: string;
 }
 
 interface GameScore {
@@ -41,28 +41,19 @@ interface ScoresResponse {
   dataSource: string;
 }
 
-// ESPN API endpoints - FREE, no auth required
-const ESPN_CONFIG: Record<string, { endpoint: string; name: string }> = {
-  mlb: {
-    endpoint: 'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard',
-    name: 'MLB'
-  },
-  nfl: {
-    endpoint: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard',
-    name: 'NFL'
-  },
-  nba: {
-    endpoint: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard',
-    name: 'NBA'
-  },
-  ncaa: {
-    endpoint: 'https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard',
-    name: 'NCAA Football'
-  },
-  'college-baseball': {
-    endpoint: 'https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard',
-    name: 'College Baseball'
-  }
+interface CachedESPNData {
+  data: any;
+  fetchedAt: string;
+  source: string;
+}
+
+// League configuration
+const LEAGUE_CONFIG: Record<string, { name: string; sportsDataPath: string }> = {
+  mlb: { name: 'MLB', sportsDataPath: 'mlb/scores/json/GamesByDate' },
+  nfl: { name: 'NFL', sportsDataPath: 'nfl/scores/json/ScoresByWeek' },
+  nba: { name: 'NBA', sportsDataPath: 'nba/scores/json/GamesByDate' },
+  ncaa: { name: 'NCAA Football', sportsDataPath: 'cfb/scores/json/GamesByWeek' },
+  'college-baseball': { name: 'College Baseball', sportsDataPath: '' },
 };
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
@@ -70,161 +61,155 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const league = (params.league as string)?.toLowerCase();
 
   // Validate league
-  if (!league || !ESPN_CONFIG[league]) {
+  if (!league || !LEAGUE_CONFIG[league]) {
     return jsonResponse({
       ok: false,
       error: 'Invalid league. Supported: mlb, nfl, nba, ncaa, college-baseball',
-      availableLeagues: Object.keys(ESPN_CONFIG)
+      availableLeagues: Object.keys(LEAGUE_CONFIG)
     }, 400);
   }
 
-  try {
-    // Check cache first (60-second TTL for live scores)
-    const cacheKey = `espn:scores:${league}`;
-    if (env.SPORTS_CACHE) {
-      const cached = await env.SPORTS_CACHE.get(cacheKey, 'json') as ScoresResponse | null;
-      if (cached) {
-        return jsonResponse({
-          ...cached,
-          cached: true,
-        }, 200, { 'X-Cache': 'HIT' });
-      }
+  const config = LEAGUE_CONFIG[league];
+
+  // Strategy 1: Check KV cache from ESPN cron worker
+  if (env.SPORTS_CACHE) {
+    const cached = await env.SPORTS_CACHE.get(`espn:${league}:scores`, 'json') as CachedESPNData | null;
+    if (cached?.data) {
+      const games = transformESPNScores(cached.data);
+      return jsonResponse({
+        ok: true,
+        league: config.name,
+        games,
+        cached: true,
+        lastUpdate: cached.fetchedAt,
+        dataSource: 'ESPN (cached)',
+      }, 200, { 'X-Cache': 'HIT', 'X-Source': 'espn-cache' });
     }
-
-    // Fetch from ESPN
-    const games = await fetchESPNScores(league);
-
-    const response: ScoresResponse = {
-      ok: true,
-      league: ESPN_CONFIG[league].name,
-      games,
-      cached: false,
-      lastUpdate: new Date().toISOString(),
-      dataSource: 'ESPN',
-    };
-
-    // Cache for 60 seconds
-    if (env.SPORTS_CACHE) {
-      await env.SPORTS_CACHE.put(cacheKey, JSON.stringify(response), {
-        expirationTtl: 60,
-      });
-    }
-
-    return jsonResponse(response, 200, { 'X-Cache': 'MISS' });
-
-  } catch (error) {
-    console.error(`Error fetching ${league} scores:`, error);
-
-    // Return fallback demo data on error
-    return jsonResponse({
-      ok: true,
-      league: ESPN_CONFIG[league].name,
-      games: getFallbackScores(league),
-      cached: false,
-      lastUpdate: new Date().toISOString(),
-      dataSource: 'Demo (ESPN unavailable)',
-    }, 200);
   }
+
+  // Strategy 2: Try SportsDataIO API
+  if (env.SPORTSDATAIO_API_KEY && config.sportsDataPath) {
+    try {
+      const games = await fetchSportsDataIO(env.SPORTSDATAIO_API_KEY, league, config.sportsDataPath);
+      if (games.length > 0) {
+        // Cache the result
+        if (env.SPORTS_CACHE) {
+          await env.SPORTS_CACHE.put(`sportsdata:${league}`, JSON.stringify({
+            games,
+            fetchedAt: new Date().toISOString(),
+          }), { expirationTtl: 120 });
+        }
+
+        return jsonResponse({
+          ok: true,
+          league: config.name,
+          games,
+          cached: false,
+          lastUpdate: new Date().toISOString(),
+          dataSource: 'SportsDataIO',
+        }, 200, { 'X-Cache': 'MISS', 'X-Source': 'sportsdata' });
+      }
+    } catch (error) {
+      console.error(`SportsDataIO error for ${league}:`, error);
+    }
+  }
+
+  // Strategy 3: Check SportsDataIO cache
+  if (env.SPORTS_CACHE) {
+    const sdCache = await env.SPORTS_CACHE.get(`sportsdata:${league}`, 'json') as any;
+    if (sdCache?.games) {
+      return jsonResponse({
+        ok: true,
+        league: config.name,
+        games: sdCache.games,
+        cached: true,
+        lastUpdate: sdCache.fetchedAt,
+        dataSource: 'SportsDataIO (cached)',
+      }, 200, { 'X-Cache': 'HIT', 'X-Source': 'sportsdata-cache' });
+    }
+  }
+
+  // Strategy 4: Return fallback demo data
+  return jsonResponse({
+    ok: true,
+    league: config.name,
+    games: getFallbackScores(league),
+    cached: false,
+    lastUpdate: new Date().toISOString(),
+    dataSource: 'Demo (live data unavailable)',
+  }, 200, { 'X-Cache': 'MISS', 'X-Source': 'fallback' });
 };
 
-function getFallbackScores(league: string): GameScore[] {
-  const fallback: Record<string, GameScore[]> = {
-    mlb: [
-      {
-        gameId: 'fallback-mlb-1',
-        status: 'scheduled' as const,
-        homeTeam: { name: 'St. Louis Cardinals', abbreviation: 'STL', score: 0, logo: '' },
-        awayTeam: { name: 'Houston Astros', abbreviation: 'HOU', score: 0, logo: '' },
-        period: 'Season starts March 2025',
-        venue: 'Busch Stadium',
-        startTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString(),
-      }
-    ],
-    nfl: [
-      {
-        gameId: 'fallback-nfl-1',
-        status: 'final' as const,
-        homeTeam: { name: 'Houston Texans', abbreviation: 'HOU', score: 23, logo: '' },
-        awayTeam: { name: 'Buffalo Bills', abbreviation: 'BUF', score: 19, logo: '' },
-        period: 'Final',
-        venue: 'NRG Stadium',
-        startTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString(),
-      },
-      {
-        gameId: 'fallback-nfl-2',
-        status: 'final' as const,
-        homeTeam: { name: 'Chicago Bears', abbreviation: 'CHI', score: 31, logo: '' },
-        awayTeam: { name: 'Pittsburgh Steelers', abbreviation: 'PIT', score: 28, logo: '' },
-        period: 'Final',
-        venue: 'Soldier Field',
-        startTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString(),
-      }
-    ],
-    nba: [
-      {
-        gameId: 'fallback-nba-1',
-        status: 'scheduled' as const,
-        homeTeam: { name: 'Memphis Grizzlies', abbreviation: 'MEM', score: 0, logo: '' },
-        awayTeam: { name: 'San Antonio Spurs', abbreviation: 'SAS', score: 0, logo: '' },
-        period: 'Games Tonight',
-        venue: 'FedExForum',
-        startTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString(),
-      }
-    ],
-    ncaa: [
-      {
-        gameId: 'fallback-ncaa-1',
-        status: 'final' as const,
-        homeTeam: { name: 'Texas Longhorns', abbreviation: 'TEX', score: 35, logo: '' },
-        awayTeam: { name: 'Kentucky Wildcats', abbreviation: 'UK', score: 13, logo: '' },
-        period: 'Final',
-        venue: 'DKR Stadium',
-        startTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString(),
-      }
-    ],
-    'college-baseball': [
-      {
-        gameId: 'fallback-cbb-1',
-        status: 'scheduled' as const,
-        homeTeam: { name: 'Texas Longhorns', abbreviation: 'TEX', score: 0, logo: '' },
-        awayTeam: { name: 'LSU Tigers', abbreviation: 'LSU', score: 0, logo: '' },
-        period: 'Season starts Feb 2025',
-        venue: 'UFCU Disch-Falk Field',
-        startTime: new Date().toISOString(),
-        lastUpdate: new Date().toISOString(),
-      }
-    ]
-  };
-  return fallback[league] || [];
-}
+async function fetchSportsDataIO(apiKey: string, league: string, path: string): Promise<GameScore[]> {
+  const today = new Date().toISOString().split('T')[0];
+  let url: string;
 
-async function fetchESPNScores(league: string): Promise<GameScore[]> {
-  const config = ESPN_CONFIG[league];
+  if (league === 'nfl' || league === 'ncaa') {
+    // NFL/NCAAF use week-based endpoints
+    url = `https://api.sportsdata.io/v3/${path}/2025REG/12?key=${apiKey}`;
+  } else {
+    url = `https://api.sportsdata.io/v3/${path}/${today}?key=${apiKey}`;
+  }
 
-  const response = await fetch(config.endpoint, {
-    headers: {
-      'Accept': 'application/json',
-      'User-Agent': 'BlazeSportsIntel/2.0',
-    },
+  const response = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
   });
 
   if (!response.ok) {
-    throw new Error(`ESPN API error: ${response.status}`);
+    throw new Error(`SportsDataIO API error: ${response.status}`);
   }
 
-  const data = await response.json() as any;
-  return transformESPNScores(data);
+  const data = await response.json() as any[];
+  return transformSportsDataIO(data, league);
+}
+
+function transformSportsDataIO(data: any[], league: string): GameScore[] {
+  if (!Array.isArray(data)) return [];
+
+  return data.slice(0, 12).map((game: any) => {
+    const homeAbbr = game.HomeTeam || game.HomeTeamKey || 'HOME';
+    const awayAbbr = game.AwayTeam || game.AwayTeamKey || 'AWAY';
+
+    let status: 'live' | 'final' | 'scheduled' = 'scheduled';
+    if (game.Status === 'InProgress' || game.Status === 'Live') status = 'live';
+    else if (game.Status === 'Final' || game.Status === 'F' || game.Status === 'F/OT') status = 'final';
+
+    let period = '';
+    if (league === 'mlb') {
+      period = game.Inning ? `${game.InningHalf || 'Bot'} ${game.Inning}` : '';
+    } else if (league === 'nfl' || league === 'ncaa') {
+      period = game.Quarter ? `Q${game.Quarter}` : '';
+    } else if (league === 'nba') {
+      period = game.Quarter ? `Q${game.Quarter}` : '';
+    }
+
+    if (status === 'final') period = 'Final';
+
+    return {
+      gameId: String(game.GameID || game.GameKey || Math.random()),
+      status,
+      homeTeam: {
+        name: game.HomeTeamName || game.HomeTeam || 'Home',
+        abbreviation: homeAbbr,
+        score: game.HomeTeamScore ?? game.HomeScore ?? 0,
+        logo: '',
+      },
+      awayTeam: {
+        name: game.AwayTeamName || game.AwayTeam || 'Away',
+        abbreviation: awayAbbr,
+        score: game.AwayTeamScore ?? game.AwayScore ?? 0,
+        logo: '',
+      },
+      period,
+      venue: game.Stadium?.Name || game.StadiumName || 'TBD',
+      startTime: game.DateTime || game.Day || new Date().toISOString(),
+      lastUpdate: game.Updated || new Date().toISOString(),
+    };
+  });
 }
 
 function transformESPNScores(data: any): GameScore[] {
-  if (!data.events || !Array.isArray(data.events)) {
-    return [];
-  }
+  if (!data?.events || !Array.isArray(data.events)) return [];
 
   return data.events.slice(0, 12).map((event: any) => {
     const competition = event.competitions?.[0];
@@ -235,7 +220,6 @@ function transformESPNScores(data: any): GameScore[] {
 
     if (!homeTeamData || !awayTeamData) return null;
 
-    // Determine game status
     let status: 'live' | 'final' | 'scheduled' = 'scheduled';
     const statusType = competition.status?.type?.name || event.status?.type?.name;
 
@@ -245,7 +229,6 @@ function transformESPNScores(data: any): GameScore[] {
       status = 'final';
     }
 
-    // Get period/inning info
     const period = competition.status?.type?.shortDetail || event.status?.type?.shortDetail || '';
 
     return {
@@ -269,6 +252,63 @@ function transformESPNScores(data: any): GameScore[] {
       lastUpdate: new Date().toISOString(),
     };
   }).filter(Boolean) as GameScore[];
+}
+
+function getFallbackScores(league: string): GameScore[] {
+  const fallback: Record<string, GameScore[]> = {
+    mlb: [{
+      gameId: 'demo-mlb-1', status: 'scheduled',
+      homeTeam: { name: 'St. Louis Cardinals', abbreviation: 'STL', score: 0, logo: '' },
+      awayTeam: { name: 'Houston Astros', abbreviation: 'HOU', score: 0, logo: '' },
+      period: 'Spring Training Feb 2025', venue: 'Busch Stadium',
+      startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+    }],
+    nfl: [
+      {
+        gameId: 'demo-nfl-1', status: 'final',
+        homeTeam: { name: 'Houston Texans', abbreviation: 'HOU', score: 23, logo: '' },
+        awayTeam: { name: 'Buffalo Bills', abbreviation: 'BUF', score: 19, logo: '' },
+        period: 'Final', venue: 'NRG Stadium',
+        startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+      },
+      {
+        gameId: 'demo-nfl-2', status: 'final',
+        homeTeam: { name: 'Chicago Bears', abbreviation: 'CHI', score: 31, logo: '' },
+        awayTeam: { name: 'Pittsburgh Steelers', abbreviation: 'PIT', score: 28, logo: '' },
+        period: 'Final', venue: 'Soldier Field',
+        startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+      },
+      {
+        gameId: 'demo-nfl-3', status: 'scheduled',
+        homeTeam: { name: 'Tennessee Titans', abbreviation: 'TEN', score: 0, logo: '' },
+        awayTeam: { name: 'Houston Texans', abbreviation: 'HOU', score: 0, logo: '' },
+        period: 'Sun 12:00 PM CT', venue: 'Nissan Stadium',
+        startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+      }
+    ],
+    nba: [{
+      gameId: 'demo-nba-1', status: 'scheduled',
+      homeTeam: { name: 'Memphis Grizzlies', abbreviation: 'MEM', score: 0, logo: '' },
+      awayTeam: { name: 'San Antonio Spurs', abbreviation: 'SAS', score: 0, logo: '' },
+      period: 'Tonight 7:00 PM CT', venue: 'FedExForum',
+      startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+    }],
+    ncaa: [{
+      gameId: 'demo-ncaa-1', status: 'final',
+      homeTeam: { name: 'Texas Longhorns', abbreviation: 'TEX', score: 35, logo: '' },
+      awayTeam: { name: 'Kentucky Wildcats', abbreviation: 'UK', score: 13, logo: '' },
+      period: 'Final', venue: 'DKR-Texas Memorial Stadium',
+      startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+    }],
+    'college-baseball': [{
+      gameId: 'demo-cbb-1', status: 'scheduled',
+      homeTeam: { name: 'Texas Longhorns', abbreviation: 'TEX', score: 0, logo: '' },
+      awayTeam: { name: 'LSU Tigers', abbreviation: 'LSU', score: 0, logo: '' },
+      period: 'Season starts Feb 2025', venue: 'UFCU Disch-Falk Field',
+      startTime: new Date().toISOString(), lastUpdate: new Date().toISOString(),
+    }],
+  };
+  return fallback[league] || [];
 }
 
 function jsonResponse(data: any, status: number, headers?: Record<string, string>): Response {

@@ -1,0 +1,15 @@
+# ESPN Data Cache Worker
+# Manual trigger worker to fetch and cache ESPN API data
+# Can be triggered via POST /refresh or GitHub Actions
+
+name = "espn-data-cache"
+main = "index.ts"
+compatibility_date = "2025-01-01"
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "SPORTS_CACHE"
+id = "c912d983175e4a1480225cfd57ed3434"
+
+[vars]
+ENVIRONMENT = "production"
